@@ -1,0 +1,235 @@
+
+$move-amount: 40px;
+$move-speed: 2000ms;
+
+[anim-on-enter="move-up"]{
+    transform: translateY($move-amount);
+    opacity: 0;
+}
+
+.in-view[anim-on-enter="move-up"] {
+    animation-name:MoveUp;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes MoveUp  {
+    0%  {
+        transform:translateY($move-amount);
+        opacity: 0;
+    }
+
+    50%  {
+        transform:translateY($move-amount);
+        opacity: 0;
+    }
+
+    100%  {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+[anim-on-enter="move-left"] {
+    transform: translateX($move-amount);
+    opacity: 0;
+}
+
+.in-view[anim-on-enter="move-left"] {
+    animation-name:MoveLeft;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes MoveLeft  {
+    0%  {
+        transform:translateX($move-amount);
+        opacity: 0;
+    }
+
+    50%  {
+        transform:translateX($move-amount);
+        opacity: 0;
+    }
+
+    100%  {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+[anim-on-enter="move-right"] {
+    transform: translateX(#{$move-amount - $move-amount - $move-amount});
+    opacity: 0;
+}
+
+.in-view[anim-on-enter="move-right"] {
+    animation-name:MoveRight;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes MoveRight  {
+    0%  {
+        transform:translateX(#{$move-amount - $move-amount - $move-amount});
+        opacity: 0;
+    }
+
+    50%  {
+        transform:translateX(#{$move-amount - $move-amount - $move-amount});
+        opacity: 0;
+    }
+
+    100%  {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+[anim-on-enter="move-down"] {
+    transform: translateY(#{$move-amount - $move-amount - $move-amount});
+    opacity: 0;
+}
+
+.in-view[anim-on-enter="move-down"] {
+    animation-name:MoveDown;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes MoveDown  {
+    0%  {
+        transform:translateY(#{$move-amount - $move-amount - $move-amount});
+        opacity: 0;
+    }
+
+    50%  {
+        transform:translateY(#{$move-amount - $move-amount - $move-amount});
+        opacity: 0;
+    }
+
+    100%  {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+[anim-on-enter="fade-in"] {
+    opacity: 0;
+}
+
+.in-view[anim-on-enter="fade-in"] {
+    animation-name:FadeIn;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes FadeIn  {
+    0%  {
+        opacity: 0;
+    }
+
+    100%  {
+        opacity: 1;
+    }
+}
+
+[anim-on-enter="blur-in"] {
+    opacity: 0;
+}
+
+.in-view[anim-on-enter="blur-in"] {
+    animation-name:BlurIn;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes BlurIn  {
+    0%  {
+        filter: blur(50px);
+        opacity: 0;
+    }
+
+    50% {
+        filter: blur(50px);
+        opacity: 1;
+    }
+
+    100%  {
+        filter: blur(0px);
+        opacity: 1;
+    }
+}
+
+.in-view[anim-on-enter="rotate"], [anim="rotate"]{
+   -webkit-animation-name:spin;
+   -webkit-animation-duration:4000ms;
+   -webkit-animation-iteration-count:infinite;
+   -webkit-animation-timing-function:linear;
+   -moz-animation-name:spin;
+   -moz-animation-duration:4000ms;
+   -moz-animation-iteration-count:infinite;
+   -moz-animation-timing-function:linear;
+   -ms-animation-name:spin;
+   -ms-animation-duration:4000ms;
+   -ms-animation-iteration-count:infinite;
+   -ms-animation-timing-function:linear;
+   animation-name:spin;
+   animation-duration:4000ms;
+   animation-iteration-count:infinite;
+   animation-timing-function:linear;
+}
+
+@keyframes spin {
+   from {
+       transform:rotate(0deg);
+   }
+
+   to {
+       transform:rotate(360deg);
+   }
+}
+
+.in-view[anim-on-enter="bob"], [anim="bob"]{
+   animation: MoveUpDown 2s ease infinite;
+}
+
+@keyframes MoveUpDown  {
+    0%  {
+        transform:translateY(0);
+   }
+
+   50%  {
+        transform: translateY(-10px);
+   }
+
+   100%  {
+        transform: translateY(0);
+   }
+}
+
+.in-view[anim-on-enter="flash"], [anim="flash"] {
+   animation-name: flash;
+   animation-duration: 1s;
+   animation-iteration-count:infinite;
+}
+
+@keyframes flash  {
+    0%  {
+       opacity: 0;
+   }
+
+   50%  {
+       opacity: 1;
+   }
+
+   100%  {
+       opacity: 0;
+   }
+}

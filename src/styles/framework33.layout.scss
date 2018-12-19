@@ -1,0 +1,390 @@
+.background {
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:100%;
+    height:auto;
+    z-index:0;
+}
+
+.background.middle {
+    position:absolute;
+    top:-100%;
+}
+
+.background + * {
+    z-index:1
+}
+
+div.background {
+    height:100%;
+}
+
+.fold, .hero {
+    position:relative;
+    display:block;
+    width:100vw;
+    min-height:100vh;
+    overflow:hidden;
+}
+
+.float-left {
+    float:left;
+}
+
+.float-right {
+    float:right;
+}
+
+.width-auto, .wa {
+    width:auto;
+}
+
+.width-full, .w100 {
+    width:100%;
+}
+
+.height-full, .h100, .fh100 {
+    height:100%;
+}
+
+.width-half,  {
+    width:50%;
+}
+
+.height-auto, .ha {
+    height:auto;
+}
+
+.height-half, .h50 {
+    height:50%;
+}
+
+.container,.row {
+    display: block;
+    font-size:0;
+    max-width:100%;
+    margin:auto;
+}
+
+.container > *, .row > * {
+    font-size:1vw
+}
+
+.h10 {
+    height:10rem;
+}
+
+.h15 {
+    height:15rem;
+}
+
+.h20 {
+    height:20rem;
+}
+
+.h25 {
+    height:25%;
+}
+
+.h30 {
+    height:30%;
+}
+
+.h40 {
+    height:40%;
+}
+
+.h100 {
+    height:100%;
+}
+
+.vh100 {
+    height:100vh;
+}
+
+.vw100 {
+    width:100vw;
+}
+
+.vh90 {
+    height:90vh;
+}
+
+.vh75 {
+    height:75vh;
+}
+
+.vh50 {
+    height:50vh;
+}
+
+.vw50 {
+    width:50vw;
+}
+
+.vh25 {
+    height:25vh;
+}
+
+.vw25 {
+    width:25vw;
+}
+
+.relative {
+    position:relative;
+}
+
+.absolute {
+    position:absolute;
+}
+
+img.absolute {
+    position: absolute
+}
+;
+ .fixed {
+    position:fixed;
+}
+
+.fixed.top.left {
+    position:fixed;
+    top:0px;
+    left:0px;
+}
+
+.fixed.top.right {
+    position:fixed;
+    top:0px;
+    right:0px;
+}
+
+.fixed.bottom.left {
+    position:fixed;
+    bottom:0px;
+    left:0px;
+}
+
+.fixed.bottom.right {
+    position:fixed;
+    bottom:0px;
+    right:0px;
+}
+
+.fixed.bottom.right {
+    position:fixed;
+    bottom:0px;
+    right:0px;
+}
+
+.absolute.bottom.left {
+    position:absolute;
+    bottom:0px;
+    left:0px;
+}
+
+.absolute.bottom.right {
+    position:absolute;
+    bottom:0px;
+    right:0px;
+}
+
+.absolute.left {
+    position:absolute;
+    left:0px;
+}
+
+.absolute.top.left {
+    position:absolute;
+    top:0px;
+    left:0px;
+}
+
+.absolute.top.right {
+    position:absolute;
+    top:0px;
+    right:0px;
+}
+
+.layer0,.layer-0 {
+    position:relative;
+    z-index:-1;
+}
+
+.layer1,.layer-1 {
+    position:relative;
+    z-index:1;
+}
+
+.layer2,.layer-2 {
+    position:relative;
+    z-index:100;
+}
+
+.layer3,.layer-3 {
+    position:relative;
+    z-index:200;
+}
+
+.layer4,.layer-4 {
+    position:relative;
+    z-index:300;
+}
+
+.layer5,.layer-5 {
+    position:relative;
+    z-index:400;
+}
+
+.layer6,.layer-6 {
+    position:relative;
+    z-index:500;
+}
+
+.layer-top {
+    position:relative;
+    z-index:800;
+}
+
+.absolute.layer0, .absolute .layer0 {
+    position:absolute;
+    z-index:-1;
+}
+
+.absolute.layer1, .absolute .layer1 {
+    position:absolute;
+    z-index:0;
+}
+
+.absolute.layer2, .absolute .layer2 {
+    position:absolute;
+    z-index:10;
+}
+
+.absolute.layer3, .absolute .layer3 {
+    position:absolute;
+    z-index:20;
+}
+
+.absolute.layer-top, .absolute .layer-top {
+    position:absolute;
+    z-index:800;
+}
+
+.fixed.layer0, .fixed .layer0 {
+    position:fixed;
+    z-index:-1;
+}
+
+.fixed.layer1, .fixed .layer1 {
+    position:fixed;
+    z-index:0;
+}
+
+.fixed.layer2, .fixed .layer2 {
+    position:fixed;
+    z-index:10;
+}
+
+.fixed.layer3, .fixed .layer3 {
+    position:fixed;
+    z-index:20;
+}
+
+.fixed.layer-top, .fixed .layer-top {
+    position:fixed;
+    z-index:999;
+}
+
+.clear {
+    clear:both;
+}
+
+.clear-after:after {
+    clear:both;
+}
+
+.clear-before:before {
+    clear:both;
+}
+
+.clear-right {
+    clear:right;
+}
+
+.clear-left {
+    clear:left;
+}
+
+.no-wrap {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.inline {
+    display:inline;
+}
+
+.block {
+    display:block;
+}
+
+.inline-block {
+    display:inline-block;
+    vertical-align:middle;
+}
+
+.inline-block.top {
+    display:inline-block;
+    vertical-align:top;
+}
+
+
+.square {
+     position: relative;
+     width: 25%;
+     overflow: hidden;
+     background: #4679BD;
+}
+
+.square:before {
+     content: "";
+     display: block;
+     padding-top: 100%;
+}
+
+.square div  {
+     position: absolute;
+     top: 0;
+     left: 0;
+     bottom: 0;
+     right: 0;
+     color: white;
+}
+
+
+@include medium {
+
+    .float-left-m {
+        float:left;
+    }
+
+    .float-right-m {
+        float:right;
+    }
+
+
+}
+
+@include small {
+
+
+    .float-left-s {
+        float:left;
+    }
+
+    .float-right-s {
+        float:right;
+    }
+
+}

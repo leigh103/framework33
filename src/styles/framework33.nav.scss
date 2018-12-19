@@ -1,0 +1,114 @@
+.nav {
+    cursor:pointer;
+    display:inline-block;
+    position:relative;
+    min-height:40px;
+    height:100%;
+    width:100%;
+    background-size:40px 40px;
+    background-repeat:no-repeat;
+    background-position:top left;
+    text-align: left;
+    padding-top:50px;
+    z-index:5;
+     overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+    -webkit-backface-visibility: hidden;
+}
+
+.nav.right {
+    background-position:top right;
+     text-align: right
+}
+
+.nav * {
+    display:block
+}
+
+.nav:not(.no-padding-children) *  {
+    padding:1rem 1rem 1rem 0
+}
+
+.nav.right:not(.no-padding-children) *  {
+    padding:1rem 0 1rem 1rem
+}
+
+.nav:not(.open) * {
+    display: none
+}
+
+.nav-bar {
+    font-size: 1rem
+}
+
+.nav-bar a {
+    padding:1em;
+     display:inline-block;
+}
+
+.nav-bar a.no-padding {
+    padding:0;
+}
+
+@include medium {
+    .nav *,.nav.right * {
+        padding:1rem 1rem 1rem 1rem
+    }
+
+    .nav.open  {
+        background:none;
+         background-color: rgba(255,255,255,0.8);
+         position:fixed;
+         top:0px;
+         left:0px;
+         width:33vw;
+         height:100vh;
+    }
+
+    .nav.open.text-white  {
+        background-color: rgba(20,20,20,0.8);
+    }
+
+    .nav.open.right {
+        left:calc(100% - 33vw);
+    }
+}
+
+@include small {
+    .nav *,.nav.right * {
+        padding:1rem 1rem 1rem 1rem
+    }
+
+    .nav.open  {
+        background:none;
+         background-color: rgba(255,255,255,0.8);
+         position:fixed;
+         top:0px;
+         left:0px;
+         width:50vw;
+         height:100vh;
+    }
+
+    .nav.open.text-white  {
+        background-color: rgba(20,20,20,0.8);
+    }
+
+    .nav.open.right {
+        left:calc(100% - 50vw);
+    }
+
+    .nav-bar a {
+        display:none;
+         text-align: left;
+    }
+
+    .nav-bar .text-right a, .nav-bar a.text-right, .nav-bar.text-right a {
+        text-align: left;
+    }
+
+    .nav-bar.open a {
+        padding:1em;
+         display:block;
+         width:100%
+    }
+}

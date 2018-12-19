@@ -1,0 +1,49 @@
+
+.flex {
+    display:flex;
+}
+
+.flex-all * {
+    display:flex;
+}
+
+.flex-none {
+    flex:none;
+}
+
+.inline-flex {
+    display:inline-flex;
+    text-align:left;
+}
+
+.flex.row {
+    flex-direction:row;
+}
+
+.flex.column {
+    flex-direction:column;
+}
+
+.flex.row-reverse {
+    flex-direction:row-reverse;
+}
+
+.flex.column-reverse {
+    flex-direction:column-reverse;
+}
+
+.flex-0 {
+    flex:0
+}
+
+.flex-1 {
+    flex:1
+}
+
+.flex-2 {
+    flex:2
+}
+
+.flex-3 {
+    flex:3
+}

@@ -1,0 +1,96 @@
+table {
+    width:100%;
+    margin:2rem auto 2rem auto;
+    border-spacing:0;
+    border-top:2px solid #fff;
+    border-left:2px solid #fff;
+    table-layout:fixed;
+}
+
+td {
+    vertical-align:middle;
+    padding:1rem;
+    text-align:center;
+    border-bottom:2px solid #fff;
+    border-right:2px solid #fff;
+    word-wrap:break-word
+}
+
+table .title {
+    background:#888;
+    color:white;
+}
+
+table .even {
+    background:#ddd;
+}
+
+table.no-style {
+    margin:0;
+    padding:0%;
+    border:none;
+    text-align:left;
+}
+
+table.no-style td {
+    border:none;
+    padding:0%;
+    text-align:left;
+}
+
+.table {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+    border-collapse:collapse;
+    word-wrap: break-word;
+}
+
+.table.small {
+    font-size:0.8rem;
+}
+
+.table .row {
+    display:table-row;
+    font-size: 1rem;
+    margin:0 1rem 1rem 0;
+    width:100%;
+    word-wrap: break-word;
+}
+
+.table .row.title, .table .row.header, .table .row.heading {
+    font-weight:bold;
+    background:#888;
+    color:white;
+}
+
+.table .row.odd,.cell.odd {
+    background:#ddd;
+}
+
+.table .row .cell {
+    position:relative;
+    vertical-align:top;
+    display:table-cell;
+    margin:0 1rem 1rem 0;
+    padding:0.7rem;
+    overflow:hidden;
+    word-wrap:break-word;
+}
+
+.table .row .cell.middle {
+    vertical-align:middle;
+}
+
+.table .row .cell.no-break {
+    word-wrap:normal;
+}
+
+.table.no-padding-children .cell {
+    padding:0
+}
+
+tr.selectable:hover, td.selectable:hover {
+    background:#ddd;
+    cursor:pointer;
+}
