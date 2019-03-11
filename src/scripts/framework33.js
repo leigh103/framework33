@@ -1,7 +1,118 @@
 
 import '../styles/framework33.scss';
+import Observable from 'observable-slim'
 
-window.onload = function(e){
+var test = {}
+var app = {}
+
+app.methods = {
+
+    updateBoundElement(el){
+
+        let el_prop = el.getAttribute('app-bind')
+
+        el.innerHTML = scope[el_prop]
+
+        app.methods.addIndex(el, el_prop, 'bound')
+
+    },
+
+    toggleElement(el, type){
+
+        if (type == 'show'){
+            let el_prop = el.getAttribute('app-show')
+        } else if (type == 'hide'){
+            let el_prop = el.getAttribute('app-hide')
+        } else {
+            let el_prop = el.getAttribute('app-if')
+        }
+
+
+        if (type == 'show'){
+
+            app.methods.addIndex(el, el_prop, 'show')
+
+            if (scope[el_prop]){
+                el.classList.remove('app-hidden')
+            } else {
+                el.classList.add('app-hidden')
+            }
+
+        } else if (type == 'hide'){
+
+            let el_prop = el.getAttribute('app-hide')
+
+            app.methods.addIndex(el, el_prop, 'hide')
+
+            if (scope[el_prop]){
+                el.classList.add('app-hidden')
+            } else {
+                el.classList.remove('app-hidden')
+            }
+
+        } else {
+
+            let el_prop = el.getAttribute('app-if')
+
+            app.methods.addIndex(el, el_prop, 'logic')
+
+            if (scope[el_prop]){
+                let index = [...app.elements.logic.nodes].indexOf(el)
+                let div = document.querySelectorAll('[app-replace="'+index+'"]')[0]
+                div.parentNode.replaceChild(el,div)
+            } else {
+                if (el.parentNode){
+                    let div = document.createElement("div")
+                    div.setAttribute('app-replace',[...app.elements.logic.nodes].indexOf(el))
+                    el.parentNode.replaceChild(div,el)
+                }
+            }
+
+        }
+
+    },
+
+    clickElement(el){
+
+        el.addEventListener('click', function(event) {
+            let attr = el.getAttribute('app-click')
+            if (attr.match(/\(/)){ // if function
+                let method = attr.replace(/\((.*?)\)/,'')
+                let param = attr.match(/\((.*?)\)/)[0].replace(/^\(/,'').replace(/\)$/,'').replace(/^\'/,'').replace(/\'$/,'')
+                scope[method](param)
+            } else if (attr.match(/=/)){ // if operator
+
+            }
+        })
+
+    },
+
+    keypressElement(el){
+
+        el.addEventListener('keyup', function(event) {
+            let attr = el.getAttribute('app-model')
+            scope[attr] = el.value
+        })
+
+    },
+
+    addIndex(el, el_prop, key){
+
+        if (el_prop && el_prop != null){
+            if (!app.elements[key].index[el_prop]){
+                app.elements[key].index[el_prop] = []
+            }
+
+            if (app.elements[key].index[el_prop].indexOf(el) === -1){
+                app.elements[key].index[el_prop].push(el)
+            }
+        }
+
+    }
+
+}
+
+document.addEventListener('DOMContentLoaded', () => {
 
     let document_containers = document.querySelectorAll("section,.container");
     let viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
@@ -27,7 +138,92 @@ window.onload = function(e){
         }
     });
 
-};
+    // on ready
+    app.elements = {}
+
+    app.elements.bound = {}
+    app.elements.logic = {}
+    app.elements.show = {}
+    app.elements.hide = {}
+    app.elements.event = {}
+    app.elements.model = {}
+
+    app.elements.bound.index = {}
+    app.elements.logic.index = {}
+    app.elements.show.index = {}
+    app.elements.hide.index = {}
+    app.elements.event.index = {}
+    app.elements.model.index = {}
+
+    app.elements.bound.nodes = document.querySelectorAll('[app-bind]')
+    app.elements.logic.nodes = document.querySelectorAll('[app-if]')
+    app.elements.show.nodes = document.querySelectorAll('[app-show]')
+    app.elements.hide.nodes = document.querySelectorAll('[app-hide]')
+    app.elements.event.nodes = document.querySelectorAll('[app-click]')
+    app.elements.model.nodes = document.querySelectorAll('[app-model]')
+
+    app.elements.bound.nodes.forEach(function(el) {
+        app.methods.updateBoundElement(el)
+    })
+
+    app.elements.logic.nodes.forEach(function(el) {
+        app.methods.toggleElement(el)
+    })
+
+    app.elements.show.nodes.forEach(function(el) {
+        app.methods.toggleElement(el,'show')
+    })
+
+    app.elements.hide.nodes.forEach(function(el) {
+        app.methods.toggleElement(el,'hide')
+    })
+
+    app.elements.event.nodes.forEach(function(el) {
+        app.methods.clickElement(el)
+    })
+
+    app.elements.model.nodes.forEach(function(el) {
+        app.methods.keypressElement(el)
+    })
+
+    scope.header_1 = 'This is HEADER ONE'
+
+});
+
+var scope = Observable.create(test, true, function(changes) {
+
+    for (var i in changes){
+
+        // update any elements with object binding
+        if (app.elements.bound.index[changes[i].property]){
+            app.elements.bound.index[changes[i].property].forEach(function(el){
+                app.methods.updateBoundElement(el)
+            })
+        }
+
+        // update any elements with logic
+        if (app.elements.logic.index[changes[i].property]){
+            app.elements.logic.index[changes[i].property].forEach(function(el){
+                app.methods.toggleElement(el)
+            })
+        }
+
+        // update any elements with show
+        if (app.elements.show.index[changes[i].property]){
+            app.elements.show.index[changes[i].property].forEach(function(el){
+                app.methods.toggleElement(el,'show')
+            })
+        }
+
+        // update any elements with hide
+        if (app.elements.hide.index[changes[i].property]){
+            app.elements.hide.index[changes[i].property].forEach(function(el){
+                app.methods.toggleElement(el,'hide')
+            })
+        }
+    }
+
+});
 
 function addInViewClass(el) {
     let divs = el.querySelectorAll('*'),
