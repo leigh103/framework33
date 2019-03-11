@@ -2,6 +2,9 @@
 
 A simple CSS and ECMA Script framework. Includes multiple CSS grids, animation system and 'in view' detection, as well as two way data binding for creating dynamic HTML using the Observable-slim module. All wrapped up in a Webpack dev environment.
 
+## Color
+
+Color and image manipulation is also a main focus for this project. Multiple pre-defined colors and gradients, along with blending, make it easy to create multi-layered graphics that are rendered in real time. Rather than relying on your photo editing software to get the background you want, you can simply add classes to render the filters, layers and blends directly in the browser.
 
 ### Installation
 
