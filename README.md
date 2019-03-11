@@ -12,7 +12,7 @@ Framework33 comes with 2 main grid class sets, using CSS Grid and regular CSS Bl
 
 ## Responsive Padding and Font size
 
-With the ability to pad elements differently depending on device, makes it quick and simple to get the look you want - regardless of which devices your audience uses. Tied with font sizes that scale with the width of the viewport, you can be sure of a consistent look and feel on mobile, all the way up to (and beyond) 4K.
+With the ability to pad elements differently depending on device, it's quick and simple to get the look you want - regardless of which devices your audience are using. Tied with font sizes that scale with the width of the viewport, you can be sure of a consistent look and feel on mobile, all the way up to (and beyond) 4K.
 
 ## Dynamic HTML
 
