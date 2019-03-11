@@ -20,25 +20,23 @@ app.methods = {
     toggleElement(el, type){
 
         if (type == 'show'){
+
             let el_prop = el.getAttribute('app-show')
-        } else if (type == 'hide'){
-            let el_prop = el.getAttribute('app-hide')
-        } else {
-            let el_prop = el.getAttribute('app-if')
-        }
-
-
-        if (type == 'show'){
 
             app.methods.addIndex(el, el_prop, 'show')
 
-            if (scope[el_prop]){
-                el.classList.remove('app-hidden')
-            } else {
-                el.classList.add('app-hidden')
-            }
+            app.methods.evaluateProp(el_prop, function(result){
+                console.log(result)
+                if (result){
+                    el.classList.remove('app-hidden')
+                } else {
+                    el.classList.add('app-hidden')
+                }
+            })
 
-        } else if (type == 'hide'){
+
+
+        } else if (el_prop && type == 'hide'){
 
             let el_prop = el.getAttribute('app-hide')
 
@@ -50,22 +48,26 @@ app.methods = {
                 el.classList.remove('app-hidden')
             }
 
-        } else {
+        } else if (el_prop) {
 
             let el_prop = el.getAttribute('app-if')
 
             app.methods.addIndex(el, el_prop, 'logic')
 
             if (scope[el_prop]){
+
                 let index = [...app.elements.logic.nodes].indexOf(el)
                 let div = document.querySelectorAll('[app-replace="'+index+'"]')[0]
                 div.parentNode.replaceChild(el,div)
+
             } else {
+
                 if (el.parentNode){
                     let div = document.createElement("div")
                     div.setAttribute('app-replace',[...app.elements.logic.nodes].indexOf(el))
                     el.parentNode.replaceChild(div,el)
                 }
+
             }
 
         }
@@ -75,14 +77,24 @@ app.methods = {
     clickElement(el){
 
         el.addEventListener('click', function(event) {
+
             let attr = el.getAttribute('app-click')
+
             if (attr.match(/\(/)){ // if function
+
                 let method = attr.replace(/\((.*?)\)/,'')
                 let param = attr.match(/\((.*?)\)/)[0].replace(/^\(/,'').replace(/\)$/,'').replace(/^\'/,'').replace(/\'$/,'')
                 scope[method](param)
+
             } else if (attr.match(/=/)){ // if operator
 
+                attr = attr.split('=')
+                let key = attr[0].replace(/\s/g,'')
+                let val = attr[1].replace(/\'/g,'').replace(/^\s/,'').replace(/\s$/,'')
+                scope[attr[0].replace(/\s/g,'')] = attr[1].replace(/\'/g,'').replace(/^\s/,'').replace(/\s$/,'')
+
             }
+
         })
 
     },
@@ -99,6 +111,11 @@ app.methods = {
     addIndex(el, el_prop, key){
 
         if (el_prop && el_prop != null){
+
+            if (el_prop.match(/\s|=|!|<|>/)){ // if the property is an expression, get the object key we need to index
+                el_prop = el_prop.split(/\s|==|!=|=|<=|>=|<|>/)[0]
+            }
+
             if (!app.elements[key].index[el_prop]){
                 app.elements[key].index[el_prop] = []
             }
@@ -106,7 +123,33 @@ app.methods = {
             if (app.elements[key].index[el_prop].indexOf(el) === -1){
                 app.elements[key].index[el_prop].push(el)
             }
+
         }
+
+    },
+
+    evaluateProp(el_prop, callback){
+
+        if (el_prop.match(/==/)){
+
+            el_prop = el_prop.replace(/\'/g,'').split('==')
+            let key = el_prop[0].replace(/^[ \t]+|[ \t]+$/,'')
+            let val = el_prop[1].replace(/^[ \t]+|[ \t]+$/,'')
+
+            callback(scope[key] == val)
+
+        } else if (el_prop.match(/!=/)){
+
+            el_prop = el_prop.replace(/\'/g,'').split('!=')
+            cond.val = el_prop[1].replace(/^[ \t]+|[ \t]+$/,'')
+            cond.op = '!='
+            cond.val = el_prop[1].replace(/^[ \t]+|[ \t]+$/,'')
+
+            callback(scope[key] != val)
+
+        }
+
+
 
     }
 
@@ -186,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         app.methods.keypressElement(el)
     })
 
-    scope.header_1 = 'This is HEADER ONE'
+    scope.panel = false
 
 });
 

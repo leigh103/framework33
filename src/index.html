@@ -14,20 +14,30 @@
 
     </section>
 
-    <section class="p-5 p-m-3 p-s-2 bg-cover">
-
-
-    </section>
-
     <section class="p-5 p-m-3 p-s-2 bg-light-grey">
 
         <div class="row">
-            <div class="block-33 block-m-50 block-s-100 margin align-middle text-right" anim-on-enter="move-up">
-                <h2 app-bind="header_1">This is a small block</h2>
-                <p>With a bit of text contained within</p>
+            <div class="block-33 block-m-50 block-s-100 margin align-top text-right p-2" anim-on-enter="move-up">
+                <div class="border p-1 clickable" app-click="panel = 'colors'">
+                    Colors
+                </div>
+                <div class="border p-1 clickable" app-click="panel = 'grid'">
+                    Grid
+                </div>
+                <div class="border p-1 clickable" app-click="panel = 'forms'">
+                    Forms
+                </div>
             </div>
-            <div class="block-66 block-s-100 margin align-middle">
-                <img src="http://reformedreality.com/images/website.jpg">
+            <div class="block-66 block-s-100 margin align-top text-left">
+                <div app-show="panel == 'colors'">
+                    <h2>Colors</h2>
+                </div>
+                <div app-show="panel == 'grid'">
+                    <h2>Grid</h2>
+                </div>
+                <div app-show="panel == 'forms'">
+                    <h2>Forms</h2>
+                </div>
             </div>
         </div>
 

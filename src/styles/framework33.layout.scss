@@ -20,11 +20,19 @@ div.background {
     height:100%;
 }
 
-.fold, .hero {
+.fold {
     position:relative;
     display:block;
     width:100vw;
     min-height:100vh;
+    overflow:hidden;
+}
+
+.hero {
+    position:relative;
+    display:block;
+    width:100vw;
+    min-height:90vh;
     overflow:hidden;
 }
 
