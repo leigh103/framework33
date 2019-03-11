@@ -1,6 +1,6 @@
-# Webpack Frontend Starterkit
+# Framework33
 
-A lightweight foundation for your next webpack based frontend project.
+A simple CSS and ECMA Script framework. Includes multiple CSS grids, animation system and 'in view' detection, as well as two way data binding for creating dynamic HTML using the Observable-slim module.
 
 
 ### Installation
