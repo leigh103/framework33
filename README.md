@@ -4,7 +4,15 @@ A simple CSS and ECMA Script framework. Includes multiple CSS grids, animation s
 
 ## Color
 
-Color and image manipulation is also a main focus for this project. Multiple pre-defined colors and gradients, along with blending, make it easy to create multi-layered graphics that are rendered in real time. Rather than relying on your photo editing software to get the background you want, you can simply add classes to render the filters, layers and blends directly in the browser.
+Color and image manipulation are possibly the main reasons for using this framework. Multiple pre-defined colors and gradients, along with blending, make it easy to create multi-layered graphics that are rendered in real time. Rather than relying on your photo editing software to get the background you want, you can simply add classes to render the filters, layers and blends directly in the browser.
+
+## Grids
+
+Framework33 comes with 2 main grid class sets, using CSS Grid and regular CSS Block styling. Flexbox is also used but mainly for internal positioning, rather than overall layout, and floats are explicitly absent.
+
+## Dynamic HTML
+
+Much like AngularJS and Vue, Framework33 offers functions for creating dynamic HTML with 2 way binding, DOM manipulation and click handlers. It only offers a very limited subset of functions, but that means it's very light weight and it's really simple to pick up. Just enough to make your pages come alive.
 
 ### Installation
 
