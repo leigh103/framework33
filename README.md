@@ -10,6 +10,10 @@ Color and image manipulation are possibly the main reasons for using this framew
 
 Framework33 comes with 2 main grid class sets, using CSS Grid and regular CSS Block styling. Flexbox is also used but mainly for internal positioning, rather than overall layout, and floats are explicitly absent.
 
+## Responsive Padding and Font size
+
+With the ability to pad elements differently depending on device, makes it quick and simple to get the look you want - regardless of which devices your audience uses. Tied with font sizes that scale with the width of the viewport, you can be sure of a consistent look and feel on mobile, all the way up to (and beyond) 4K.
+
 ## Dynamic HTML
 
 Much like AngularJS and Vue, Framework33 offers functions for creating dynamic HTML with 2 way binding, DOM manipulation and click handlers. It only offers a very limited subset of functions, but that means it's very light weight and it's really simple to pick up. Just enough to make your pages come alive.
