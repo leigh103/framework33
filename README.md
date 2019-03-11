@@ -1,6 +1,6 @@
 # Framework33
 
-A simple CSS and ECMA Script framework. Includes multiple CSS grids, animation system and 'in view' detection, as well as two way data binding for creating dynamic HTML using the Observable-slim module.
+A simple CSS and ECMA Script framework. Includes multiple CSS grids, animation system and 'in view' detection, as well as two way data binding for creating dynamic HTML using the Observable-slim module. All wrapped up in a Webpack dev environment.
 
 
 ### Installation
