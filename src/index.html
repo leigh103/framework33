@@ -17,18 +17,15 @@
     <section class="p-5 p-m-3 p-s-2 bg-light-grey">
 
         <div class="row">
-            <div class="block-33 block-m-50 block-s-100 margin align-top text-right p-2" anim-on-enter="move-up">
-                <div class="border p-1 clickable" app-click="panel = 'colors'">
-                    Colors
-                </div>
-                <div class="border p-1 clickable" app-click="panel = 'grid'">
-                    Grid
-                </div>
-                <div class="border p-1 clickable" app-click="panel = 'forms'">
-                    Forms
+            <div class="block-20 block-m-50 block-s-100 margin align-top text-right pr-2">
+                <div class="border p-1 clickable" app-click="panel = ''" app-foreach="item in menu_items" app-bind="item">
+
                 </div>
             </div>
-            <div class="block-66 block-s-100 margin align-top text-left">
+            <div class="block-80 block-s-100 margin align-top text-left">
+                <div app-show="!panel">
+                    <h2>Welcome</h2>
+                </div>
                 <div app-show="panel == 'colors'">
                     <h2>Colors</h2>
                 </div>

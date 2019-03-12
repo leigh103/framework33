@@ -26,7 +26,6 @@ app.methods = {
             app.methods.addIndex(el, el_prop, 'show')
 
             app.methods.evaluateProp(el_prop, function(result){
-                console.log(result)
                 if (result){
                     el.classList.remove('app-hidden')
                 } else {
@@ -108,13 +107,82 @@ app.methods = {
 
     },
 
+    forEachElement(el){
+
+        let el_prop = el.getAttribute('app-foreach')
+
+        app.methods.addIndex(el, el_prop, 'foreach')
+
+        let key = el_prop.split(/in/)[1].replace(/^[ \t]+|[ \t]+$/,'')
+
+        app.methods.removeElements('app-foreach-child-'+key, function(){
+
+            for (let i in scope[key]){
+
+                let parent = el.parentNode;
+                let newelement = el.cloneNode(true)
+
+                newelement.classList.add('app-foreach-child-'+key)
+
+                if (newelement.hasAttribute('app-bind')){
+                    newelement.innerHTML = scope[key][i]
+                }
+
+                if (parent.lastChild == el) {
+                    parent.appendChild(newelement);
+                } else {
+                    parent.insertBefore(newelement, el.nextSibling);
+                }
+                
+            }
+
+        })
+
+    },
+
+    removeElements(className, callback){
+
+        if (!className.match(/^\./)){
+            className = '.'+className
+        }
+
+        let els = document.querySelectorAll(className)
+
+        if (els.length > 0){
+
+            for (let i in els){
+
+                els[i].parentNode.removeChild(els[i])
+
+                if (i >= els.length-1){
+                    callback()
+                }
+
+            }
+
+        } else {
+            callback()
+        }
+
+    },
+
     addIndex(el, el_prop, key){
 
         if (el_prop && el_prop != null){
 
-            if (el_prop.match(/\s|=|!|<|>/)){ // if the property is an expression, get the object key we need to index
+            el_prop = el_prop.replace(/^!/,'')
+
+            if (el_prop.match(/in/)){ // if the property is a foreach loop
+
+                el_prop = el_prop.split(/in/)[1]
+
+            } else if (el_prop.match(/\s|=|!|<|>/)){ // if the property is an expression, get the object key we need to index
+
                 el_prop = el_prop.split(/\s|==|!=|=|<=|>=|<|>/)[0]
+
             }
+
+            el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'')
 
             if (!app.elements[key].index[el_prop]){
                 app.elements[key].index[el_prop] = []
@@ -136,20 +204,28 @@ app.methods = {
             let key = el_prop[0].replace(/^[ \t]+|[ \t]+$/,'')
             let val = el_prop[1].replace(/^[ \t]+|[ \t]+$/,'')
 
-            callback(scope[key] == val)
+            if (val === 'false' && scope[key] === false){
+                callback(true)
+            } else {
+                callback(scope[key] == val)
+            }
 
         } else if (el_prop.match(/!=/)){
 
             el_prop = el_prop.replace(/\'/g,'').split('!=')
-            cond.val = el_prop[1].replace(/^[ \t]+|[ \t]+$/,'')
-            cond.op = '!='
-            cond.val = el_prop[1].replace(/^[ \t]+|[ \t]+$/,'')
+            let key = el_prop[0].replace(/^[ \t]+|[ \t]+$/,'')
+            let val = el_prop[1].replace(/^[ \t]+|[ \t]+$/,'')
 
             callback(scope[key] != val)
 
+        } else if (el_prop.match(/^!/)){
+
+            el_prop = el_prop.replace(/\'/g,'').split('!=')
+            let key = el_prop[0].replace(/^!/,'').replace(/^[ \t]+|[ \t]+$/,'')
+
+            callback(scope[key] == false)
+
         }
-
-
 
     }
 
@@ -190,6 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.hide = {}
     app.elements.event = {}
     app.elements.model = {}
+    app.elements.foreach = {}
 
     app.elements.bound.index = {}
     app.elements.logic.index = {}
@@ -197,6 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.hide.index = {}
     app.elements.event.index = {}
     app.elements.model.index = {}
+    app.elements.foreach.index = {}
 
     app.elements.bound.nodes = document.querySelectorAll('[app-bind]')
     app.elements.logic.nodes = document.querySelectorAll('[app-if]')
@@ -204,6 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.hide.nodes = document.querySelectorAll('[app-hide]')
     app.elements.event.nodes = document.querySelectorAll('[app-click]')
     app.elements.model.nodes = document.querySelectorAll('[app-model]')
+    app.elements.foreach.nodes = document.querySelectorAll('[app-foreach]')
 
     app.elements.bound.nodes.forEach(function(el) {
         app.methods.updateBoundElement(el)
@@ -229,7 +308,9 @@ document.addEventListener('DOMContentLoaded', () => {
         app.methods.keypressElement(el)
     })
 
-    scope.panel = false
+    app.elements.foreach.nodes.forEach(function(el) {
+        app.methods.forEachElement(el)
+    })
 
 });
 
@@ -264,9 +345,34 @@ var scope = Observable.create(test, true, function(changes) {
                 app.methods.toggleElement(el,'hide')
             })
         }
+
+        // update any elements with foreach
+        if (app.elements.foreach.index[changes[i].property]){
+            app.elements.foreach.index[changes[i].property].forEach(function(el){
+                app.methods.forEachElement(el)
+            })
+        }
     }
 
 });
+
+
+
+scope.panel = false
+scope.menu_items = [
+    'welcome',
+    'colors',
+    'grid',
+    'forms'
+]
+
+setTimeout(function(){
+    scope.menu_items = [
+        'Something',
+        'else',
+        'here'
+    ]
+},2000)
 
 function addInViewClass(el) {
     let divs = el.querySelectorAll('*'),
