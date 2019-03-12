@@ -10,8 +10,8 @@ module.exports = merge(common, {
   stats: 'errors-only',
   bail: true,
   output: {
-    filename: 'js/framework33.min.js',
-    chunkFilename: 'js/framework33.chunk.js'
+    filename: 'js/[name].[chunkhash:8].js',
+    chunkFilename: 'js/[name].[chunkhash:8].chunk.js'
   },
   plugins: [
     new Webpack.DefinePlugin({
@@ -19,7 +19,7 @@ module.exports = merge(common, {
     }),
     new Webpack.optimize.ModuleConcatenationPlugin(),
     new MiniCssExtractPlugin({
-      filename: 'framework33.css'
+      filename: 'bundle.css'
     })
   ],
   module: {

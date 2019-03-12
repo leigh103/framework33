@@ -9,7 +9,7 @@ module.exports = {
   },
   output: {
     path: Path.join(__dirname, '../build'),
-    filename: 'js/framework33.js'
+    filename: 'js/[name].js'
   },
   optimization: {
     splitChunks: {
