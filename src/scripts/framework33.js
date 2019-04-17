@@ -10,10 +10,15 @@ app.methods = {
     updateBoundElement(el){
 
         let el_prop = el.getAttribute('app-bind')
+        let el_parent = el.parentNode
 
-        el.innerHTML = scope[el_prop]
+        if (!el_parent || !el_parent.getAttribute('app-foreach')){
+            el.innerHTML = scope[el_prop]
 
-        app.methods.addIndex(el, el_prop, 'bound')
+            app.methods.addIndex(el, el_prop, 'bound')
+        }
+
+
 
     },
 
@@ -21,7 +26,7 @@ app.methods = {
 
         if (type == 'show'){
 
-            let el_prop = el.getAttribute('app-show')
+            var el_prop = el.getAttribute('app-show')
 
             app.methods.addIndex(el, el_prop, 'show')
 
@@ -33,11 +38,9 @@ app.methods = {
                 }
             })
 
+        } else if (type == 'hide'){
 
-
-        } else if (el_prop && type == 'hide'){
-
-            let el_prop = el.getAttribute('app-hide')
+            var el_prop = el.getAttribute('app-hide')
 
             app.methods.addIndex(el, el_prop, 'hide')
 
@@ -47,9 +50,9 @@ app.methods = {
                 el.classList.remove('app-hidden')
             }
 
-        } else if (el_prop) {
+        } else {
 
-            let el_prop = el.getAttribute('app-if')
+            var el_prop = el.getAttribute('app-if')
 
             app.methods.addIndex(el, el_prop, 'logic')
 
@@ -58,6 +61,25 @@ app.methods = {
                 let index = [...app.elements.logic.nodes].indexOf(el)
                 let div = document.querySelectorAll('[app-replace="'+index+'"]')[0]
                 div.parentNode.replaceChild(el,div)
+
+            } else if (el_prop.match(/==|\!=|^!/)){
+
+                app.methods.evaluateProp(el_prop, function(test){
+                    if (test === false){
+                        if (el.parentNode){
+                            let div = document.createElement("div")
+                            div.setAttribute('app-replace',[...app.elements.logic.nodes].indexOf(el))
+                            el.parentNode.replaceChild(div,el)
+                        }
+                    } else {
+                        let index = [...app.elements.logic.nodes].indexOf(el)
+                        let div = document.querySelectorAll('[app-replace="'+index+'"]')[0]
+                        if (div){
+                            div.parentNode.replaceChild(el,div)
+                        }
+
+                    }
+                })
 
             } else {
 
@@ -107,33 +129,65 @@ app.methods = {
 
     },
 
-    forEachElement(el){
+    forEachElement(el, initial, arr){
 
         let el_prop = el.getAttribute('app-foreach')
 
-        app.methods.addIndex(el, el_prop, 'foreach')
+        if (initial){ // for the initial render, don't run the loop, just add it to the index
+            app.methods.addIndex(el, el_prop, 'foreach')
+            return false
+        }
 
-        let key = el_prop.split(/in/)[1].replace(/^[ \t]+|[ \t]+$/,'')
+        let parent = el.parentNode;
 
-        app.methods.removeElements('app-foreach-child-'+key, function(){
+        var props = el_prop.match(/(.*) in (.*)/);
+        var view_key = props[1],
+            scope_key = props[2]
 
-            for (let i in scope[key]){
+        if (arr){
+            var loop_arr = arr
+        } else {
+            var loop_arr = scope[scope_key]
+        }
 
-                let parent = el.parentNode;
-                let newelement = el.cloneNode(true)
+        app.methods.removeElements('app-foreach-child-'+scope_key, function(){
 
-                newelement.classList.add('app-foreach-child-'+key)
+            for (let i in loop_arr){ // loop through the scope array
 
-                if (newelement.hasAttribute('app-bind')){
-                    newelement.innerHTML = scope[key][i]
-                }
+                let block = {}
+                block[view_key] = loop_arr[i] // assign current arr element to block scope
 
-                if (parent.lastChild == el) {
-                    parent.appendChild(newelement);
+                let parentClone = el.cloneNode(true) // clone the parent node and repeat it for how many elements there are in the array
+                parentClone.classList.add('app-foreach-child-'+scope_key)
+
+                if (parent.lastChild == el) { // append the clone
+                    parent.appendChild(parentClone);
                 } else {
-                    parent.insertBefore(newelement, el.nextSibling);
+                    parent.insertBefore(parentClone, el.nextSibling);
                 }
-                
+
+                var children = parentClone.querySelectorAll('[app-bind]'),ii
+
+                for (ii = 0; ii < children.length; ++ii) { // for each child of this new parent node, get the scope arr value and update the contents
+                    let bind = children[ii].getAttribute('app-bind')
+                    let val = eval('block.'+bind)
+
+                    if (val){
+                        children[ii].innerHTML = val
+                    }
+                }
+
+                var loop_children = parentClone.querySelectorAll('[app-foreach]'),iii
+                for (iii = 0; iii < loop_children.length; ++iii) {
+
+                    let bind = loop_children[iii].getAttribute('app-foreach')
+                    var cl_props = bind.match(/(.*) in (.*)/);
+
+                    let val = eval('block.'+cl_props[2])
+
+                    app.methods.forEachElement(loop_children[iii], false, val)
+                }
+
             }
 
         })
@@ -152,7 +206,9 @@ app.methods = {
 
             for (let i in els){
 
-                els[i].parentNode.removeChild(els[i])
+                if (els[i].parentNode){
+                    els[i].parentNode.removeChild(els[i])
+                }
 
                 if (i >= els.length-1){
                     callback()
@@ -225,6 +281,8 @@ app.methods = {
 
             callback(scope[key] == false)
 
+        } else if (eval('scope.'+el_prop)){
+            callback(eval('scope.'+el_prop))
         }
 
     }
@@ -309,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     app.elements.foreach.nodes.forEach(function(el) {
-        app.methods.forEachElement(el)
+        app.methods.forEachElement(el, true)
     })
 
 });
