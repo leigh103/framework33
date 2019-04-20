@@ -1,6 +1,8 @@
 
 import '../styles/framework33.scss';
+import '../styles/style.scss';
 import Observable from 'observable-slim'
+import async from 'async'
 
 var test = {}
 var app = {}
@@ -129,7 +131,7 @@ app.methods = {
 
     },
 
-    forElement(el, initial, arr){
+    forElement(el, initial, arr, key){
 
         var el_prop = el.getAttribute('app-for')
 
@@ -144,184 +146,130 @@ app.methods = {
             scope_key = el_props[2],
             scope_key_parse = scope_key.replace(/\./g,'_'),
             loop_arr = scope[scope_key],
-            el_remove = false
+            el_remove = false,
+            block = view_key
 
-            if (arr){
+            if (arr){ // if this is a nested repeater
+
                 loop_arr = arr
+                block = view_key+key
+
             }
 
-                function runSerial() {
+            function runSerial() {
 
-                    var that = this;
+                var that = this;
 
-                    return Promise.resolve()
+                return Promise.resolve()
 
-                        .then(function() { // create the elements needed
+                    .then(function() { // create the elements needed
 
-                            for (let i = 0; i < loop_arr.length; ++i){
+                        for (let i = 0; i < loop_arr.length; ++i){
 
-                                if (i == 0){
+                            if (i == 0){
 
-                                    let el_arr_data = {el:el, [view_key]:loop_arr[i]}
+                                let el_arr_data = {el:el, [view_key]:loop_arr[i]}
 
-                                    if (!app.elements.foreach.loops[view_key]){
+                                if (!app.elements.foreach.loops[block]){
 
-                                        app.elements.foreach.loops[view_key] = []
-                                    }
+                                    app.elements.foreach.loops[block] = []
 
-                                    if (!app.elements.foreach.loops[view_key][i]){
+                                }
 
-                                        app.elements.foreach.loops[view_key][i] = el_arr_data
+                                if (!app.elements.foreach.loops[block][i]){
 
-                                    } else {
-
-                                        app.elements.foreach.loops[view_key][i][view_key] = loop_arr[i]
-
-                                    }
+                                    app.elements.foreach.loops[block][i] = el_arr_data
 
                                 } else {
 
-                                    if (!app.elements.foreach.loops[view_key][i]){
+                                    app.elements.foreach.loops[block][i][view_key] = loop_arr[i]
 
-                                        let el_clone = el.cloneNode(true) // clone the parent node
-                                        let el_arr_data = {el:el_clone, [view_key]:loop_arr[i]}
-                                        el_clone.classList.remove('app-for-parent-'+scope_key_parse)
-                                        el_clone.classList.add('app-for-child-'+scope_key_parse)
-                                        el_clone.removeAttribute('app-for')
-                                        el_parent.appendChild(el_clone)
+                                }
 
-                                        app.elements.foreach.loops[view_key][i] = el_arr_data
+                            } else {
 
-                                    } else {
+                                if (!app.elements.foreach.loops[block][i]){
 
-                                        app.elements.foreach.loops[view_key][i][view_key] = loop_arr[i]
-                                    }
+                                    let el_clone = el.cloneNode(true), // clone the parent node
+                                        el_arr_data = {el:el_clone, [view_key]:loop_arr[i]}
+
+                                    el_clone.classList.remove('app-for-parent-'+scope_key_parse)
+                                    el_clone.classList.add('app-for-child-'+scope_key_parse)
+                                    el_clone.removeAttribute('app-for')
+
+                                    el_parent.appendChild(el_clone)
+
+                                    app.elements.foreach.loops[block][i] = el_arr_data
+
+                                } else {
+
+                                    app.elements.foreach.loops[block][i][view_key] = loop_arr[i]
 
                                 }
 
                             }
 
-                        })
-                        .then(function() { // add in the content
+                        }
 
-                            for (let i = 0; i < app.elements.foreach.loops[view_key].length; ++i){
+                    })
+                    .then(function() { // remove any elements where the data has been removed also
 
-                                let self = app.elements.foreach.loops[view_key][i]
+                        if (loop_arr.length < app.elements.foreach.loops[block].length){
 
-                                let children = self.el.querySelectorAll('[app-bind]')
-                            //    let loop_children = self.el.querySelectorAll('[app-for]')
+                            for (let i = 0; i < app.elements.foreach.loops[block].length; ++i){
 
-                                for (let i = 0; i < children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
+                                if (typeof loop_arr[i] == 'undefined'){
 
-                                    let bind = children[i].getAttribute('app-bind')
-                                    let val = eval('self.'+bind)
-
-                                    if (val){
-                                        children[i].innerHTML = val
-                                    }
+                                    el_parent.removeChild(app.elements.foreach.loops[block][i].el)
+                                    app.elements.foreach.loops[block].splice(i,1)
 
                                 }
+                            }
+                        }
 
-                                // for (let i = 0; i < loop_children.length; ++i) { // for each chil that has a repeater, call the forElement method
-                                //
-                                //     let bind = loop_children[i].getAttribute('app-for')
-                                //     let cl_props = bind.match(/(.*) in (.*)/);
-                                //
-                                //     let val = eval('self.'+cl_props[2])
-                                //
-                                //     app.methods.forElement(loop_children[i], false, val)
-                                //
-                                // }
+                    })
+                    .then(function() { // add in the content
+
+                        for (let i = 0; i < app.elements.foreach.loops[block].length; ++i){
+
+                            let self = app.elements.foreach.loops[block][i],
+                                self_key = i,
+                                children = self.el.querySelectorAll('[app-bind]'),
+                                loop_children = self.el.querySelectorAll('[app-for]')
+
+                            for (let i = 0; i < children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
+
+                                let bind = children[i].getAttribute('app-bind'),
+                                    val = eval('self.'+bind)
+
+                                if (val){
+                                    children[i].innerHTML = val
+                                }
 
                             }
-                        })
-                        .then(function() {
-                            console.log(" ---- done ----");
-                        });
-                }
 
-                runSerial()
+                            for (let i = 0; i < loop_children.length; ++i) { // for each child that has a repeater, call the forElement method
 
-    },
+                                let bind = loop_children[i].getAttribute('app-for'),
+                                    cl_props = bind.match(/(.*) in (.*)/),
+                                    val = eval('self.'+cl_props[2])
 
-    forElementOLD(el, initial, arr){
+                            //    console.log('self.'+cl_props[2], val, bind)
 
-        let el_prop = el.getAttribute('app-for')
+                                app.methods.forElement(loop_children[i], false, val, self_key)
 
-        if (initial){ // for the initial render, don't run the loop, just add it to the index
-            app.methods.addIndex(el, el_prop, 'foreach')
-            return false
-        }
+                            }
 
-        let parent = el.parentNode;
+                        }
+                    })
+                    .then(function() {
 
-        var props = el_prop.match(/(.*) in (.*)/);
-        var view_key = props[1],
-            scope_key = props[2],
-            scope_key_parse = scope_key.replace(/\./g,'_')
+                        console.log(" ---- done ----");
 
-        el.classList.add('app-for-parent-'+scope_key_parse)
-
-        if (arr){
-            var loop_arr = arr
-            var el_remove = el
-        } else {
-            var loop_arr = scope[scope_key]
-            var el_remove = false
-        }
-
-        app.methods.removeElements('app-for-child-'+scope_key_parse, el_remove, function(){
-
-            for (let i = 0; i < loop_arr.length; ++i){ // loop through the scope array
-
-                let block = {}
-                block[view_key] = loop_arr[i] // assign current arr element to block scope
-
-                let parentClone = el.cloneNode(true) // clone the parent node and repeat it for how many elements there are in the array
-                parentClone.classList.remove('app-for-parent-'+scope_key_parse)
-                parentClone.classList.add('app-for-child-'+scope_key_parse)
-
-                if (i > 0){ // dont remove the app-for for the first repeat
-                    parentClone.removeAttribute('app-for')
-                }
-
-                parentClone.id = scope_key_parse+"_"+i
-
-                // if (parent.lastChild == el) { // append the clone
-                    parent.appendChild(parentClone);
-                // } else {
-                //     parent.insertBefore(parentClone, el.nextSibling);
-                // }
-
-                let children = parentClone.querySelectorAll('[app-bind]')
-
-                for (let iv = 0; iv < children.length; ++iv) { // for each child of this new parent node, get the scope arr value and update the contents
-
-                    let bind = children[iv].getAttribute('app-bind')
-                    let val = eval('block.'+bind)
-                    if (val){
-                        children[iv].innerHTML = val
-                    }
-
-                }
-
-                let loop_children = parentClone.querySelectorAll('[app-for]')
-
-                for (let v = 0; v < loop_children.length; ++v) { // for each chil that has a repeater, call the forElement method
-
-                    let bind = loop_children[v].getAttribute('app-for')
-                    let cl_props = bind.match(/(.*) in (.*)/);
-
-                    let val = eval('block.'+cl_props[2])
-
-                    app.methods.forElement(loop_children[v], false, val)
-
-                }
-
+                    });
             }
 
-        })
-
+            runSerial()
 
     },
 
