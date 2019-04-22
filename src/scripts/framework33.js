@@ -149,7 +149,7 @@ app.methods = {
         }
 
         let el_parent = el.parentNode,
-            el_props = el_prop.match(/(.*) in (.*)/),
+            el_props = el_prop.match(/(.*)\s*in\s*(.*)/),
             view_key = el_props[1],
             scope_key = el_props[2],
             scope_key_parse = scope_key.replace(/\./g,'_'),
