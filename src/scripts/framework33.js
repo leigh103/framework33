@@ -2,7 +2,6 @@
 import '../styles/framework33.scss';
 import '../styles/style.scss';
 import Observable from 'observable-slim'
-import async from 'async'
 
 var test = {}
 var app = {}
