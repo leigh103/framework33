@@ -18,26 +18,35 @@
 
         <div class="row">
             <div class="block-20 block-m-50 block-s-100 margin align-top text-right pr-2">
-                <div class="border p-1 clickable" app-click="panel = ''" app-foreach="item in menu_items" app-bind="item">
-
+                <div class="border p-1 clickable" app-for="item in menu_items">
+                    <span app-click="panel = item.panel" app-bind="item.name"></span>
                 </div>
             </div>
-            <div class="block-80 block-s-100 margin align-top text-left">
-                <div app-show="!panel">
-                    <h2>Welcome</h2>
-                </div>
-                <div app-show="panel == 'colors'">
-                    <h2>Colors</h2>
-                </div>
-                <div app-show="panel == 'grid'">
-                    <h2>Grid</h2>
-                </div>
-                <div app-show="panel == 'forms'">
-                    <h2>Forms</h2>
-                </div>
+            <div class="block-80 block-m-50 block-s-100 margin align-top text-left" app-bind="panel">
+
             </div>
         </div>
 
+    </section>
+
+    <section class="p-5 p-m-3 p-s-2 bg-dark-grey text-white text-left">
+        <div class="row">
+            <div class="block-33 block-s-100">
+                Footer<br>
+                Footer<br>
+                Footer<br>
+            </div>
+            <div class="block-33 block-s-100">
+                Footer<br>
+                Footer<br>
+                Footer<br>
+            </div>
+            <div class="block-33 block-s-100">
+                Footer<br>
+                Footer<br>
+                Footer<br>
+            </div>
+        </div>
     </section>
 
 </body>

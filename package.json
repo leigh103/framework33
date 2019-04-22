@@ -47,6 +47,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
-    "observable-slim": "^0.1.5"
+    "observable-slim": "^0.1.5",
+    "xregexp": "^4.2.4"
   }
 }
