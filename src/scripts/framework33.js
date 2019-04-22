@@ -6,7 +6,7 @@ import async from 'async'
 
 var test = {}
 var app = {}
-var in_view_elements = []
+var anim_elements = []
 
 app.methods = {
 
@@ -380,6 +380,48 @@ app.methods = {
 
 }
 
+var scope = Observable.create(test, true, function(changes) {
+
+    for (var i in changes){
+
+        // update any elements with object binding
+        if (app.elements.bound.index[changes[i].property]){
+            app.elements.bound.index[changes[i].property].forEach(function(el){
+                app.methods.updateBoundElement(el)
+            })
+        }
+
+        // update any elements with logic
+        if (app.elements.logic.index[changes[i].property]){
+            app.elements.logic.index[changes[i].property].forEach(function(el){
+                app.methods.toggleElement(el)
+            })
+        }
+
+        // update any elements with show
+        if (app.elements.show.index[changes[i].property]){
+            app.elements.show.index[changes[i].property].forEach(function(el){
+                app.methods.toggleElement(el,'show')
+            })
+        }
+
+        // update any elements with hide
+        if (app.elements.hide.index[changes[i].property]){
+            app.elements.hide.index[changes[i].property].forEach(function(el){
+                app.methods.toggleElement(el,'hide')
+            })
+        }
+
+        // update any elements with foreach
+        if (app.elements.foreach.index[changes[i].property]){
+            app.elements.foreach.index[changes[i].property].forEach(function(el){
+                app.methods.forElement(el)
+            })
+        }
+    }
+
+});
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // on ready
@@ -440,80 +482,13 @@ document.addEventListener('DOMContentLoaded', () => {
         app.methods.forElement(el, true)
     })
 
-    var anim_elements = document.querySelectorAll("[anim],[anim-on-enter],[anim-on-exit]"),
-        viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    anim_elements = document.querySelectorAll("[anim],[anim-on-enter],[anim-on-exit]")
 
-    //
-    // if (document_containers[0].getBoundingClientRect().top < viewport_h) { // process the in-view class for the first container on page load
-    //     if (document_containers[0].classList && !document_containers[0].classList.contains('in-view')) {
-    //         addInViewClass(document_containers[0]);
-    //     }
-    // }
+})
 
+window.addEventListener('load', () => {inViewChk()})
 
-    window.addEventListener('scroll', function() { // other containers in-view class is processed on scroll
-
-        for (let i = 0; i < anim_elements.length; i++) {
-            if (anim_elements[i].getBoundingClientRect().top <= viewport_h && anim_elements[i].getBoundingClientRect().top > 150 || anim_elements[i].getBoundingClientRect().top > 150) {
-                if (anim_elements[i].classList && !anim_elements[i].classList.contains('in-view')) {
-                    applyInViewClass(anim_elements[i]);
-                }
-            }
-        }
-
-        for (let i = 0; i < in_view_elements.length; i++) {
-            if (in_view_elements[i].getBoundingClientRect().top <= 150) {
-                if (in_view_elements[i].classList && !in_view_elements[i].classList.contains('exit-view')) {
-                    applyExitViewClass(in_view_elements[i], i);
-                }
-            }
-        }
-
-    });
-
-});
-
-var scope = Observable.create(test, true, function(changes) {
-
-    for (var i in changes){
-
-        // update any elements with object binding
-        if (app.elements.bound.index[changes[i].property]){
-            app.elements.bound.index[changes[i].property].forEach(function(el){
-                app.methods.updateBoundElement(el)
-            })
-        }
-
-        // update any elements with logic
-        if (app.elements.logic.index[changes[i].property]){
-            app.elements.logic.index[changes[i].property].forEach(function(el){
-                app.methods.toggleElement(el)
-            })
-        }
-
-        // update any elements with show
-        if (app.elements.show.index[changes[i].property]){
-            app.elements.show.index[changes[i].property].forEach(function(el){
-                app.methods.toggleElement(el,'show')
-            })
-        }
-
-        // update any elements with hide
-        if (app.elements.hide.index[changes[i].property]){
-            app.elements.hide.index[changes[i].property].forEach(function(el){
-                app.methods.toggleElement(el,'hide')
-            })
-        }
-
-        // update any elements with foreach
-        if (app.elements.foreach.index[changes[i].property]){
-            app.elements.foreach.index[changes[i].property].forEach(function(el){
-                app.methods.forElement(el)
-            })
-        }
-    }
-
-});
+document.addEventListener('scroll', () => {inViewChk()})
 
 
 scope.view = 'no'
@@ -524,26 +499,50 @@ scope.menu_items = [
     {name: 'Responsive', panel:'Something else here'}
 ]
 
+function inView(el, init) {
 
-function addInViewClass(el) {
-    let divs = el.querySelectorAll('*'),
-        i;
-    for (i = 0; i < divs.length; ++i) {
-        if (divs[i].classList && !divs[i].classList.contains('in-view')) {
-            if (i == 0){
-                applyInViewClass(divs[i], 0);
-            } else {
-                applyInViewClass(divs[i], i * 200);
-            }
+    let trigger_top   = el.getAttribute('anim-trigger-top'),
+        trigger_bottom     = el.getAttribute('anim-trigger-bottom'),
+        viewport_h    = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
+        _top          = el.getBoundingClientRect().top
 
-            in_view_elements.push(divs[i])
-        }
+    if (!trigger_top){
+        trigger_top = 150
+    } else {
+        trigger_top = viewport_h * (parseFloat(trigger_top.replace('%',''))/100)
     }
+
+    if (!trigger_bottom){
+        trigger_bottom = viewport_h - 150
+    } else {
+        trigger_bottom = viewport_h * (parseFloat(trigger_bottom.replace('%',''))/100)
+        trigger_bottom = viewport_h - trigger_bottom
+    }
+
+    return (_top <= trigger_bottom && _top >= trigger_top)
+    
+}
+
+function inViewChk(init){
+
+    for (let i = 0; i < anim_elements.length; i++) {
+
+        if (inView(anim_elements[i],init)) {
+            if (anim_elements[i].classList && !anim_elements[i].classList.contains('in-view')) {
+                applyInViewClass(anim_elements[i]);
+            }
+        } else {
+            if (anim_elements[i].classList && anim_elements[i].classList.contains('in-view')) {
+                applyExitViewClass(anim_elements[i], i);
+            }
+        }
+
+    }
+
 }
 
 function applyInViewClass(el, delay) {
 
-    in_view_elements.push(el)
     if (el.classList.contains("exit-view")){
         el.classList.remove('exit-view')
     }
@@ -568,8 +567,9 @@ function applyInViewClass(el, delay) {
 
 function applyExitViewClass(el, index) {
 
-    in_view_elements.splice(index,1)
-    el.classList.remove('in-view')
+    if (el.classList.contains("in-view")){
+        el.classList.remove('in-view')
+    }
 
     if (!el.classList.contains("exit-view")){
 
