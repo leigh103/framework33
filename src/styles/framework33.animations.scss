@@ -219,6 +219,7 @@ $move-speed: 2000ms;
 }
 
 .in-view[anim-enter="fade-in"] {
+    transform: translateY(0);
     animation-name:FadeIn;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -236,6 +237,7 @@ $move-speed: 2000ms;
 }
 
 .exit-view[anim-exit="fade-out"] {
+    transform: translateY(0);
     animation-name:FadeOut;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -257,6 +259,7 @@ $move-speed: 2000ms;
 }
 
 .in-view[anim-enter="blur-in"] {
+    transform: translateY(0);
     animation-name:BlurIn;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -281,6 +284,7 @@ $move-speed: 2000ms;
 }
 
 .exit-view[anim-exit="blur-out"] {
+    transform: translateY(0);
     animation-name:BlurOut;
     animation-duration:$move-speed;
     animation-iteration-count:1;

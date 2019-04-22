@@ -482,6 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     app.elements.animation = document.querySelectorAll("[anim],[anim-enter],[anim-exit]")
+    parseAnimAttr()
 
 })
 
@@ -499,9 +500,57 @@ scope.menu_items = [
     {name: 'Responsive', panel:'Something else here'}
 ]
 
+function parseAnimAttr(){
+    for (let i = 0; i < app.elements.animation.length; i++) {
 
+        let self = app.elements.animation[i],
+            attr = self.getAttribute('anim'),
+            anim_data = ''
 
-function inView(el, init) {
+        if (attr && attr.match(/^{/)){
+            anim_data = JSON.parse(attr.replace(/'/g,'"'))
+
+            if (anim_data.anim){
+
+                self.setAttribute('anim',anim_data.anim)
+
+            } else {
+
+                if (anim_data.enter){
+                    self.setAttribute('anim-enter',anim_data.enter)
+                }
+
+                if (anim_data.exit){
+                    self.setAttribute('anim-exit',anim_data.exit)
+                }
+
+            }
+
+            if (anim_data.duration){
+                self.setAttribute('anim-duration',anim_data.duration)
+            }
+
+            if (anim_data.easing){
+                self.setAttribute('anim-easing',anim_data.easing)
+            }
+
+            if (anim_data.delay){
+                self.setAttribute('anim-delay',anim_data.delay)
+            }
+
+            if (anim_data.trigger_top){
+                self.setAttribute('anim-trigger-top',anim_data.trigger_top)
+            }
+
+            if (anim_data.trigger_bottom){
+                self.setAttribute('anim-trigger-bottom',anim_data.trigger_bottom)
+            }
+        }
+
+    }
+}
+
+function inView(el) {
 
     let trigger_top = el.getAttribute('anim-trigger-top'),
         trigger_bottom = el.getAttribute('anim-trigger-bottom'),
@@ -525,13 +574,13 @@ function inView(el, init) {
 
 }
 
-function inViewChk(init){
+function inViewChk(){
 
     for (let i = 0; i < app.elements.animation.length; i++) {
 
         let self = app.elements.animation[i]
 
-        if (inView(self,init)) {
+        if (inView(self)) {
             if (self.classList && !self.classList.contains('in-view')) {
                 applyInViewClass(self);
             }
