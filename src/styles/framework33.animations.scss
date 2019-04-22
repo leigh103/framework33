@@ -259,20 +259,7 @@ $move-speed: 2000ms;
 }
 
 .in-view[anim-enter="rotate"], [anim="rotate"]{
-   -webkit-animation-name:spin;
-   -webkit-animation-duration:4000ms;
-   -webkit-animation-iteration-count:infinite;
-   -webkit-animation-timing-function:linear;
-   -moz-animation-name:spin;
-   -moz-animation-duration:4000ms;
-   -moz-animation-iteration-count:infinite;
-   -moz-animation-timing-function:linear;
-   -ms-animation-name:spin;
-   -ms-animation-duration:4000ms;
-   -ms-animation-iteration-count:infinite;
-   -ms-animation-timing-function:linear;
    animation-name:spin;
-   animation-duration:4000ms;
    animation-iteration-count:infinite;
    animation-timing-function:linear;
 }
@@ -288,7 +275,10 @@ $move-speed: 2000ms;
 }
 
 .in-view[anim-enter="bob"], [anim="bob"]{
-   animation: MoveUpDown 2s ease infinite;
+    animation-name:MoveUpDown;
+    animation-duration:2000ms;
+    animation-iteration-count:infinite;
+    animation-timing-function:linear;
 }
 
 @keyframes MoveUpDown  {

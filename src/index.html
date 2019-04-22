@@ -10,8 +10,8 @@
     <section class="hero bg-ruby text-white text-middle p-s-2">
 
         <h1 class="biggest">Framework33</h1>
-        <h4 class="text-light" anim="{'enter':'move-down','exit':'fade-out','duration':'5s','easing':'ease-'}">A Simple CSS and ECMA Script Framework</h4>
-        <a app-click="view = 'yes'" class="mt-2">Show More</a>
+        <h4 class="text-light" anim="{'enter':'move-down','exit':'fade-out','duration':'5s','easing':'ease'}">A Simple CSS and ECMA Script Framework</h4>
+        <a app-click="view = 'yes'" class="mt-2" anim="{'anim':'bob','duration':'200ms','easing':'ease'}">Show More</a>
 
     </section>
 
@@ -41,7 +41,7 @@
                 <h3>Bit Slower</h3>
                 <p>This element will also rise up, but after the first one</p>
             </div>
-            <div anim="{'enter':'move-up','exit':'fade-out','delay':'1s', 'duration':'1500ms'}" class="block-33 block-s-100 p-2">
+            <div anim="{'enter':'move-up','exit':'fade-out','delay':'1s', 'duration':'1500ms', 'exit-duration':'200ms'}" class="block-33 block-s-100 p-2">
                 <h3>Really Slow...</h3>
                 <p>This element will rise up last. But that's ok</p>
             </div>

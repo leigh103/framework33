@@ -488,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('load', () => {inViewChk()})
 
-document.addEventListener('scroll', () => {if (document.body.scrollTop % 20 === 0){console.log(document.body.scrollTop);inViewChk()}})
+document.addEventListener('scroll', () => {if (document.body.scrollTop % 20 === 0){inViewChk()}})
 
 
 
@@ -509,10 +509,28 @@ function parseAnimAttr(){
 
         if (attr && attr.match(/^{/)){
 
+            // allowed keys are: anim, enter, exit, duration, exit-duration, easing, exit-easing, delay, trigger-top, trigger-bottom, iteration-count, fill-mode
+
             anim_data = JSON.parse(attr.replace(/'/g,'"'))
 
             for (let i in anim_data){
-                self.setAttribute('anim-'+i,anim_data[i])
+                if (i == 'anim'){
+                    self.setAttribute('anim',anim_data[i])
+
+                    if (anim_data['iteration-count']){
+                        self.style.animationIterationCount = anim_data['iteration-count']
+                    } else if (anim_data['fill-mode']){
+                        self.style.animationFillMode = anim_data['fill-mode']
+                    } else if (anim_data['duration']){
+                        self.style.animationDuraton = anim_data['duration']
+                    } else if (anim_data['easing']){
+                        self.style.animationEasing = anim_data['easing']
+                    }
+
+                } else {
+                    self.setAttribute('anim-'+i,anim_data[i])
+                }
+
             }
 
         }
