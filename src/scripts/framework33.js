@@ -482,7 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
         app.methods.forElement(el, true)
     })
 
-    anim_elements = document.querySelectorAll("[anim],[anim-on-enter],[anim-on-exit]")
+    anim_elements = document.querySelectorAll("[anim],[anim-enter],[anim-exit]")
 
 })
 
@@ -567,7 +567,7 @@ function applyInViewClass(el, delay) {
 
 function applyExitViewClass(el, index) {
 
-    if (el.getAttribute('anim-on-exit')){
+    if (el.getAttribute('anim-exit')){
 
         if (el.classList.contains("in-view")){
             el.classList.remove('in-view')

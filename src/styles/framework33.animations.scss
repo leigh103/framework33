@@ -2,12 +2,12 @@
 $move-amount: 40px;
 $move-speed: 2000ms;
 
-[anim-on-enter="move-up"]{
+[anim-enter="move-up"]{
     transform: translateY($move-amount);
     opacity: 0;
 }
 
-.in-view[anim-on-enter="move-up"] {
+.in-view[anim-enter="move-up"] {
     animation-name:MoveUpEnter;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -31,7 +31,7 @@ $move-speed: 2000ms;
     }
 }
 
-.exit-view[anim-on-exit="move-up"] {
+.exit-view[anim-exit="move-up"] {
     animation-name:MoveUpExit;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -55,12 +55,12 @@ $move-speed: 2000ms;
     }
 }
 
-[anim-on-enter="move-left"] {
+[anim-enter="move-left"] {
     transform: translateX($move-amount);
     opacity: 0;
 }
 
-.in-view[anim-on-enter="move-left"] {
+.in-view[anim-enter="move-left"] {
     animation-name:MoveLeftEnter;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -84,7 +84,7 @@ $move-speed: 2000ms;
     }
 }
 
-.exit-view[anim-on-exit="move-left"] {
+.exit-view[anim-exit="move-left"] {
     animation-name:MoveLeftEnter;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -108,12 +108,12 @@ $move-speed: 2000ms;
     }
 }
 
-[anim-on-enter="move-right"] {
+[anim-enter="move-right"] {
     transform: translateX(#{$move-amount - $move-amount - $move-amount});
     opacity: 0;
 }
 
-.in-view[anim-on-enter="move-right"] {
+.in-view[anim-enter="move-right"] {
     animation-name:MoveRightEnter;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -137,7 +137,7 @@ $move-speed: 2000ms;
     }
 }
 
-.exit-view[anim-on-exit="move-right"] {
+.exit-view[anim-exit="move-right"] {
     animation-name:MoveRightExit;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -161,12 +161,12 @@ $move-speed: 2000ms;
     }
 }
 
-[anim-on-enter="move-down"] {
+[anim-enter="move-down"] {
     transform: translateY(#{$move-amount - $move-amount - $move-amount});
     opacity: 0;
 }
 
-.in-view[anim-on-enter="move-down"] {
+.in-view[anim-enter="move-down"] {
     animation-name:MoveDownEnter;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -190,7 +190,7 @@ $move-speed: 2000ms;
     }
 }
 
-.exit-view[anim-on-exit="move-down"] {
+.exit-view[anim-exit="move-down"] {
     animation-name:MoveDownExit;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -214,11 +214,11 @@ $move-speed: 2000ms;
     }
 }
 
-[anim-on-enter="fade-in"] {
+[anim-enter="fade-in"] {
     opacity: 0;
 }
 
-.in-view[anim-on-enter="fade-in"] {
+.in-view[anim-enter="fade-in"] {
     animation-name:FadeIn;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -235,7 +235,7 @@ $move-speed: 2000ms;
     }
 }
 
-.exit-view[anim-on-exit="fade-out"] {
+.exit-view[anim-exit="fade-out"] {
     animation-name:FadeOut;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -252,11 +252,11 @@ $move-speed: 2000ms;
     }
 }
 
-[anim-on-enter="blur-in"] {
+[anim-enter="blur-in"] {
     opacity: 0;
 }
 
-.in-view[anim-on-enter="blur-in"] {
+.in-view[anim-enter="blur-in"] {
     animation-name:BlurIn;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -280,7 +280,7 @@ $move-speed: 2000ms;
     }
 }
 
-.exit-view[anim-on-exit="blur-out"] {
+.exit-view[anim-exit="blur-out"] {
     animation-name:BlurOut;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -304,7 +304,7 @@ $move-speed: 2000ms;
     }
 }
 
-.in-view[anim-on-enter="rotate"], [anim="rotate"]{
+.in-view[anim-enter="rotate"], [anim="rotate"]{
    -webkit-animation-name:spin;
    -webkit-animation-duration:4000ms;
    -webkit-animation-iteration-count:infinite;
@@ -333,7 +333,7 @@ $move-speed: 2000ms;
    }
 }
 
-.in-view[anim-on-enter="bob"], [anim="bob"]{
+.in-view[anim-enter="bob"], [anim="bob"]{
    animation: MoveUpDown 2s ease infinite;
 }
 
@@ -351,7 +351,7 @@ $move-speed: 2000ms;
    }
 }
 
-.in-view[anim-on-enter="flash"], [anim="flash"] {
+.in-view[anim-enter="flash"], [anim="flash"] {
    animation-name: flash;
    animation-duration: 1s;
    animation-iteration-count:infinite;
