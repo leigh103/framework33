@@ -97,28 +97,35 @@ app.methods = {
 
     },
 
-    clickElement(el){
+    clickElement(el, index){
 
-        el.addEventListener('click', function(event) {
+        let attr = el.getAttribute('app-click')
 
-            let attr = el.getAttribute('app-click')
+        if (attr.match(/\(/)){ // if function
 
-            if (attr.match(/\(/)){ // if function
+            let method = attr.replace(/\((.*?)\)/,''),
+                param = attr.match(/\((.*?)\)/)[0].replace(/^\(/,'').replace(/\)$/,'').replace(/^\'/,'').replace(/\'$/,'')
 
-                let method = attr.replace(/\((.*?)\)/,'')
-                let param = attr.match(/\((.*?)\)/)[0].replace(/^\(/,'').replace(/\)$/,'').replace(/^\'/,'').replace(/\'$/,'')
+            if (scope[method]){
                 scope[method](param)
-
-            } else if (attr.match(/=/)){ // if operator
-
-                attr = attr.split('=')
-                let key = attr[0].replace(/\s/g,'')
-                let val = attr[1].replace(/\'/g,'').replace(/^\s/,'').replace(/\s$/,'')
-                scope[attr[0].replace(/\s/g,'')] = attr[1].replace(/\'/g,'').replace(/^\s/,'').replace(/\s$/,'')
-
             }
 
-        })
+        } else if (attr.match(/=/)){ // if operator
+
+            attr = attr.split('=')
+            let key = attr[0].replace(/\s/g,''),
+                val = attr[1].replace(/\'/g,'').replace(/^\s/,'').replace(/\s$/,''),
+                val_root = ''
+
+            if (index){ // if using a value from a for loop
+                val_root = val.split('.')[0]
+                let str = 'app.elements.foreach.loops.'+val_root+'['+index+'].'+val
+                val = eval(str)
+            }
+
+            scope[key] = val
+
+        }
 
     },
 
@@ -131,7 +138,7 @@ app.methods = {
 
     },
 
-    forElement(el, initial, arr, key){
+    forElement(el, initial, data, key){
 
         var el_prop = el.getAttribute('app-for')
 
@@ -149,20 +156,20 @@ app.methods = {
             el_remove = false,
             block = view_key
 
-            if (arr){ // if this is a nested repeater
+            if (data){ // if this is a nested repeater
 
-                loop_arr = arr
+                loop_arr = data
                 block = view_key+key
 
             }
 
-            function runSerial() {
+            function runLoop() {
 
                 var that = this;
 
                 return Promise.resolve()
 
-                    .then(function() { // create the elements needed
+                    .then(function() { // create the elements needed at first run, but after that just update the content
 
                         for (let i = 0; i < loop_arr.length; ++i){
 
@@ -228,14 +235,15 @@ app.methods = {
                         }
 
                     })
-                    .then(function() { // add in the content
+                    .then(function() { // add in or update the content
 
                         for (let i = 0; i < app.elements.foreach.loops[block].length; ++i){
 
                             let self = app.elements.foreach.loops[block][i],
                                 self_key = i,
                                 children = self.el.querySelectorAll('[app-bind]'),
-                                loop_children = self.el.querySelectorAll('[app-for]')
+                                loop_children = self.el.querySelectorAll('[app-for]'),
+                                click_children = self.el.querySelectorAll('[app-click]')
 
                             for (let i = 0; i < children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
 
@@ -254,22 +262,22 @@ app.methods = {
                                     cl_props = bind.match(/(.*) in (.*)/),
                                     val = eval('self.'+cl_props[2])
 
-                            //    console.log('self.'+cl_props[2], val, bind)
-
                                 app.methods.forElement(loop_children[i], false, val, self_key)
 
                             }
 
+                            for (let i = 0; i < click_children.length; ++i){
+                                click_children[i].addEventListener('click', function(){
+                                    app.methods.clickElement(click_children[i], self_key)
+                                })
+                            }
+
                         }
                     })
-                    .then(function() {
 
-                        console.log(" ---- done ----");
-
-                    });
             }
 
-            runSerial()
+            runLoop()
 
     },
 
@@ -448,7 +456,9 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     app.elements.event.nodes.forEach(function(el) {
-        app.methods.clickElement(el)
+        el.addEventListener('click', function(event) {
+            app.methods.clickElement(el)
+        })
     })
 
     app.elements.model.nodes.forEach(function(el) {
@@ -507,19 +517,11 @@ var scope = Observable.create(test, true, function(changes) {
 
 scope.panel = false
 scope.menu_items = [
-    'welcome',
-    'colors',
-    'grid',
-    'forms'
+    {name: 'Welcome', panel:'Hi there'},
+    {name: 'What\'s it about?', panel:'<h1>What\'s it about?</h1>Something here'},
+    {name: 'Responsive', panel:'Something else here'}
 ]
 
-setTimeout(function(){
-    scope.menu_items = [
-        'Something',
-        'else',
-        'here'
-    ]
-},2000)
 
 function addInViewClass(el) {
     let divs = el.querySelectorAll('*'),
