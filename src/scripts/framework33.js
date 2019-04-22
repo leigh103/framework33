@@ -511,19 +511,15 @@ function parseAnimAttr(){
             anim_data = JSON.parse(attr.replace(/'/g,'"'))
 
             if (anim_data.anim){
-
                 self.setAttribute('anim',anim_data.anim)
+            }
 
-            } else {
+            if (anim_data.enter){
+                self.setAttribute('anim-enter',anim_data.enter)
+            }
 
-                if (anim_data.enter){
-                    self.setAttribute('anim-enter',anim_data.enter)
-                }
-
-                if (anim_data.exit){
-                    self.setAttribute('anim-exit',anim_data.exit)
-                }
-
+            if (anim_data.exit){
+                self.setAttribute('anim-exit',anim_data.exit)
             }
 
             if (anim_data.duration){
