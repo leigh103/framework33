@@ -507,20 +507,20 @@ function inView(el, init) {
         _top          = el.getBoundingClientRect().top
 
     if (!trigger_top){
-        trigger_top = 150
+        trigger_top = 100
     } else {
         trigger_top = viewport_h * (parseFloat(trigger_top.replace('%',''))/100)
     }
 
     if (!trigger_bottom){
-        trigger_bottom = viewport_h - 150
+        trigger_bottom = viewport_h - 100
     } else {
         trigger_bottom = viewport_h * (parseFloat(trigger_bottom.replace('%',''))/100)
         trigger_bottom = viewport_h - trigger_bottom
     }
 
     return (_top <= trigger_bottom && _top >= trigger_top)
-    
+
 }
 
 function inViewChk(init){
@@ -567,22 +567,26 @@ function applyInViewClass(el, delay) {
 
 function applyExitViewClass(el, index) {
 
-    if (el.classList.contains("in-view")){
-        el.classList.remove('in-view')
-    }
+    if (el.getAttribute('anim-on-exit')){
 
-    if (!el.classList.contains("exit-view")){
-
-        el.classList.add("exit-view")
-
-        if (el.getAttribute("anim-duration")){
-            el.style.animationDuration = el.getAttribute("anim-duration")
+        if (el.classList.contains("in-view")){
+            el.classList.remove('in-view')
         }
-        if (el.getAttribute("anim-easing")){
-            el.style.animationTimingFunction = el.getAttribute("anim-easing")
-        }
-        if (el.getAttribute("anim-delay")){
-            el.style.animationDelay = 0
+
+        if (!el.classList.contains("exit-view")){
+
+            el.classList.add("exit-view")
+
+            if (el.getAttribute("anim-duration")){
+                el.style.animationDuration = el.getAttribute("anim-duration")
+            }
+            if (el.getAttribute("anim-easing")){
+                el.style.animationTimingFunction = el.getAttribute("anim-easing")
+            }
+            if (el.getAttribute("anim-delay")){
+                el.style.animationDelay = 0
+            }
+
         }
 
     }
