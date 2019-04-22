@@ -101,20 +101,21 @@ app.methods = {
 
         let attr = el.getAttribute('app-click')
 
-        if (attr.match(/\(/)){ // if function
+        if (attr.match(/(\w+)\((.*?)\)/)){ // if function
 
-            let method = attr.replace(/\((.*?)\)/,''),
-                param = attr.match(/\((.*?)\)/)[0].replace(/^\(/,'').replace(/\)$/,'').replace(/^\'/,'').replace(/\'$/,'')
+            let matches = attr.match(/(\w+)\((.*?)\)/),
+                method = matches[1],
+                param = matches[2]
 
             if (scope[method]){
                 scope[method](param)
             }
 
-        } else if (attr.match(/=/)){ // if operator
+        } else if (attr.match(/([a-z.]+)\s*(=)\s*'?([a-z.]+)'?/)){ // if operator
 
-            attr = attr.split('=')
-            let key = attr[0].replace(/\s/g,''),
-                val = attr[1].replace(/\'/g,'').replace(/^\s/,'').replace(/\s$/,''),
+            let matches = attr.match(/([a-z.]+)\s*(=)\s*'?([a-z.]+)'?/),
+                key = matches[1],
+                val = matches[3],
                 val_root = ''
 
             if (index){ // if using a value from a for loop
@@ -350,35 +351,28 @@ app.methods = {
 
     evaluateProp(el_prop, callback){
 
-        if (el_prop.match(/==/)){
+        let matches = el_prop.match(/([a-z.]+)\s*(!=|==|>|>=|<|<=)\s*'?([a-z.]+)'?/)
 
-            el_prop = el_prop.replace(/\'/g,'').split('==')
-            let key = el_prop[0].replace(/^[ \t]+|[ \t]+$/,'')
-            let val = el_prop[1].replace(/^[ \t]+|[ \t]+$/,'')
+        if (matches[2] == '=='){
 
-            if (val === 'false' && scope[key] === false){
+            if (matches[3] === 'false' && scope[matches[1]] === false){
                 callback(true)
             } else {
-                callback(scope[key] == val)
+                callback(scope[matches[1]] == matches[3])
             }
 
-        } else if (el_prop.match(/!=/)){
+        } else if (matches[2] == '!='){
 
-            el_prop = el_prop.replace(/\'/g,'').split('!=')
-            let key = el_prop[0].replace(/^[ \t]+|[ \t]+$/,'')
-            let val = el_prop[1].replace(/^[ \t]+|[ \t]+$/,'')
+            callback(scope[matches[1]] != matches[3])
 
-            callback(scope[key] != val)
+        } else if (matches[1].match(/^!/)){
 
-        } else if (el_prop.match(/^!/)){
-
-            el_prop = el_prop.replace(/\'/g,'').split('!=')
-            let key = el_prop[0].replace(/^!/,'').replace(/^[ \t]+|[ \t]+$/,'')
-
-            callback(scope[key] == false)
+            callback(scope[matches[1]] == false)
 
         } else if (eval('scope.'+el_prop)){
+
             callback(eval('scope.'+el_prop))
+
         }
 
     }
@@ -514,7 +508,7 @@ var scope = Observable.create(test, true, function(changes) {
 });
 
 
-
+scope.view = 'no'
 scope.panel = false
 scope.menu_items = [
     {name: 'Welcome', panel:'Hi there'},
