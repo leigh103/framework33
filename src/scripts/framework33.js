@@ -488,7 +488,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 window.addEventListener('load', () => {inViewChk()})
 
-document.addEventListener('scroll', () => {inViewChk()})
+document.addEventListener('scroll', () => {if (document.body.scrollTop % 20 === 0){console.log(document.body.scrollTop);inViewChk()}})
 
 
 
@@ -508,39 +508,13 @@ function parseAnimAttr(){
             anim_data = ''
 
         if (attr && attr.match(/^{/)){
+
             anim_data = JSON.parse(attr.replace(/'/g,'"'))
 
-            if (anim_data.anim){
-                self.setAttribute('anim',anim_data.anim)
+            for (let i in anim_data){
+                self.setAttribute('anim-'+i,anim_data[i])
             }
 
-            if (anim_data.enter){
-                self.setAttribute('anim-enter',anim_data.enter)
-            }
-
-            if (anim_data.exit){
-                self.setAttribute('anim-exit',anim_data.exit)
-            }
-
-            if (anim_data.duration){
-                self.setAttribute('anim-duration',anim_data.duration)
-            }
-
-            if (anim_data.easing){
-                self.setAttribute('anim-easing',anim_data.easing)
-            }
-
-            if (anim_data.delay){
-                self.setAttribute('anim-delay',anim_data.delay)
-            }
-
-            if (anim_data.trigger_top){
-                self.setAttribute('anim-trigger-top',anim_data.trigger_top)
-            }
-
-            if (anim_data.trigger_bottom){
-                self.setAttribute('anim-trigger-bottom',anim_data.trigger_bottom)
-            }
         }
 
     }
@@ -590,7 +564,7 @@ function inViewChk(){
 
 }
 
-function applyInViewClass(el, delay) {
+function applyInViewClass(el) {
 
     if (el.classList.contains("exit-view")){
         el.classList.remove('exit-view')
@@ -614,7 +588,7 @@ function applyInViewClass(el, delay) {
 
 }
 
-function applyExitViewClass(el, index) {
+function applyExitViewClass(el) {
 
     if (el.getAttribute('anim-exit')){
 
@@ -622,20 +596,14 @@ function applyExitViewClass(el, index) {
             el.classList.remove('in-view')
         }
 
-        if (!el.classList.contains("exit-view")){
+        el.classList.add("exit-view")
+        el.style.animationDelay = 0
 
-            el.classList.add("exit-view")
-
-            if (el.getAttribute("anim-duration")){
-                el.style.animationDuration = el.getAttribute("anim-duration")
-            }
-            if (el.getAttribute("anim-easing")){
-                el.style.animationTimingFunction = el.getAttribute("anim-easing")
-            }
-            if (el.getAttribute("anim-delay")){
-                el.style.animationDelay = 0
-            }
-
+        if (el.getAttribute("anim-exit-duration")){
+            el.style.animationDuration = el.getAttribute("anim-exit-duration")
+        }
+        if (el.getAttribute("anim-exit-easing")){
+            el.style.animationTimingFunction = el.getAttribute("anim-exit-easing")
         }
 
     }

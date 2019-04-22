@@ -19,12 +19,6 @@ $move-speed: 2000ms;
         transform:translateY($move-amount);
         opacity: 0;
     }
-
-    50%  {
-        transform:translateY($move-amount);
-        opacity: 0;
-    }
-
     100%  {
         transform: translateY(0);
         opacity: 1;
@@ -43,12 +37,6 @@ $move-speed: 2000ms;
         transform:translateY(0);
         opacity: 1;
     }
-
-    50%  {
-        transform:translateY(#{$move-amount - $move-amount - $move-amount});
-        opacity: 1;
-    }
-
     100%  {
         transform: translateY(#{$move-amount - $move-amount - $move-amount});
         opacity: 0;
@@ -72,12 +60,6 @@ $move-speed: 2000ms;
         transform:translateX($move-amount);
         opacity: 0;
     }
-
-    50%  {
-        transform:translateX($move-amount);
-        opacity: 0;
-    }
-
     100%  {
         transform: translateX(0);
         opacity: 1;
@@ -96,12 +78,6 @@ $move-speed: 2000ms;
         transform:translateX(0);
         opacity: 1;
     }
-
-    50%  {
-        transform:translateX($move-amount);
-        opacity: 0;
-    }
-
     100%  {
         transform: translateX($move-amount);
         opacity: 0;
@@ -125,12 +101,6 @@ $move-speed: 2000ms;
         transform:translateX(#{$move-amount - $move-amount - $move-amount});
         opacity: 0;
     }
-
-    50%  {
-        transform:translateX(#{$move-amount - $move-amount - $move-amount});
-        opacity: 0;
-    }
-
     100%  {
         transform: translateX(0);
         opacity: 1;
@@ -149,12 +119,6 @@ $move-speed: 2000ms;
         transform:translateX(0);
         opacity: 1;
     }
-
-    50%  {
-        transform:translateX(#{$move-amount - $move-amount - $move-amount});
-        opacity: 0;
-    }
-
     100%  {
         transform: translateX(#{$move-amount - $move-amount - $move-amount});
         opacity: 0;
@@ -178,12 +142,6 @@ $move-speed: 2000ms;
         transform:translateY(#{$move-amount - $move-amount - $move-amount});
         opacity: 0;
     }
-
-    50%  {
-        transform:translateY(#{$move-amount - $move-amount - $move-amount});
-        opacity: 0;
-    }
-
     100%  {
         transform: translateY(0);
         opacity: 1;
@@ -202,12 +160,6 @@ $move-speed: 2000ms;
         transform:translateY(0);
         opacity: 1;
     }
-
-    50%  {
-        transform:translateY($move-amount);
-        opacity: 0;
-    }
-
     100%  {
         transform: translateY($move-amount);
         opacity: 0;
@@ -230,7 +182,6 @@ $move-speed: 2000ms;
     0%  {
         opacity: 0;
     }
-
     100%  {
         opacity: 1;
     }
@@ -248,7 +199,6 @@ $move-speed: 2000ms;
     0%  {
         opacity: 1;
     }
-
     100%  {
         opacity: 0;
     }
