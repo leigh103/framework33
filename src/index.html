@@ -18,7 +18,7 @@
     <section class="vh100 p-5 p-m-3 p-s-2 bg-light-grey">
 
         <div class="row">
-            <div class="block-20 block-m-50 block-s-100 margin align-top text-right pr-2">
+            <div class="block-20 block-m-50 block-s-100 margin align-top text-right text-s-left pr-2">
                 <div class="border p-1 clickable" app-for="item in menu_items">
                     <span app-click="panel = item.panel" app-bind="item.name"></span>
                 </div>
@@ -33,15 +33,15 @@
     <section class="p-5 p-m-3 p-s-2 bg-white">
 
         <div class="row">
-            <div anim-enter="move-up" anim-exit="move-up" class="block-33 block-s-100">
+            <div anim-enter="move-up" anim-exit="move-up" anim-trigger-bottom="0" class="block-33 block-s-100 p-2">
                 <h3>On Screen</h3>
                 <p>This element will rise up when it's in the devices viewport</p>
             </div>
-            <div anim-enter="move-up" anim-exit="move-up" anim-delay="500ms" class="block-33 block-s-100">
+            <div anim-enter="move-up" anim-exit="move-up" anim-delay="500ms" anim-trigger-bottom="0" class="block-33 block-s-100 p-2">
                 <h3>On Screen</h3>
                 <p>This element will also rise up, but after the first one</p>
             </div>
-            <div anim-enter="move-up" anim-exit="move-up" anim-delay="1000ms" class="block-33 block-s-100">
+            <div anim-enter="move-up" anim-exit="move-up" anim-delay="1000ms" anim-trigger-bottom="0" class="block-33 block-s-100 p-2">
                 <h3>On Screen</h3>
                 <p>This element will rise up last. But that's ok</p>
             </div>
