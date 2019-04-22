@@ -6,7 +6,6 @@ import async from 'async'
 
 var test = {}
 var app = {}
-var anim_elements = []
 
 app.methods = {
 
@@ -482,13 +481,14 @@ document.addEventListener('DOMContentLoaded', () => {
         app.methods.forElement(el, true)
     })
 
-    anim_elements = document.querySelectorAll("[anim],[anim-enter],[anim-exit]")
+    app.elements.animation = document.querySelectorAll("[anim],[anim-enter],[anim-exit]")
 
 })
 
 window.addEventListener('load', () => {inViewChk()})
 
 document.addEventListener('scroll', () => {inViewChk()})
+
 
 
 scope.view = 'no'
@@ -499,12 +499,14 @@ scope.menu_items = [
     {name: 'Responsive', panel:'Something else here'}
 ]
 
+
+
 function inView(el, init) {
 
-    let trigger_top   = el.getAttribute('anim-trigger-top'),
-        trigger_bottom     = el.getAttribute('anim-trigger-bottom'),
-        viewport_h    = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
-        _top          = el.getBoundingClientRect().top
+    let trigger_top = el.getAttribute('anim-trigger-top'),
+        trigger_bottom = el.getAttribute('anim-trigger-bottom'),
+        viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
+        _top = el.getBoundingClientRect().top
 
     if (!trigger_top){
         trigger_top = 100
@@ -525,15 +527,17 @@ function inView(el, init) {
 
 function inViewChk(init){
 
-    for (let i = 0; i < anim_elements.length; i++) {
+    for (let i = 0; i < app.elements.animation.length; i++) {
 
-        if (inView(anim_elements[i],init)) {
-            if (anim_elements[i].classList && !anim_elements[i].classList.contains('in-view')) {
-                applyInViewClass(anim_elements[i]);
+        let self = app.elements.animation[i]
+
+        if (inView(self,init)) {
+            if (self.classList && !self.classList.contains('in-view')) {
+                applyInViewClass(self);
             }
         } else {
-            if (anim_elements[i].classList && anim_elements[i].classList.contains('in-view')) {
-                applyExitViewClass(anim_elements[i], i);
+            if (self.classList && self.classList.contains('in-view')) {
+                applyExitViewClass(self, i);
             }
         }
 
