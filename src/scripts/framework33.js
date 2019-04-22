@@ -522,7 +522,7 @@ function addInViewClass(el) {
     let divs = el.querySelectorAll('*'),
         i;
     for (i = 0; i < divs.length; ++i) {
-        if (divs[i].classList && divs[i].classList.value && !divs[i].classList.value.match(/in-view/)) {
+        if (divs[i].classList && !divs[i].classList.contains('in-view')) {
             if (i == 0){
                 applyInViewClass(divs[i], 0);
             } else {
@@ -535,7 +535,11 @@ function addInViewClass(el) {
 
 function applyInViewClass(el, delay) {
     setTimeout(function() {
-        el.className += " in-view";
+
+        if (!el.classList.contains("in-view")){
+            el.classList.add("in-view")
+        }
+
         if (el.getAttribute("anim-duration")){
             el.style.animationDuration = el.getAttribute("anim-duration")
         }
