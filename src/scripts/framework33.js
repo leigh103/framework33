@@ -248,9 +248,8 @@ app.methods = {
 
                             for (let i = 0; i < children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
 
-                                let bind = children[i].getAttribute('app-bind')
-                                console.log(bind, self)
-                                let val = eval('self.'+bind)
+                                let bind = children[i].getAttribute('app-bind'),
+                                    val = eval('self.'+bind)
 
                                 if (val){
                                     children[i].innerHTML = val
@@ -382,30 +381,6 @@ app.methods = {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    let document_containers = document.querySelectorAll("section,.container");
-    let viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-    for (let i = 0; i < document_containers.length; i++) {
-        if (document_containers[i].getBoundingClientRect().top < viewport_h) {
-            if (document_containers[i].classList && !document_containers[i].classList.contains('in-view')) {
-                addInViewClass(document_containers[i]);
-            }
-        }
-    }
-
-    window.addEventListener('scroll', function() {
-        for (let i = 0; i < document_containers.length; i++) {
-            if (document_containers[i].getBoundingClientRect().top < viewport_h - 200) {
-                if (document_containers[i].classList && !document_containers[i].classList.contains('in-view')) {
-                    addInViewClass(document_containers[i]);
-                }
-            } else if (document_containers[i].getBoundingClientRect().top < 0){
-                if (document_containers[i].classList && !document_containers[i].classList.contains('in-view')) {
-                    addExitViewClass(document_containers[i]);
-                }
-            }
-        }
-    });
-
     // on ready
     app.elements = {}
 
@@ -463,6 +438,32 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.foreach.nodes.forEach(function(el) {
         app.methods.forElement(el, true)
     })
+
+
+        let document_containers = document.querySelectorAll("section,.container"),
+            viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+
+
+        if (document_containers[0].getBoundingClientRect().top < viewport_h) { // process the in-view class for the first container on page load
+            if (document_containers[0].classList && !document_containers[0].classList.contains('in-view')) {
+                addInViewClass(document_containers[0]);
+            }
+        }
+
+
+        window.addEventListener('scroll', function() { // other containers in-view class is processed on scroll
+            for (let i = 0; i < document_containers.length; i++) {
+                if (document_containers[i].getBoundingClientRect().top < viewport_h - 150) {
+                    if (document_containers[i].classList && !document_containers[i].classList.contains('in-view')) {
+                        addInViewClass(document_containers[i]);
+                    }
+                } else if (document_containers[i].getBoundingClientRect().top < 0){
+                    if (document_containers[i].classList && !document_containers[i].classList.contains('in-view')) {
+                        addExitViewClass(document_containers[i]);
+                    }
+                }
+            }
+        });
 
 });
 
@@ -534,6 +535,7 @@ function addInViewClass(el) {
 }
 
 function applyInViewClass(el, delay) {
+
     setTimeout(function() {
 
         if (!el.classList.contains("in-view")){
@@ -549,7 +551,9 @@ function applyInViewClass(el, delay) {
         if (el.getAttribute("anim-delay")){
             el.style.animationDelay = el.getAttribute("anim-delay")
         }
+
     }, delay);
+
 }
 
 
@@ -637,7 +641,6 @@ initFH();
 
 function setHeight(nodes, height) {
     for (let i = 0; i < nodes.length; i++) {
-        console.log(document.documentElement.clientWidth);
         if (document.documentElement.clientWidth > 850) {
             nodes[i].style.height = height + 'px';
         }
