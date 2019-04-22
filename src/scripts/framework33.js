@@ -6,6 +6,7 @@ import async from 'async'
 
 var test = {}
 var app = {}
+var in_view_elements = []
 
 app.methods = {
 
@@ -439,31 +440,36 @@ document.addEventListener('DOMContentLoaded', () => {
         app.methods.forElement(el, true)
     })
 
+    var anim_elements = document.querySelectorAll("[anim],[anim-on-enter],[anim-on-exit]"),
+        viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
 
-        let document_containers = document.querySelectorAll("section,.container"),
-            viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
+    //
+    // if (document_containers[0].getBoundingClientRect().top < viewport_h) { // process the in-view class for the first container on page load
+    //     if (document_containers[0].classList && !document_containers[0].classList.contains('in-view')) {
+    //         addInViewClass(document_containers[0]);
+    //     }
+    // }
 
 
-        if (document_containers[0].getBoundingClientRect().top < viewport_h) { // process the in-view class for the first container on page load
-            if (document_containers[0].classList && !document_containers[0].classList.contains('in-view')) {
-                addInViewClass(document_containers[0]);
+    window.addEventListener('scroll', function() { // other containers in-view class is processed on scroll
+
+        for (let i = 0; i < anim_elements.length; i++) {
+            if (anim_elements[i].getBoundingClientRect().top <= viewport_h && anim_elements[i].getBoundingClientRect().top > 150 || anim_elements[i].getBoundingClientRect().top > 150) {
+                if (anim_elements[i].classList && !anim_elements[i].classList.contains('in-view')) {
+                    applyInViewClass(anim_elements[i]);
+                }
             }
         }
 
-
-        window.addEventListener('scroll', function() { // other containers in-view class is processed on scroll
-            for (let i = 0; i < document_containers.length; i++) {
-                if (document_containers[i].getBoundingClientRect().top < viewport_h - 150) {
-                    if (document_containers[i].classList && !document_containers[i].classList.contains('in-view')) {
-                        addInViewClass(document_containers[i]);
-                    }
-                } else if (document_containers[i].getBoundingClientRect().top < 0){
-                    if (document_containers[i].classList && !document_containers[i].classList.contains('in-view')) {
-                        addExitViewClass(document_containers[i]);
-                    }
+        for (let i = 0; i < in_view_elements.length; i++) {
+            if (in_view_elements[i].getBoundingClientRect().top <= 150) {
+                if (in_view_elements[i].classList && !in_view_elements[i].classList.contains('exit-view')) {
+                    applyExitViewClass(in_view_elements[i], i);
                 }
             }
-        });
+        }
+
+    });
 
 });
 
@@ -530,17 +536,21 @@ function addInViewClass(el) {
                 applyInViewClass(divs[i], i * 200);
             }
 
+            in_view_elements.push(divs[i])
         }
     }
 }
 
 function applyInViewClass(el, delay) {
 
-    setTimeout(function() {
+    in_view_elements.push(el)
+    if (el.classList.contains("exit-view")){
+        el.classList.remove('exit-view')
+    }
 
-        if (!el.classList.contains("in-view")){
-            el.classList.add("in-view")
-        }
+    if (!el.classList.contains("in-view")){
+
+        el.classList.add("in-view")
 
         if (el.getAttribute("anim-duration")){
             el.style.animationDuration = el.getAttribute("anim-duration")
@@ -552,28 +562,31 @@ function applyInViewClass(el, delay) {
             el.style.animationDelay = el.getAttribute("anim-delay")
         }
 
-    }, delay);
-
-}
-
-
-function addExitViewClass(el) {
-    let divs = el.querySelectorAll('*'),
-        i;
-    for (i = 0; i < divs.length; ++i) {
-        if (divs[i].classList && divs[i].classList.value && !divs[i].classList.value.match(/exit-view/)) {
-
-                applyExitViewClass(divs[i], 0);
-
-
-        }
     }
+
 }
 
-function applyExitViewClass(el, delay) {
-    setTimeout(function() {
-        el.className.value.replace(/in\-view/, 'exit-view');
-    }, delay);
+function applyExitViewClass(el, index) {
+
+    in_view_elements.splice(index,1)
+    el.classList.remove('in-view')
+
+    if (!el.classList.contains("exit-view")){
+
+        el.classList.add("exit-view")
+
+        if (el.getAttribute("anim-duration")){
+            el.style.animationDuration = el.getAttribute("anim-duration")
+        }
+        if (el.getAttribute("anim-easing")){
+            el.style.animationTimingFunction = el.getAttribute("anim-easing")
+        }
+        if (el.getAttribute("anim-delay")){
+            el.style.animationDelay = 0
+        }
+
+    }
+
 }
 
 let document_navs = document.getElementsByClassName("nav");

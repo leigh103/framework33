@@ -8,13 +8,13 @@ $move-speed: 2000ms;
 }
 
 .in-view[anim-on-enter="move-up"] {
-    animation-name:MoveUp;
+    animation-name:MoveUpEnter;
     animation-duration:$move-speed;
     animation-iteration-count:1;
     animation-fill-mode: forwards;
 }
 
-@keyframes MoveUp  {
+@keyframes MoveUpEnter  {
     0%  {
         transform:translateY($move-amount);
         opacity: 0;
@@ -28,6 +28,30 @@ $move-speed: 2000ms;
     100%  {
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+.exit-view[anim-on-exit="move-up"] {
+    animation-name:MoveUpExit;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes MoveUpExit  {
+    0%  {
+        transform:translateY(0);
+        opacity: 1;
+    }
+
+    50%  {
+        transform:translateY(#{$move-amount - $move-amount - $move-amount});
+        opacity: 1;
+    }
+
+    100%  {
+        transform: translateY(#{$move-amount - $move-amount - $move-amount});
+        opacity: 0;
     }
 }
 
@@ -37,13 +61,13 @@ $move-speed: 2000ms;
 }
 
 .in-view[anim-on-enter="move-left"] {
-    animation-name:MoveLeft;
+    animation-name:MoveLeftEnter;
     animation-duration:$move-speed;
     animation-iteration-count:1;
     animation-fill-mode: forwards;
 }
 
-@keyframes MoveLeft  {
+@keyframes MoveLeftEnter  {
     0%  {
         transform:translateX($move-amount);
         opacity: 0;
@@ -57,6 +81,30 @@ $move-speed: 2000ms;
     100%  {
         transform: translateX(0);
         opacity: 1;
+    }
+}
+
+.exit-view[anim-on-exit="move-left"] {
+    animation-name:MoveLeftEnter;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes MoveLeftExit {
+    0%  {
+        transform:translateX(0);
+        opacity: 1;
+    }
+
+    50%  {
+        transform:translateX($move-amount);
+        opacity: 0;
+    }
+
+    100%  {
+        transform: translateX($move-amount);
+        opacity: 0;
     }
 }
 
@@ -66,13 +114,13 @@ $move-speed: 2000ms;
 }
 
 .in-view[anim-on-enter="move-right"] {
-    animation-name:MoveRight;
+    animation-name:MoveRightEnter;
     animation-duration:$move-speed;
     animation-iteration-count:1;
     animation-fill-mode: forwards;
 }
 
-@keyframes MoveRight  {
+@keyframes MoveRightEnter  {
     0%  {
         transform:translateX(#{$move-amount - $move-amount - $move-amount});
         opacity: 0;
@@ -89,19 +137,43 @@ $move-speed: 2000ms;
     }
 }
 
+.exit-view[anim-on-exit="move-right"] {
+    animation-name:MoveRightExit;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes MoveRightExit  {
+    0%  {
+        transform:translateX(0);
+        opacity: 1;
+    }
+
+    50%  {
+        transform:translateX(#{$move-amount - $move-amount - $move-amount});
+        opacity: 0;
+    }
+
+    100%  {
+        transform: translateX(#{$move-amount - $move-amount - $move-amount});
+        opacity: 0;
+    }
+}
+
 [anim-on-enter="move-down"] {
     transform: translateY(#{$move-amount - $move-amount - $move-amount});
     opacity: 0;
 }
 
 .in-view[anim-on-enter="move-down"] {
-    animation-name:MoveDown;
+    animation-name:MoveDownEnter;
     animation-duration:$move-speed;
     animation-iteration-count:1;
     animation-fill-mode: forwards;
 }
 
-@keyframes MoveDown  {
+@keyframes MoveDownEnter  {
     0%  {
         transform:translateY(#{$move-amount - $move-amount - $move-amount});
         opacity: 0;
@@ -115,6 +187,30 @@ $move-speed: 2000ms;
     100%  {
         transform: translateY(0);
         opacity: 1;
+    }
+}
+
+.exit-view[anim-on-exit="move-down"] {
+    animation-name:MoveDownExit;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes MoveDownExit  {
+    0%  {
+        transform:translateY(0);
+        opacity: 1;
+    }
+
+    50%  {
+        transform:translateY($move-amount);
+        opacity: 0;
+    }
+
+    100%  {
+        transform: translateY($move-amount);
+        opacity: 0;
     }
 }
 
@@ -136,6 +232,23 @@ $move-speed: 2000ms;
 
     100%  {
         opacity: 1;
+    }
+}
+
+.exit-view[anim-on-exit="fade-out"] {
+    animation-name:FadeOut;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes FadeOut  {
+    0%  {
+        opacity: 1;
+    }
+
+    100%  {
+        opacity: 0;
     }
 }
 
@@ -164,6 +277,30 @@ $move-speed: 2000ms;
     100%  {
         filter: blur(0px);
         opacity: 1;
+    }
+}
+
+.exit-view[anim-on-exit="blur-out"] {
+    animation-name:BlurOut;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes BlurOut  {
+    0%  {
+        filter: blur(0px);
+        opacity: 1;
+    }
+
+    50% {
+        filter: blur(50px);
+        opacity: 1;
+    }
+
+    100%  {
+        filter: blur(50px);
+        opacity: 0;
     }
 }
 
