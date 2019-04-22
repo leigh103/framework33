@@ -149,7 +149,7 @@ app.methods = {
         }
 
         let el_parent = el.parentNode,
-            el_props = el_prop.match(/(.*)\s*in\s*(.*)/),
+            el_props = el_prop.match(/([a-z._]+)\s*in\s*([a-z._]+)/i),
             view_key = el_props[1],
             scope_key = el_props[2],
             scope_key_parse = scope_key.replace(/\./g,'_'),
@@ -248,8 +248,9 @@ app.methods = {
 
                             for (let i = 0; i < children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
 
-                                let bind = children[i].getAttribute('app-bind'),
-                                    val = eval('self.'+bind)
+                                let bind = children[i].getAttribute('app-bind')
+                                console.log(bind, self)
+                                let val = eval('self.'+bind)
 
                                 if (val){
                                     children[i].innerHTML = val
@@ -351,7 +352,7 @@ app.methods = {
 
     evaluateProp(el_prop, callback){
 
-        let matches = el_prop.match(/([a-z.]+)\s*(!=|==|>|>=|<|<=)\s*'?([a-z.]+)'?/)
+        let matches = el_prop.match(/([a-z._]+)\s*(!=|==|>|>=|<|<=)\s*'?([a-z._]+)'?/)
 
         if (matches[2] == '=='){
 
