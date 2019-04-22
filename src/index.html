@@ -9,8 +9,8 @@
 
     <section class="hero bg-ruby text-white text-middle p-s-2">
 
-        <h1 class="biggest" anim="{'enter':'blur-in','duration':'2s','easing':'ease-out'}">Framework33</h1>
-        <h4 class="text-light" anim="{'enter':'move-down','exit':'fade-out','duration':'500ms','easing':'ease-out'}">A Simple CSS and ECMA Script Framework</h4>
+        <h1 class="biggest">Framework33</h1>
+        <h4 class="text-light" anim="{'enter':'move-down','exit':'fade-out','duration':'500ms','easing':'ease-out','delay':'1s'}">A Simple CSS and ECMA Script Framework</h4>
         <a app-click="view = 'yes'" class="mt-2">Show More</a>
 
     </section>
@@ -33,15 +33,15 @@
     <section class="p-5 p-m-3 p-s-2 bg-white">
 
         <div class="row">
-            <div anim-enter="move-up" anim-exit="move-up" anim-trigger-bottom="0" class="block-33 block-s-100 p-2">
+            <div anim="{'enter':'move-up','exit':'move-up','trigger_bottom':'0'}" class="block-33 block-s-100 p-2">
                 <h3>On Screen</h3>
                 <p>This element will rise up when it's in the devices viewport</p>
             </div>
-            <div anim-enter="move-up" anim-exit="move-up" anim-delay="500ms" anim-trigger-bottom="0" class="block-33 block-s-100 p-2">
+            <div anim="{'enter':'move-up','exit':'move-up','trigger_bottom':'0','delay':'500ms'}" class="block-33 block-s-100 p-2">
                 <h3>On Screen</h3>
                 <p>This element will also rise up, but after the first one</p>
             </div>
-            <div anim-enter="move-up" anim-exit="move-up" anim-delay="1000ms" anim-trigger-bottom="0" class="block-33 block-s-100 p-2">
+            <div anim="{'enter':'move-up','exit':'move-up','trigger_bottom':'0','delay':'1s'}" class="block-33 block-s-100 p-2">
                 <h3>On Screen</h3>
                 <p>This element will rise up last. But that's ok</p>
             </div>
