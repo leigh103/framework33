@@ -75,8 +75,12 @@ div.background {
     margin:auto;
 }
 
+.container.contain,.row.contain {
+    max-width: 1140px;
+}
+
 .container > *, .row > * {
-    font-size:1vw
+    font-size:1rem
 }
 
 .h10 {
