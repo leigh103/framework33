@@ -3,9 +3,9 @@ import '../styles/framework33.scss';
 import '../styles/style.scss';
 import Observable from 'observable-slim'
 
-var test = {}
-var app = {}
-
+var test = {},
+    app = {}
+    
 app.methods = {
 
     updateBoundElement(el){
@@ -378,7 +378,7 @@ app.methods = {
 
 }
 
-var scope = Observable.create(test, true, function(changes) {
+scope = Observable.create(test, true, function(changes) {
 
     for (var i in changes){
 
@@ -488,16 +488,6 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('load', () => {inViewChk()})
 
 document.addEventListener('scroll', () => {if (document.body.scrollTop % 20 === 0){inViewChk()}})
-
-
-
-scope.view = 'no'
-scope.panel = false
-scope.menu_items = [
-    {name: 'Welcome', panel:'Hi there'},
-    {name: 'What\'s it about?', panel:'<h1>What\'s it about?</h1>Something here'},
-    {name: 'Responsive', panel:'Something else here'}
-]
 
 function parseAnimAttr(){
     for (let i = 0; i < app.elements.animation.length; i++) {
