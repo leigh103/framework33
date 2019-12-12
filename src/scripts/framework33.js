@@ -103,7 +103,7 @@ app.methods = {
 
     },
 
-    clickElement(el, index){
+    clickElement(el, index, data){
 
         let attr = el.getAttribute('app-click')
 
@@ -113,7 +113,10 @@ app.methods = {
                 method = matches[1],
                 param = matches[2]
 
-            if (scope[method]){
+            if (param.match(/\./)){
+                param = app.methods.getValue(data,param);
+                scope[method](param)
+            } else if (scope[method]){
                 scope[method](param)
             }
 
@@ -291,8 +294,9 @@ app.methods = {
                             }
 
                             for (let i = 0; i < click_children.length; ++i){
+
                                 click_children[i].addEventListener('click', function(){
-                                    app.methods.clickElement(click_children[i], self_key)
+                                    app.methods.clickElement(click_children[i], self_key, self)
                                 })
                             }
 

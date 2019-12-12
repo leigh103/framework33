@@ -21,7 +21,7 @@
         <div class="row contain">
             <div class="block-20 block-m-50 block-s-100 margin align-top text-right text-s-left pr-2">
                 <div class="border p-1 clickable" app-for="item in menu_items">
-                    <span app-click="panel = item.panel" app-bind="item.name" app-class="item.class"></span>
+                    <span app-click="gotoPanel(item.panel)" app-bind="item.name" app-class="item.class"></span>
                 </div>
             </div>
             <div class="block-80 block-m-50 block-s-100 margin align-top text-left" app-bind="panel">
