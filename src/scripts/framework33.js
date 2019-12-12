@@ -5,7 +5,7 @@ import Observable from 'observable-slim'
 
 var test = {},
     app = {}
-    
+
 app.methods = {
 
     updateBoundElement(el){
@@ -14,12 +14,19 @@ app.methods = {
         let el_parent = el.parentNode
 
         if (!el_parent || !el_parent.getAttribute('app-for')){
-            el.innerHTML = scope[el_prop]
-
+            el.innerHTML = app.methods.getValue(scope, el_prop)
             app.methods.addIndex(el, el_prop, 'bound')
         }
 
+    },
 
+    getValue(obj, path) {
+
+        if (path.match(/\./)){
+            return path.split(".").reduce(function(obj, name){ if (obj && obj[name]){return obj[name]}}, obj);
+        } else {
+            return obj[path]
+        }
 
     },
 
@@ -110,9 +117,9 @@ app.methods = {
                 scope[method](param)
             }
 
-        } else if (attr.match(/([a-z.]+)\s*(=)\s*'?([a-z.]+)'?/)){ // if operator
+        } else if (attr.match(/([a-z.]+)\s*(=)\s*'?([a-z.!]+)'?/)){ // if operator
 
-            let matches = attr.match(/([a-z.]+)\s*(=)\s*'?([a-z.]+)'?/),
+            let matches = attr.match(/([a-z.]+)\s*(=)\s*'?([a-z.!]+)'?/),
                 key = matches[1],
                 val = matches[3],
                 val_root = ''
@@ -123,7 +130,12 @@ app.methods = {
                 val = eval(str)
             }
 
-            scope[key] = val
+            if (val.match(/^!/)){
+                scope[key] = !scope[key]
+            } else {
+                scope[key] = val
+            }
+
 
         }
 
@@ -243,6 +255,7 @@ app.methods = {
                                 self_key = i,
                                 children = self.el.querySelectorAll('[app-bind]'),
                                 loop_children = self.el.querySelectorAll('[app-for]'),
+                                class_children = self.el.querySelectorAll('[app-class]'),
                                 click_children = self.el.querySelectorAll('[app-click]')
 
                             for (let i = 0; i < children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
@@ -252,6 +265,17 @@ app.methods = {
 
                                 if (val){
                                     children[i].innerHTML = val
+                                }
+
+                            }
+
+                            for (let i = 0; i < class_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
+
+                                let bind = children[i].getAttribute('app-class'),
+                                    val = eval('self.'+bind)
+
+                                if (val){
+                                    children[i].classList.add(val)
                                 }
 
                             }
@@ -315,6 +339,13 @@ app.methods = {
                 callback()
             }
         }
+
+    },
+
+    addClass(el){
+
+        var el_prop = el.getAttribute('app-class');
+        el.classList.add(app.methods.getValue(scope, el_prop))
 
     },
 
@@ -430,6 +461,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.show = {}
     app.elements.hide = {}
     app.elements.event = {}
+    app.elements.class = {}
     app.elements.model = {}
     app.elements.foreach = {}
 
@@ -447,6 +479,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.show.nodes = document.querySelectorAll('[app-show]')
     app.elements.hide.nodes = document.querySelectorAll('[app-hide]')
     app.elements.event.nodes = document.querySelectorAll('[app-click]')
+    app.elements.class.nodes = document.querySelectorAll('[app-class]')
     app.elements.model.nodes = document.querySelectorAll('[app-model]')
     app.elements.foreach.nodes = document.querySelectorAll('[app-for]')
 
@@ -470,6 +503,10 @@ document.addEventListener('DOMContentLoaded', () => {
         el.addEventListener('click', function(event) {
             app.methods.clickElement(el)
         })
+    })
+
+    app.elements.class.nodes.forEach(function(el) {
+        app.methods.addClass(el)
     })
 
     app.elements.model.nodes.forEach(function(el) {

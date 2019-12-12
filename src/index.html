@@ -12,7 +12,7 @@
 
         <h1 class="biggest">Framework33</h1>
         <h4 class="text-light" anim="{'enter':'move-down','exit':'fade-out','duration':'5s','easing':'ease'}">A Simple CSS and ECMA Script Framework</h4>
-        <a app-click="view = 'yes'" class="mt-2" anim="{'enter':'bob','delay':'1s','duration':'500ms','easing':'ease'}">Show More</a>
+        <a app-click="test = !test" class="mt-2" app-class="view.test">Show More</a>
 
     </section>
 
@@ -21,7 +21,7 @@
         <div class="row contain">
             <div class="block-20 block-m-50 block-s-100 margin align-top text-right text-s-left pr-2">
                 <div class="border p-1 clickable" app-for="item in menu_items">
-                    <span app-click="panel = item.panel" app-bind="item.name"></span>
+                    <span app-click="panel = item.panel" app-bind="item.name" app-class="item.class"></span>
                 </div>
             </div>
             <div class="block-80 block-m-50 block-s-100 margin align-top text-left" app-bind="panel">
@@ -77,6 +77,6 @@
     </section>
 
     <script src="/public/script.js"></script>
-    
+
 </body>
 </html>
