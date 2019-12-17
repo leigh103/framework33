@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
         {name: 'Responsive', panel:'Something else here', class:"text-red"}
     ]
 
-    scope.gotoPanel = (panel)=>{
-        console.log(panel)
+    scope.gotoPanel = (panel, name)=>{
+        console.log(panel, name.class)
     }
 
 })

@@ -105,7 +105,12 @@ app.methods = {
 
     clickElement(el, index, data){
 
-        let attr = el.getAttribute('app-click')
+        let attr
+        if (typeof el.getAttribute == 'undefined'){
+            attr = el.currentTarget.getAttribute('app-click')
+        } else {
+            attr = el.getAttribute('app-click')
+        }
 
         if (attr.match(/(\w+)\((.*?)\)/)){ // if function
 
@@ -114,10 +119,34 @@ app.methods = {
                 param = matches[2]
 
             if (param.match(/\./)){
-                param = app.methods.getValue(data,param);
-                scope[method](param)
+
+                if (param.match(/\,/)){
+
+                    param = param.split(',');
+                    for (var i in param){
+
+                        param[i] = app.methods.getValue(data,param[i].replace(/^\s|\s$/,''))
+
+                        if (i == param.length-1){
+                        //    param = param.join(',')
+                            scope[method].apply(null,param)
+                        //    console.log(method, param)
+                        }
+                    }
+
+                } else {
+                    param = app.methods.getValue(data,param)
+                    scope[method](param)
+                }
+
             } else if (scope[method]){
-                scope[method](param)
+
+                if (data && data[param]){
+                    scope[method](data[param])
+                } else {
+                    scope[method](param)
+                }
+
             }
 
         } else if (attr.match(/([a-z.]+)\s*(=)\s*'?([a-z.!]+)'?/)){ // if operator
@@ -295,9 +324,12 @@ app.methods = {
 
                             for (let i = 0; i < click_children.length; ++i){
 
+                                click_children[i].removeEventListener('click',app.methods.clickElement)
+
                                 click_children[i].addEventListener('click', function(){
                                     app.methods.clickElement(click_children[i], self_key, self)
                                 })
+
                             }
 
                         }
@@ -504,9 +536,8 @@ document.addEventListener('DOMContentLoaded', () => {
     })
 
     app.elements.event.nodes.forEach(function(el) {
-        el.addEventListener('click', function(event) {
-            app.methods.clickElement(el)
-        })
+        el.addEventListener('click', app.methods.clickElement)
+        el.self = el
     })
 
     app.elements.class.nodes.forEach(function(el) {
