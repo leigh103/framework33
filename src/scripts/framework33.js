@@ -14,8 +14,27 @@ app.methods = {
         let el_parent = el.parentNode
 
         if (!el_parent || !el_parent.getAttribute('app-for')){
-            el.innerHTML = app.methods.getValue(scope, el_prop)
+
+            if (el_prop.match(/\((.*?)\)$/)){ // if function
+
+                let el_prop_params = el_prop.match(/\((.*?)\)$/)[1].split(',')
+                el_prop_params = el_prop_params.map((e)=>{
+                    return e.replace(/^['"]|['"]$/g,'')
+                })
+                el_prop = el_prop.replace(/\((.*?)\)/,'')
+
+                if (typeof scope[el_prop] == 'function'){
+                    el.innerHTML = scope[el_prop].apply(null,el_prop_params)
+                }
+
+            } else {
+
+                el.innerHTML = app.methods.getValue(scope, el_prop)
+
+            }
+
             app.methods.addIndex(el, el_prop, 'bound')
+
         }
 
     },
@@ -381,7 +400,12 @@ app.methods = {
     addClass(el){
 
         var el_prop = el.getAttribute('app-class');
-        el.classList.add(app.methods.getValue(scope, el_prop))
+        var className = app.methods.getValue(scope, el_prop)
+
+        if (typeof className == 'string'){
+            el.classList.add(className)
+        }
+
 
     },
 

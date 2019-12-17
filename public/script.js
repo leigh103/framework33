@@ -4,7 +4,8 @@ var scope = {}
 document.addEventListener('DOMContentLoaded', () => {
 
     scope.view = {}
-    scope.view.test = "text-blue"
+    scope.view.test = {}
+    scope.view.test.test1 = "text-blue"
     scope.test = "Start"
     scope.panel = false
     scope.menu_items = [
@@ -15,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     scope.gotoPanel = (panel, name)=>{
         console.log(panel, name.class)
+    }
+
+    scope.parseDate = function(data, data2){
+        return data+' '+data2
     }
 
 })
