@@ -137,25 +137,19 @@ app.methods = {
                 method = matches[1],
                 param = matches[2]
 
-            if (param.match(/\./)){
+            if (param.match(/\,/)){
 
-                if (param.match(/\,/)){
+                params = param.split(',');
+                for (var i in params){
 
-                    param = param.split(',');
-                    for (var i in param){
+                    params[i] = app.methods.getValue(data,params[i].replace(/^\s|\s$/,''))
 
-                        param[i] = app.methods.getValue(data,param[i].replace(/^\s|\s$/,''))
-
-                        if (i == param.length-1){
-                        //    param = param.join(',')
-                            scope[method].apply(null,param)
-                        //    console.log(method, param)
-                        }
+                    if (i == params.length-1){
+                        params = params.map((e)=>{
+                            return e.replace(/^['"]|['"]$/g,'')
+                        })
+                        scope[method].apply(null,params)
                     }
-
-                } else {
-                    param = app.methods.getValue(data,param)
-                    scope[method](param)
                 }
 
             } else if (scope[method]){
@@ -163,7 +157,7 @@ app.methods = {
                 if (data && data[param]){
                     scope[method](data[param])
                 } else {
-                    scope[method](param)
+                    scope[method](param.replace(/^['"]|['"]$/g,''))
                 }
 
             }

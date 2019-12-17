@@ -18,8 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(panel, name.class)
     }
 
-    scope.parseDate = function(data, data2){
-        return data+' '+data2
+    scope.parseDate = function(data){
+        console.log(data)
+        scope.test = data
     }
 
 })
