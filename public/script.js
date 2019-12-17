@@ -19,8 +19,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     scope.parseDate = function(data){
-        console.log(data)
-        scope.test = data
+        scope.menu_items = [
+            {name: 'Welcome', panel:'Hi there', class:"text-red"},
+            {name: 'What\'s it about?', panel:'<h1>What\'s it about?</h1>Something here', class:"text-light"},
+            {name: 'Responsive', panel:'Something else here', class:"text-green"}
+        ]
+        scope.menu_items.push({name: data, panel:'Something else here', class:"text-red"})
+
     }
 
 })

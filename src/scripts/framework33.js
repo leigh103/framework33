@@ -29,11 +29,11 @@ app.methods = {
 
             } else {
 
-                el.innerHTML = app.methods.getValue(scope, el_prop)
+                el.innerHTML = app.methods.getValue(scope, el_prop.replace(/^['"]|['"]/g,''))
 
             }
 
-            app.methods.addIndex(el, el_prop, 'bound')
+            app.methods.addIndex(el, el_prop.replace(/\./g,'__'), 'bound')
 
         }
 
@@ -44,6 +44,7 @@ app.methods = {
         if (path.match(/\./)){
             return path.split(".").reduce(function(obj, name){ if (obj && obj[name]){return obj[name]}}, obj);
         } else {
+        //    console.log(typeof path, path, obj, obj[path])
             return obj[path]
         }
 
@@ -306,7 +307,7 @@ app.methods = {
                             for (let i = 0; i < children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
 
                                 let bind = children[i].getAttribute('app-bind'),
-                                    val = eval('self.'+bind)
+                                    val = app.methods.getValue(self, bind)
 
                                 if (val){
                                     children[i].innerHTML = val
@@ -317,9 +318,19 @@ app.methods = {
                             for (let i = 0; i < class_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
 
                                 let bind = children[i].getAttribute('app-class'),
-                                    val = eval('self.'+bind)
+                                    val = app.methods.getValue(self, bind),
+                                    orig_class_list = children[i].getAttribute('app-orig-class')
+
+                                if (!orig_class_list){
+                                    children[i].setAttribute('app-orig-class',children[i].classList)
+                                }
 
                                 if (val){
+                                    
+                                    if (orig_class_list){
+                                        children[i].className = orig_class_list
+                                    }
+
                                     children[i].classList.add(val)
                                 }
 
@@ -400,6 +411,7 @@ app.methods = {
             el.classList.add(className)
         }
 
+        app.methods.addIndex(el, el_prop, 'class')
 
     },
 
@@ -419,7 +431,7 @@ app.methods = {
 
             }
 
-            el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'')
+            el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'').replace(/\./g,'__')
 
             if (!app.elements[key].index[el_prop]){
                 app.elements[key].index[el_prop] = []
@@ -427,6 +439,10 @@ app.methods = {
 
             if (app.elements[key].index[el_prop].indexOf(el) === -1){
                 app.elements[key].index[el_prop].push(el)
+            }
+
+            if (key == 'class'){
+                console.log(app.elements[key].index)
             }
 
         }
@@ -464,19 +480,25 @@ app.methods = {
 }
 
 scope = Observable.create(test, true, function(changes) {
-
+console.log(changes)
     for (var i in changes){
 
+        let currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
+        let property = changes[i].property
+
+        console.log(currentPath)
+
         // update any elements with object binding
-        if (app.elements.bound.index[changes[i].property]){
-            app.elements.bound.index[changes[i].property].forEach(function(el){
+        if (app.elements.bound.index[currentPath]){
+            app.elements.bound.index[currentPath].forEach(function(el){
                 app.methods.updateBoundElement(el)
             })
         }
 
         // update any elements with logic
-        if (app.elements.logic.index[changes[i].property]){
-            app.elements.logic.index[changes[i].property].forEach(function(el){
+        if (app.elements.logic.index[currentPath]){
+            app.elements.logic.index[currentPath].forEach(function(el){
+            //    console.log(app.elements.logic.index)
                 app.methods.toggleElement(el)
             })
         }
@@ -496,11 +518,20 @@ scope = Observable.create(test, true, function(changes) {
         }
 
         // update any elements with foreach
-        if (app.elements.foreach.index[changes[i].property]){
-            app.elements.foreach.index[changes[i].property].forEach(function(el){
+        if (app.elements.foreach.index[currentPath]){
+            app.elements.foreach.index[currentPath].forEach(function(el){
                 app.methods.forElement(el)
             })
         }
+
+        // update any elements with hide
+        if (app.elements.class.index[currentPath]){
+            console.log('class',app.elements.class.index)
+            app.elements.class.index[currentPath].forEach(function(el){
+                app.methods.addClass(el)
+            })
+        }
+
     }
 
 });
@@ -524,6 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.show.index = {}
     app.elements.hide.index = {}
     app.elements.event.index = {}
+    app.elements.class.index = {}
     app.elements.model.index = {}
     app.elements.foreach.index = {}
     app.elements.foreach.loops = {}
