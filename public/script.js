@@ -1,7 +1,6 @@
 
-var scope = {}
 
-document.addEventListener('DOMContentLoaded', () => {
+controller = () => {
 
     scope.view = {}
     scope.view.test = {}
@@ -28,4 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     }
 
-})
+    scope.getThings = function(){
+        http('PUT','http://10.0.1.100/api/988112a4e198cc1211/groups/7/action',{toggle:true})
+            .then((data)=>{console.log(data)})
+            .catch((data)=>{console.log('Error:',data)})
+    }
+
+}

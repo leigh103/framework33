@@ -3,6 +3,9 @@ import '../styles/framework33.scss';
 import '../styles/style.scss';
 import Observable from 'observable-slim'
 
+global.scope = {}
+global.http = ''
+
 var test = {},
     app = {}
 
@@ -321,18 +324,22 @@ app.methods = {
                                     val = app.methods.getValue(self, bind),
                                     orig_class_list = children[i].getAttribute('app-orig-class')
 
-                                if (!orig_class_list){
+                                if (!children[i].getAttribute('app-initial')){
                                     children[i].setAttribute('app-orig-class',children[i].classList)
                                 }
 
                                 if (val){
-                                    
+
                                     if (orig_class_list){
                                         children[i].className = orig_class_list
+                                    } else {
+                                        children[i].className = ''
                                     }
 
                                     children[i].classList.add(val)
                                 }
+
+                                children[i].setAttribute('app-initial',true)
 
                             }
 
@@ -441,10 +448,6 @@ app.methods = {
                 app.elements[key].index[el_prop].push(el)
             }
 
-            if (key == 'class'){
-                console.log(app.elements[key].index)
-            }
-
         }
 
     },
@@ -478,63 +481,6 @@ app.methods = {
     }
 
 }
-
-scope = Observable.create(test, true, function(changes) {
-console.log(changes)
-    for (var i in changes){
-
-        let currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
-        let property = changes[i].property
-
-        console.log(currentPath)
-
-        // update any elements with object binding
-        if (app.elements.bound.index[currentPath]){
-            app.elements.bound.index[currentPath].forEach(function(el){
-                app.methods.updateBoundElement(el)
-            })
-        }
-
-        // update any elements with logic
-        if (app.elements.logic.index[currentPath]){
-            app.elements.logic.index[currentPath].forEach(function(el){
-            //    console.log(app.elements.logic.index)
-                app.methods.toggleElement(el)
-            })
-        }
-
-        // update any elements with show
-        if (app.elements.show.index[changes[i].property]){
-            app.elements.show.index[changes[i].property].forEach(function(el){
-                app.methods.toggleElement(el,'show')
-            })
-        }
-
-        // update any elements with hide
-        if (app.elements.hide.index[changes[i].property]){
-            app.elements.hide.index[changes[i].property].forEach(function(el){
-                app.methods.toggleElement(el,'hide')
-            })
-        }
-
-        // update any elements with foreach
-        if (app.elements.foreach.index[currentPath]){
-            app.elements.foreach.index[currentPath].forEach(function(el){
-                app.methods.forElement(el)
-            })
-        }
-
-        // update any elements with hide
-        if (app.elements.class.index[currentPath]){
-            console.log('class',app.elements.class.index)
-            app.elements.class.index[currentPath].forEach(function(el){
-                app.methods.addClass(el)
-            })
-        }
-
-    }
-
-});
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -604,6 +550,62 @@ document.addEventListener('DOMContentLoaded', () => {
 
     app.elements.animation = document.querySelectorAll("[anim],[anim-enter],[anim-exit]")
     parseAnimAttr()
+
+    scope = Observable.create(test, true, function(changes) {
+
+        for (var i in changes){
+
+            let currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
+            let property = changes[i].property
+
+            // update any elements with object binding
+            if (app.elements.bound.index[currentPath]){
+                app.elements.bound.index[currentPath].forEach(function(el){
+                    app.methods.updateBoundElement(el)
+                })
+            }
+
+            // update any elements with logic
+            if (app.elements.logic.index[currentPath]){
+                app.elements.logic.index[currentPath].forEach(function(el){
+                //    console.log(app.elements.logic.index)
+                    app.methods.toggleElement(el)
+                })
+            }
+
+            // update any elements with show
+            if (app.elements.show.index[changes[i].property]){
+                app.elements.show.index[changes[i].property].forEach(function(el){
+                    app.methods.toggleElement(el,'show')
+                })
+            }
+
+            // update any elements with hide
+            if (app.elements.hide.index[changes[i].property]){
+                app.elements.hide.index[changes[i].property].forEach(function(el){
+                    app.methods.toggleElement(el,'hide')
+                })
+            }
+
+            // update any elements with foreach
+            if (app.elements.foreach.index[currentPath]){
+                app.elements.foreach.index[currentPath].forEach(function(el){
+                    app.methods.forElement(el)
+                })
+            }
+
+            // update any elements with hide
+            if (app.elements.class.index[currentPath]){
+                app.elements.class.index[currentPath].forEach(function(el){
+                    app.methods.addClass(el)
+                })
+            }
+
+        }
+
+    });
+
+    controller()
 
 })
 
@@ -755,6 +757,7 @@ for (let i = 0; i < document_nav_bars.length; i++) {
 function showNavBarLinks() {
     this.classList.toggle("open");
 }
+
 document.onclick = function(event) {
     let hasParent = false;
     for (let node = event.target; node != document.body; node = node.parentNode) {
@@ -770,6 +773,33 @@ document.onclick = function(event) {
         for (let i = 0; i < document_nav_bars.length; i++) {
             document_nav_bars[i].classList.remove('open');
         }
+    }
+};
+
+window.onresize = function(event) {
+    let ch_height = 0;
+    let card_headers = document.querySelectorAll(".card .header");
+    for (let i = 0; i < card_headers.length; i++) {
+        if (card_headers[i] && card_headers[i].offsetHeight && card_headers[i].offsetHeight > ch_height) {
+            ch_height = card_headers[i].offsetHeight;
+        }
+        if (i >= card_headers.length - 1) {
+            setHeight(card_headers, ch_height);
+        }
+    }
+    let cb_height = 0;
+    let card_bodies = document.querySelectorAll(".card .body");
+    for (let i = 0; i < card_bodies.length; i++) {
+        if (card_bodies[i] && card_bodies[i].offsetHeight && card_bodies[i].offsetHeight > cb_height) {
+            cb_height = card_bodies[i].offsetHeight;
+        }
+        if (i >= card_bodies.length - 1) {
+            setHeight(card_bodies, cb_height);
+        }
+    }
+    let fh_containers = document.querySelectorAll(".fixed-height");
+    for (let i = 0; i < fh_containers.length; i++) {
+        setHeight(fh_containers[i].children, fh_containers[i].offsetHeight);
     }
 };
 
@@ -810,32 +840,78 @@ function setHeight(nodes, height) {
     }
 }
 
-window.onresize = function(event) {
-    let ch_height = 0;
-    let card_headers = document.querySelectorAll(".card .header");
-    for (let i = 0; i < card_headers.length; i++) {
-        if (card_headers[i] && card_headers[i].offsetHeight && card_headers[i].offsetHeight > ch_height) {
-            ch_height = card_headers[i].offsetHeight;
-        }
-        if (i >= card_headers.length - 1) {
-            setHeight(card_headers, ch_height);
-        }
+
+http = function(method,url,payload){
+
+    if (method.match(/get|put|post|delete/i)){
+
+        return new Promise(function(resolve, reject){
+
+            let request = new XMLHttpRequest();
+
+            request.onreadystatechange=function(){
+                if (request.readyState==4){
+                    if (request.status==200){
+
+                        if (JSON.parse(request.response)){
+                            resolve(JSON.parse(request.response))
+                        } else {
+                            resolve(request.response)
+                        }
+
+                    } else {
+                        reject(request.status)
+                    }
+                }
+            }
+
+            request.open(method.toUpperCase(), url);
+
+            if (payload){
+
+                request.setRequestHeader('Content-type', 'application/json')
+                request.send(JSON.stringify(payload))
+
+            } else {
+
+                request.send(null);
+
+            }
+
+        })
+
+    } else {
+
+        return new Promise(function(resolve, reject){
+
+            let request = new XMLHttpRequest();
+
+            request.onreadystatechange=function(){
+                if (request.readyState==4){
+                    if (request.status==200){
+
+                        if (JSON.parse(request.response)){
+                            resolve(JSON.parse(request.response))
+                        } else {
+                            resolve(request.response)
+                        }
+
+                    } else {
+                        reject(request.status)
+                    }
+                }
+            }
+
+            request.open("GET", method);
+            request.send(null);
+
+        })
+
     }
-    let cb_height = 0;
-    let card_bodies = document.querySelectorAll(".card .body");
-    for (let i = 0; i < card_bodies.length; i++) {
-        if (card_bodies[i] && card_bodies[i].offsetHeight && card_bodies[i].offsetHeight > cb_height) {
-            cb_height = card_bodies[i].offsetHeight;
-        }
-        if (i >= card_bodies.length - 1) {
-            setHeight(card_bodies, cb_height);
-        }
-    }
-    let fh_containers = document.querySelectorAll(".fixed-height");
-    for (let i = 0; i < fh_containers.length; i++) {
-        setHeight(fh_containers[i].children, fh_containers[i].offsetHeight);
-    }
-};
+
+}
+
+
 
 function setCookie(cname, cvalue, exdays) {
     let d = new Date();
