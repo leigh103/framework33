@@ -128,11 +128,16 @@ app.methods = {
 
     clickElement(el, index, data){
 
-        let attr
+        let attr,attr_name = 'app-click'
+
+        if (el.hasAttribute('app-init')){
+            attr_name = 'app-init'
+        }
+
         if (typeof el.getAttribute == 'undefined'){
-            attr = el.currentTarget.getAttribute('app-click')
+            attr = el.currentTarget.getAttribute(attr_name)
         } else {
-            attr = el.getAttribute('app-click')
+            attr = el.getAttribute(attr_name)
         }
 
         if (attr.match(/(\w+)\((.*?)\)/)){ // if function
@@ -201,22 +206,23 @@ app.methods = {
 
     forElement(el, initial, data, key){
 
-        var el_prop = el.getAttribute('app-for')
+        var el_prop = el.getAttribute('app-for'),
+            el_props = el_prop.match(/([a-z._]+)\s*in\s*([a-z._]+)/i)
+
 
         if (initial){ // for the initial render, don't run the loop, just add it to the index
-            app.methods.addIndex(el, el_prop, 'foreach')
+            app.methods.addIndex(el, el_prop.replace(/\.[0-9a-z]+/g,''), 'foreach')
             return false
         }
 
         let el_parent = el.parentNode,
-            el_props = el_prop.match(/([a-z._]+)\s*in\s*([a-z._]+)/i),
             view_key = el_props[1],
             scope_key = el_props[2],
             scope_key_parse = scope_key.replace(/\./g,'_'),
-            loop_arr = scope[scope_key],
+            loop_arr = app.methods.getValue(scope, scope_key),
             el_remove = false,
             block = view_key
-
+// console.log(loop_arr)
             if (data){ // if this is a nested repeater
 
                 loop_arr = data
@@ -306,6 +312,10 @@ app.methods = {
                                 loop_children = self.el.querySelectorAll('[app-for]'),
                                 class_children = self.el.querySelectorAll('[app-class]'),
                                 click_children = self.el.querySelectorAll('[app-click]')
+
+                            if (self.el.hasAttribute('app-bind')){
+                                self.el.innerHTML = app.methods.getValue(self, self.el.getAttribute('app-bind'))
+                            }
 
                             for (let i = 0; i < children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
 
@@ -495,6 +505,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.class = {}
     app.elements.model = {}
     app.elements.foreach = {}
+    app.elements.init = {}
 
     app.elements.bound.index = {}
     app.elements.logic.index = {}
@@ -505,6 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.model.index = {}
     app.elements.foreach.index = {}
     app.elements.foreach.loops = {}
+    app.elements.init.index = {}
 
     app.elements.bound.nodes = document.querySelectorAll('[app-bind]')
     app.elements.logic.nodes = document.querySelectorAll('[app-if]')
@@ -514,6 +526,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.class.nodes = document.querySelectorAll('[app-class]')
     app.elements.model.nodes = document.querySelectorAll('[app-model]')
     app.elements.foreach.nodes = document.querySelectorAll('[app-for]')
+    app.elements.init.nodes = document.querySelectorAll('[app-init]')
 
     app.elements.bound.nodes.forEach(function(el) {
         app.methods.updateBoundElement(el)
@@ -609,7 +622,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 })
 
-window.addEventListener('load', () => {inViewChk()})
+window.addEventListener('load', () => {
+
+    inViewChk()
+
+    app.elements.init.nodes.forEach(function(el) {
+        app.methods.clickElement(el)
+    })
+
+})
 
 document.addEventListener('scroll', () => {if (document.body.scrollTop % 20 === 0){inViewChk()}})
 
@@ -843,7 +864,7 @@ function setHeight(nodes, height) {
 
 http = function(method,url,payload){
 
-    if (method.match(/get|put|post|delete/i)){
+    if (method.match(/^get|put|post|delete$/i)){
 
         return new Promise(function(resolve, reject){
 
@@ -853,11 +874,7 @@ http = function(method,url,payload){
                 if (request.readyState==4){
                     if (request.status==200){
 
-                        if (JSON.parse(request.response)){
-                            resolve(JSON.parse(request.response))
-                        } else {
-                            resolve(request.response)
-                        }
+                        resolve(request.response)
 
                     } else {
                         reject(request.status)
@@ -887,16 +904,14 @@ http = function(method,url,payload){
             let request = new XMLHttpRequest();
 
             request.onreadystatechange=function(){
+
                 if (request.readyState==4){
                     if (request.status==200){
 
-                        if (JSON.parse(request.response)){
-                            resolve(JSON.parse(request.response))
-                        } else {
-                            resolve(request.response)
-                        }
+                        resolve(request.response)
 
                     } else {
+                        console.log('Error')
                         reject(request.status)
                     }
                 }

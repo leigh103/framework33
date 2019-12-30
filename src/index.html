@@ -12,7 +12,7 @@
 
         <h1 class="biggest">Framework33</h1>
         <h4 class="text-light" anim="{'enter':'move-down','exit':'fade-out','duration':'5s','easing':'ease'}">A Simple CSS and ECMA Script Framework</h4>
-        <a app-click="getThings()" class="mt-2" app-class="view.test.test1"><span app-bind="view.test.test1"></span></a>
+        <a app-init="getThings()" class="mt-2" app-class="view.test.test1"><span app-bind="view.test.test1"></span></a>
 
     </section>
 
@@ -52,7 +52,9 @@
 
         <section class="vh100 p-5 p-m-3 p-s-2 bg-light-grey">
 
-
+            <select>
+                <option app-for="staff in salon.staff" app-bind="staff.name.first"></option>
+            </select>
 
         </section>
 
