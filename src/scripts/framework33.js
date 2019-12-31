@@ -46,7 +46,19 @@ app.methods = {
 
         let result
 
-        if (path.match(/\./)){
+        if (path.match(/\((.*?)\)$/)){ // if function
+
+            let params = path.match(/\((.*?)\)$/)[1].split(',')
+            params = params.map((e)=>{
+                return obj[e.replace(/^['"]|['"]$/g,'')]
+            })
+            path = path.replace(/\((.*?)\)/,'')
+
+            if (typeof scope[path] == 'function'){
+                return scope[path].apply(null,params)
+            }
+
+        } else if (path.match(/\./)){
 
             result = path.split(".").reduce(function(obj, name){ if (obj && obj[name]){return obj[name]}}, obj);
 
@@ -336,10 +348,10 @@ app.methods = {
                                     loop_children = self.el.querySelectorAll('[app-for]'),
                                     class_children = self.el.querySelectorAll('[app-class]'),
                                     click_children = self.el.querySelectorAll('[app-click]')
- // console.log(self.el)
+
                                 if (self.el.hasAttribute('app-bind')){
-                                //    console.log(self, self.el.getAttribute('app-bind'))
                                     self.el.innerHTML = app.methods.getValue(self, self.el.getAttribute('app-bind'))
+
                                 }
 
                                 for (let i = 0; i < children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
@@ -348,7 +360,6 @@ app.methods = {
                                         val = app.methods.getValue(self, bind)
 
                                     if (val){
-
                                         children[i].innerHTML = val
                                     }
 
