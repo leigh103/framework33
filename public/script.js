@@ -27,12 +27,68 @@ controller = () => {
 
     }
 
+    scope.getHrs = function() {
+
+        var hrs = []
+
+        for(i=6; i<24; i++) {
+
+            if (i < 10){
+                hrs.push('0'+i)
+            } else {
+                hrs.push(i)
+            }
+
+            if (i==23){
+                return hrs
+            }
+
+        }
+
+    }
+
+    scope.getDurationHrs = function() {
+
+        var hrs = []
+
+        for(i=0; i<9; i++) {
+
+            hrs.push(i)
+
+            if (i==8){
+                return hrs
+            }
+
+        }
+
+    }
+
+    scope.getMins = function() {
+console.log('here')
+        var mins = []
+
+        for (i=0; i<=45; i += 15) {
+
+            if (i < 10){
+                mins.push('0'+i)
+            } else {
+                mins.push(i)
+            }
+
+            if (i==45){
+                return mins
+            }
+
+        }
+
+    }
+
     scope.getThings = function(){
 
         setTimeout(function(){
 
 
-        scope.salon = 
+        scope.salon =
   {
     "salon": {
       "_key": "54855602",
