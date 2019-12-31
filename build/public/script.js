@@ -64,7 +64,7 @@ controller = () => {
     }
 
     scope.getMins = function() {
-console.log('here')
+
         var mins = []
 
         for (i=0; i<=45; i += 15) {

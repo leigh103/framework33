@@ -47,8 +47,9 @@ app.methods = {
         let result
 
         if (path.match(/\./)){
+
             result = path.split(".").reduce(function(obj, name){ if (obj && obj[name]){return obj[name]}}, obj);
-console.log(obj, typeof result,result)
+
             if (typeof result == 'function'){
                 return result()
             } else {
@@ -56,8 +57,9 @@ console.log(obj, typeof result,result)
             }
 
         } else {
+
             result = obj[path]
-console.log(obj, typeof result,result)
+
             if (typeof result == 'function'){
                 return result()
             } else {
@@ -226,7 +228,7 @@ console.log(obj, typeof result,result)
 
         if (initial){ // for the initial render, don't run the loop, just add it to the index
             app.methods.addIndex(el, el_prop.replace(/\.[0-9a-z]+/g,''), 'foreach')
-        //    return false
+            return false
         }
 
         let el_parent = el.parentNode,
@@ -236,7 +238,11 @@ console.log(obj, typeof result,result)
             loop_arr = app.methods.getValue(scope, scope_key),
             el_remove = false,
             block = view_key
-console.log(loop_arr, scope_key)
+
+            if (el.hasAttribute('app-index')){
+                block = el.getAttribute('app-index')
+            }
+
             if (data){ // if this is a nested repeater
 
                 loop_arr = data
@@ -245,8 +251,6 @@ console.log(loop_arr, scope_key)
             }
 
             function runLoop() {
-
-                var that = this;
 
                 return Promise.resolve()
 
@@ -332,8 +336,9 @@ console.log(loop_arr, scope_key)
                                     loop_children = self.el.querySelectorAll('[app-for]'),
                                     class_children = self.el.querySelectorAll('[app-class]'),
                                     click_children = self.el.querySelectorAll('[app-click]')
-
+ // console.log(self.el)
                                 if (self.el.hasAttribute('app-bind')){
+                                //    console.log(self, self.el.getAttribute('app-bind'))
                                     self.el.innerHTML = app.methods.getValue(self, self.el.getAttribute('app-bind'))
                                 }
 
@@ -343,6 +348,7 @@ console.log(loop_arr, scope_key)
                                         val = app.methods.getValue(self, bind)
 
                                     if (val){
+
                                         children[i].innerHTML = val
                                     }
 
@@ -460,9 +466,9 @@ console.log(loop_arr, scope_key)
 
             el_prop = el_prop.replace(/^!/,'')
 
-            if (el_prop.match(/in/)){ // if the property is a foreach loop
+            if (el_prop.match(/\sin\s/)){ // if the property is a foreach loop
 
-                el_prop = el_prop.split(/in/)[1].replace(/\./g,'_')
+                el_prop = el_prop.split(/\sin\s/)[1].replace(/\./g,'_')
 
             } else if (el_prop.match(/\s|=|!|<|>/)){ // if the property is an expression, get the object key we need to index
 
@@ -470,11 +476,17 @@ console.log(loop_arr, scope_key)
 
             }
 
-            el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'').replace(/\./g,'__')
+            el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'').replace(/\(|\)/g,'').replace(/\./g,'__')
+            let el_prop_index = ''
 
             if (!app.elements[key].index[el_prop]){
                 app.elements[key].index[el_prop] = []
+                el_prop_index = el_prop
+            } else {
+                el_prop_index = el_prop+'_'+app.elements[key].index[el_prop].length // add a different index if 2 or more elements share the same one
             }
+
+            el.setAttribute('app-index',el_prop_index)
 
             if (app.elements[key].index[el_prop].indexOf(el) === -1){
                 app.elements[key].index[el_prop].push(el)
