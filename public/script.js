@@ -84,7 +84,7 @@ controller = () => {
     }
 
     scope.parseService = function(obj){
-        return obj.name+' - £'+parseFloat(obj.price).toFixed(2)
+        return obj.first+' - £'+obj.last
     }
 
     scope.getThings = function(){
@@ -94,15 +94,24 @@ controller = () => {
 
         scope.salon =[
           {
-            name: "Haircut",
+            name: {
+                first: "hair",
+                last:"cut"
+            },
             price: "50"
           },
           {
-            name: "Haircut and color",
+              name: {
+                  first: "haircut",
+                  last:"and color"
+              },
             price: "75"
           },
           {
-            name: "Cut and blow dry",
+              name: {
+                  first: "cut",
+                  last:"and dry"
+              },
             price: "65"
           }
         ]

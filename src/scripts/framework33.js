@@ -50,10 +50,11 @@ app.methods = {
 
             let params = path.match(/\((.*?)\)$/)[1].split(',')
             params = params.map((e)=>{
-                return obj[e.replace(/^['"]|['"]$/g,'')]
+                console.log(e)
+                return app.methods.getValue(obj, e)
             })
             path = path.replace(/\((.*?)\)/,'')
-
+console.log(params)
             if (typeof scope[path] == 'function'){
                 return scope[path].apply(null,params)
             }
