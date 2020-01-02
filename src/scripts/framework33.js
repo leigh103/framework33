@@ -50,11 +50,10 @@ app.methods = {
 
             let params = path.match(/\((.*?)\)$/)[1].split(',')
             params = params.map((e)=>{
-                console.log(e)
                 return app.methods.getValue(obj, e)
             })
             path = path.replace(/\((.*?)\)/,'')
-console.log(params)
+
             if (typeof scope[path] == 'function'){
                 return scope[path].apply(null,params)
             }
@@ -82,6 +81,22 @@ console.log(params)
 
     },
 
+    setValue(obj, path, val) {
+
+        path = path.split(".")
+        let result = path.reduce(
+                            function(obj_ref, name){
+
+                                if (obj_ref && typeof obj_ref[path[path.length-1]] != 'undefined'){
+                                    obj_ref[path[path.length-1]] = val
+                                } else {
+                                    return obj_ref[name]
+                                }
+
+                            }, obj)
+
+    },
+
     toggleElement(el, type){
 
         if (type == 'show'){
@@ -104,11 +119,13 @@ console.log(params)
 
             app.methods.addIndex(el, el_prop, 'hide')
 
-            if (scope[el_prop]){
-                el.classList.add('app-hidden')
-            } else {
-                el.classList.remove('app-hidden')
-            }
+            app.methods.evaluateProp(el_prop, function(result){
+                if (result){
+                    el.classList.add('app-hidden')
+                } else {
+                    el.classList.remove('app-hidden')
+                }
+            })
 
         } else {
 
@@ -125,6 +142,7 @@ console.log(params)
             } else if (el_prop.match(/==|\!=|^!/)){
 
                 app.methods.evaluateProp(el_prop, function(test){
+                //    console.log(el, test)
                     if (test === false){
                         if (el.parentNode){
                             let div = document.createElement("div")
@@ -143,10 +161,11 @@ console.log(params)
 
             } else {
 
-                if (el.parentNode){
-                    let div = document.createElement("div")
-                    div.setAttribute('app-replace',[...app.elements.logic.nodes].indexOf(el))
-                    el.parentNode.replaceChild(div,el)
+                let index = [...app.elements.logic.nodes].indexOf(el)
+                let div = document.querySelectorAll('[app-replace="'+index+'"]')[0]
+
+                if (div){
+                    div.parentNode.replaceChild(el,div)
                 }
 
             }
@@ -159,7 +178,7 @@ console.log(params)
 
         let attr,attr_name = 'app-click'
 
-        if (el.hasAttribute('app-init')){
+        if (el.hasAttribute && el.hasAttribute('app-init')){
             attr_name = 'app-init'
         }
 
@@ -200,11 +219,11 @@ console.log(params)
 
             }
 
-        } else if (attr.match(/([a-z.]+)\s*(=)\s*'?([a-z.!]+)'?/)){ // if operator
+        } else if (attr.match(/([a-za-zA-Z._]+)\s*(=)\s*'?((.*))'?/)){ // if operator
 
-            let matches = attr.match(/([a-z.]+)\s*(=)\s*'?([a-z.!]+)'?/),
+            let matches = attr.match(/([a-za-zA-Z._]+)\s*(=)\s*'?((.*))'?/),
                 key = matches[1],
-                val = matches[3],
+                val = matches[3].replace(/\"|\'$/,''),
                 val_root = ''
 
             if (index){ // if using a value from a for loop
@@ -215,6 +234,14 @@ console.log(params)
 
             if (val.match(/^!/)){
                 scope[key] = !scope[key]
+            } else if (matches && matches.length > 2){
+
+                if (matches[2] == '='){
+                    console.log(val)
+                    app.methods.setValue(scope, key, val)
+                //    console.log(scope, key,obj)
+                }
+
             } else {
                 scope[key] = val
             }
@@ -236,7 +263,7 @@ console.log(params)
     forElement(el, initial, data, key){
 
         var el_prop = el.getAttribute('app-for'),
-            el_props = el_prop.match(/([a-z._]+)\s*in\s*([a-z._]+)/i)
+            el_props = el_prop.match(/([a-zA-Z._]+)\s*in\s*([a-zA-Z._]+)/i)
 
 
         if (initial){ // for the initial render, don't run the loop, just add it to the index
@@ -395,7 +422,7 @@ console.log(params)
 
                                     let bind = loop_children[i].getAttribute('app-for'),
                                         cl_props = bind.match(/(.*) in (.*)/),
-                                        val = eval('self.'+cl_props[2])
+                                        val = app.methods.getValue(self, cl_props[2])
 
                                     app.methods.forElement(loop_children[i], false, val, self_key)
 
@@ -510,27 +537,37 @@ console.log(params)
 
     evaluateProp(el_prop, callback){
 
-        let matches = el_prop.match(/([a-z._]+)\s*(!=|==|>|>=|<|<=)\s*'?([a-z._]+)'?/)
+        let matches = el_prop.match(/([a-zA-Z._!]+)\s*(!=|==|>|>=|<|<=)\s*'?([a-zA-Z._]+)'?/)
 
-        if (matches[2] == '=='){
+        if (matches){
 
-            if (matches[3] === 'false' && scope[matches[1]] === false){
-                callback(true)
-            } else {
-                callback(scope[matches[1]] == matches[3])
+            if (matches.length > 1 && matches[2] == '=='){
+
+                if (matches[3] === 'false' && scope[matches[1]] === false){
+                    callback(true)
+                } else {
+                    callback(scope[matches[1]] == matches[3])
+                }
+
+            } else if (matches.length > 1 && matches[2] == '!='){
+
+                callback(scope[matches[1]] != matches[3])
+
             }
 
-        } else if (matches[2] == '!='){
+        } else if (el_prop.match(/^!/)){ // falsy
 
-            callback(scope[matches[1]] != matches[3])
+            el_prop = el_prop.replace(/^!/,'')
 
-        } else if (matches[1].match(/^!/)){
+            if (!app.methods.getValue(scope, el_prop)){
+                callback(true)
+            } else {
+                callback(false)
+            }
 
-            callback(scope[matches[1]] == false)
+        } else {
 
-        } else if (eval('scope.'+el_prop)){
-
-            callback(eval('scope.'+el_prop))
+            callback(app.methods.getValue(scope,el_prop))
 
         }
 
@@ -600,15 +637,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // update any elements with show
-            if (app.elements.show.index[changes[i].property]){
-                app.elements.show.index[changes[i].property].forEach(function(el){
+            if (app.elements.show.index[currentPath]){
+                app.elements.show.index[currentPath].forEach(function(el){
                     app.methods.toggleElement(el,'show')
                 })
             }
 
             // update any elements with hide
-            if (app.elements.hide.index[changes[i].property]){
-                app.elements.hide.index[changes[i].property].forEach(function(el){
+            if (app.elements.hide.index[currentPath]){
+                app.elements.hide.index[currentPath].forEach(function(el){
                     app.methods.toggleElement(el,'hide')
                 })
             }

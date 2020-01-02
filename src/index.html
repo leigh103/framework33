@@ -16,7 +16,7 @@
 
     </section>
 
-    <section class="vh100 p-5 p-m-3 p-s-2 bg-light-grey">
+    <section class="p-5 p-m-3 p-s-2 bg-light-grey">
 
         <div class="row contain">
             <div class="block-20 block-m-50 block-s-100 margin align-top text-right text-s-left pr-2">
@@ -49,32 +49,46 @@
 
     </section>
 
+<div>
+        <section class="p-5 p-m-3 p-s-2 bg-light-grey" app-hide="view.selected_customer">
 
-        <section class="vh100 p-5 p-m-3 p-s-2 bg-light-grey">
+            <div class="form-wrap grid col-12 mt-2" app-for="appointment in appointments">
 
-            <select>
-                <option app-for="service in salon" app-bind="parseService(service.name)"></option>
-            </select>
+                <select>
+                    <option app-for="service in salon" app-bind="parseService(service.name)"></option>
+                </select>
 
-            <select>
-                <option app-for="hr in getHrs()" app-bind="hr"></option>
-            </select>
-            <select>
-                <option app-for="hr in getHrs()" app-bind="hr"></option>
-            </select>
-            <select>
+                <select>
+                    <option app-for="hr in getHrs()" app-bind="hr"></option>
+                </select>
+                <select>
+                    <option app-for="hr in getHrs()" app-bind="hr"></option>
+                </select>
+                <select>
 
-                <option app-for="min in getMins()" app-bind="min"></option>
+                    <option app-for="min in getMins()" app-bind="min"></option>
 
-            </select>
+                </select>
 
-            <select>
+                <select>
 
-                <option app-for="min in getMins" app-bind="min"></option>
+                    <option app-for="min in getMins" app-bind="min"></option>
 
-            </select>
+                </select>
+
+            </div>
+
 
         </section>
+
+        <section class="p-5 p-m-3 p-s-2 bg-light-grey" app-show="view.selected_customer">
+
+                <span app-bind="view.selected_customer"></span>
+
+
+        </section>
+</div>
+        <a class="btn" app-click="view.selected_customer = '40u77333'">Add +</a>
 
     <section class="p-5 p-m-3 p-s-2 bg-dark-grey text-white text-left">
         <div class="row contain">

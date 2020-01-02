@@ -4,6 +4,7 @@ controller = () => {
 
     scope.view = {}
     scope.view.test = {}
+    scope.view.selected_customer = ''
     scope.view.test.test1 = "text-blue"
     scope.test = "Start"
     scope.panel = false
@@ -84,7 +85,19 @@ controller = () => {
     }
 
     scope.parseService = function(obj){
-        return obj.first+' - £'+obj.last
+        if (obj){
+            return obj.first+' - £'+obj.last
+        }
+
+    }
+
+    scope.appointments = [
+        {start_time:'',duration:0,service:'',staff_id:0},
+        {start_time:'',duration:0,service:'',staff_id:0}
+    ]
+
+    scope.newAppointment = function(){
+        scope.appointments.push({start_time:'',duration:0,service:'',staff_id:0})
     }
 
     scope.getThings = function(){
