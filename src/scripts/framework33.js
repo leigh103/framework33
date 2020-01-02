@@ -175,7 +175,7 @@ app.methods = {
     },
 
     clickElement(el, index, data){
-console.log(data)
+
         let attr,attr_name = 'app-click'
 
         if (el.hasAttribute && el.hasAttribute('app-init')){
@@ -240,7 +240,7 @@ console.log(data)
 
                     let val_scope
 
-                    if (data && data.item){
+                    if (data){
                         val_scope = app.methods.getValue(data, val)
                     } else {
                         val_scope = app.methods.getValue(scope, val)
