@@ -55,7 +55,7 @@
             <div class="form-wrap grid col-12 mt-2" app-for="appointment in appointments">
 
                 <select app-model="appointment.service">
-                    <option selected disabled>Start...</option>
+                    <option value="">Start...</option>
                     <option app-for="service in salon" app-value="service.price" app-bind="parseService(service.name)"></option>
                 </select>
 

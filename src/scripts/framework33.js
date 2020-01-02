@@ -301,7 +301,22 @@ app.methods = {
             set_val = app.methods.getValue(data, attr)
 
             if (init && typeof set_val != 'undefined'){
+
                 el.value = set_val
+
+                for (var i=0; i<el.children.length; i++){
+                    console.log(el.children[i].innerHTML.toString(),set_val.toString())
+                    if (el.children[i].hasAttribute('value') && el.children[i].getAttribute('value') == set_val || el.children[i].innerHTML && el.children[i].innerHTML.toString() == set_val.toString()){
+                        el.children[i].setAttribute('selected',true)
+                        console.log('setting', el.children[i])
+                    } else {
+                        el.children[i].removeAttribute('selected')
+                    }
+
+                }
+
+
+
             } else {
                 app.methods.setValue(data, attr, el.value)
             }
@@ -434,9 +449,9 @@ app.methods = {
                                     children = self.el.querySelectorAll('[app-bind]'),
                                     loop_children = self.el.querySelectorAll('[app-for]'),
                                     class_children = self.el.querySelectorAll('[app-class]'),
-                                    model_children = self.el.querySelectorAll('[app-model]'),
                                     value_children = self.el.querySelectorAll('[app-value]'),
-                                    click_children = self.el.querySelectorAll('[app-click]')
+                                    click_children = self.el.querySelectorAll('[app-click]'),
+                                    model_children = self.el.querySelectorAll('[app-model]')
 
                                 if (self.el.hasAttribute('app-bind')){
                                     self.el.innerHTML = app.methods.getValue(self, self.el.getAttribute('app-bind'))
@@ -682,10 +697,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             let property = changes[i].property
-//    console.log(currentPath, app.elements.bound.index[currentPath])
+
             // update any elements with object binding
             if (app.elements.bound.index[currentPath]){
                 app.elements.bound.index[currentPath].forEach(function(el){
+                    app.methods.updateBoundElement(el)
+                })
+            }
+
+            if (app.elements.value.index[currentPath]){
+                console.log(currentPath, app.elements.value.index[currentPath])
+                app.elements.value.index[currentPath].forEach(function(el){
                     app.methods.updateBoundElement(el)
                 })
             }
@@ -744,6 +766,10 @@ window.addEventListener('load', () => {
     inViewChk()
 
     app.elements.bound.nodes.forEach(function(el) {
+        app.methods.updateBoundElement(el)
+    })
+
+    app.elements.value.nodes.forEach(function(el) {
         app.methods.updateBoundElement(el)
     })
 
