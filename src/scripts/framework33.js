@@ -13,6 +13,8 @@ app.methods = {
 
     updateBoundElement(el){
 
+        // console.log(el)
+
         let el_prop = el.getAttribute('app-bind')
         let el_parent = el.parentNode
 
@@ -36,7 +38,7 @@ app.methods = {
 
             }
 
-            app.methods.addIndex(el, el_prop.replace(/\./g,'__'), 'bound')
+            app.methods.addIndex(el, el_prop, 'bound')
 
         }
 
@@ -175,7 +177,7 @@ app.methods = {
     },
 
     clickElement(el, index, data){
-console.log(index, data)
+
         let attr,attr_name = 'app-click'
 
         if (el.hasAttribute && el.hasAttribute('app-init')){
@@ -513,7 +515,7 @@ console.log(index, data)
     },
 
     addIndex(el, el_prop, key){
-
+//console.log(el_prop)
         if (el_prop && el_prop != null){
 
             el_prop = el_prop.replace(/^!/,'')
@@ -528,7 +530,14 @@ console.log(index, data)
 
             }
 
+            if (el_prop.match(/\./)){ // if nested object, use the route as the index
+                let route_el_prop = el_prop.split('.')
+                let popped = route_el_prop.pop()
+                app.methods.addIndex(el, route_el_prop.join('.'), key)
+            }
+
             el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'').replace(/\(|\)/g,'').replace(/\./g,'__')
+
             let el_prop_index = ''
 
             if (!app.elements[key].index[el_prop]){
@@ -542,6 +551,10 @@ console.log(index, data)
 
             if (app.elements[key].index[el_prop].indexOf(el) === -1){
                 app.elements[key].index[el_prop].push(el)
+            }
+
+            if (key == 'bound'){
+                console.log(app.elements[key].index)
             }
 
         }
@@ -633,7 +646,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             let property = changes[i].property
-
+//    console.log(currentPath, app.elements.bound.index[currentPath])
             // update any elements with object binding
             if (app.elements.bound.index[currentPath]){
                 app.elements.bound.index[currentPath].forEach(function(el){
@@ -682,6 +695,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     controller()
+
 
 })
 
