@@ -237,8 +237,14 @@ app.methods = {
             } else if (matches && matches.length > 2){
 
                 if (matches[2] == '='){
-                    console.log(val)
-                    app.methods.setValue(scope, key, val)
+                    let val_scope = app.methods.getValue(scope, val)
+
+                    if (val_scope){
+                        app.methods.setValue(scope, key, val_scope)
+                    } else {
+                        app.methods.setValue(scope, key, val)
+                    }
+
                 //    console.log(scope, key,obj)
                 }
 

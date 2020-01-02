@@ -5,6 +5,7 @@ controller = () => {
     scope.view = {}
     scope.view.test = {}
     scope.view.selected_customer = ''
+    scope.view.selected_customer_id = '393okk39393e.99w9_'
     scope.view.test.test1 = "text-blue"
     scope.test = "Start"
     scope.panel = false
