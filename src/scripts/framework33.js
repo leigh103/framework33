@@ -175,7 +175,7 @@ app.methods = {
     },
 
     clickElement(el, index, data){
-
+console.log(data)
         let attr,attr_name = 'app-click'
 
         if (el.hasAttribute && el.hasAttribute('app-init')){
@@ -237,7 +237,14 @@ app.methods = {
             } else if (matches && matches.length > 2){
 
                 if (matches[2] == '='){
-                    let val_scope = app.methods.getValue(scope, val)
+
+                    let val_scope
+
+                    if (data && data.item){
+                        val_scope = app.methods.getValue(data, val)
+                    } else {
+                        val_scope = app.methods.getValue(scope, val)
+                    }
 
                     if (val_scope){
                         app.methods.setValue(scope, key, val_scope)
