@@ -114,7 +114,7 @@ app.methods = {
 
                                 if (obj_ref && typeof obj_ref[path[path.length-1]] != 'undefined'){
                                     obj_ref[path[path.length-1]] = val
-                                } else {
+                                } else if (obj_ref && obj_ref[name]){
                                     return obj_ref[name]
                                 }
 
@@ -289,12 +289,31 @@ app.methods = {
 
     },
 
-    keypressElement(el){
+    onChangeElement(el, index, data, init){
 
-        el.addEventListener('keyup', function(event) {
-            let attr = el.getAttribute('app-model')
-            scope[attr] = el.value
-        })
+        let attr
+
+        if (el.srcElement){
+            el = el.srcElement
+        }
+
+        attr = el.getAttribute('app-model')
+
+        if (data){
+
+            if (init){
+                el.value = app.methods.getValue(data, attr)
+            } else {
+                app.methods.setValue(data, attr, el.value)
+            }
+
+        } else {
+            if (init){
+                el.value = app.methods.getValue(scope, attr)
+            } else {
+                app.methods.setValue(scope, attr, el.value)
+            }
+        }
 
     },
 
@@ -413,6 +432,7 @@ app.methods = {
                                     children = self.el.querySelectorAll('[app-bind]'),
                                     loop_children = self.el.querySelectorAll('[app-for]'),
                                     class_children = self.el.querySelectorAll('[app-class]'),
+                                    model_children = self.el.querySelectorAll('[app-model]'),
                                     click_children = self.el.querySelectorAll('[app-click]')
 
                                 if (self.el.hasAttribute('app-bind')){
@@ -472,6 +492,17 @@ app.methods = {
 
                                     click_children[i].addEventListener('click', function(){
                                         app.methods.clickElement(click_children[i], self_key, self)
+                                    })
+
+                                }
+
+                                for (let i = 0; i < model_children.length; ++i){
+
+                                    model_children[i].removeEventListener('change',app.methods.onChangeElement)
+
+                                    app.methods.onChangeElement(model_children[i], self_key, self, true)
+                                    model_children[i].addEventListener('change', function(){
+                                        app.methods.onChangeElement(model_children[i], self_key, self)
                                     })
 
                                 }
@@ -731,7 +762,9 @@ window.addEventListener('load', () => {
     })
 
     app.elements.model.nodes.forEach(function(el) {
-        app.methods.keypressElement(el)
+        el.addEventListener('change', app.methods.onChangeElement)
+        el.self = el
+        app.methods.onChangeElement(el, false, false, true)
     })
 
     app.elements.init.nodes.forEach(function(el) {

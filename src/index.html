@@ -21,7 +21,7 @@
         <div class="row contain">
             <div class="block-20 block-m-50 block-s-100 margin align-top text-right text-s-left pr-2">
                 <div class="border p-1 clickable" app-for="item in menu_items">
-                    <span app-click="view.selected_customer = item.class" app-bind="item.name" app-class="item.class" class="text-italic"></span>
+                    <span app-click="view.selected_customer = item" app-bind="item.name" app-class="item.class" class="text-italic"></span>
                 </div>
             </div>
             <div class="block-80 block-m-50 block-s-100 margin align-top text-left" app-bind="panel">
@@ -54,7 +54,8 @@
 
             <div class="form-wrap grid col-12 mt-2" app-for="appointment in appointments">
 
-                <select>
+                <select app-model="appointment.service">
+                    <option selected disabled>Start...</option>
                     <option app-for="service in salon" app-bind="parseService(service.name)"></option>
                 </select>
 

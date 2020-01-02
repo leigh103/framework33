@@ -93,8 +93,7 @@ controller = () => {
     }
 
     scope.appointments = [
-        {start_time:'',duration:0,service:'',staff_id:0},
-        {start_time:'',duration:0,service:'',staff_id:0}
+        {start_time:'',duration:0,service:'hair - £cut',staff_id:0}
     ]
 
     scope.newAppointment = function(){
