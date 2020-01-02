@@ -9,6 +9,29 @@ global.http = ''
 var test = {},
     app = {}
 
+app.elements = {}
+
+    app.elements.bound = {}
+    app.elements.logic = {}
+    app.elements.show = {}
+    app.elements.hide = {}
+    app.elements.event = {}
+    app.elements.class = {}
+    app.elements.model = {}
+    app.elements.foreach = {}
+    app.elements.init = {}
+
+    app.elements.bound.index = {}
+    app.elements.logic.index = {}
+    app.elements.show.index = {}
+    app.elements.hide.index = {}
+    app.elements.event.index = {}
+    app.elements.class.index = {}
+    app.elements.model.index = {}
+    app.elements.foreach.index = {}
+    app.elements.foreach.loops = {}
+    app.elements.init.index = {}
+
 app.methods = {
 
     updateBoundElement(el){
@@ -554,7 +577,7 @@ app.methods = {
             }
 
             if (key == 'bound'){
-                console.log(app.elements[key].index)
+            //    console.log(app.elements[key].index)
             }
 
         }
@@ -603,30 +626,6 @@ app.methods = {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // on ready
-    app.elements = {}
-
-    app.elements.bound = {}
-    app.elements.logic = {}
-    app.elements.show = {}
-    app.elements.hide = {}
-    app.elements.event = {}
-    app.elements.class = {}
-    app.elements.model = {}
-    app.elements.foreach = {}
-    app.elements.init = {}
-
-    app.elements.bound.index = {}
-    app.elements.logic.index = {}
-    app.elements.show.index = {}
-    app.elements.hide.index = {}
-    app.elements.event.index = {}
-    app.elements.class.index = {}
-    app.elements.model.index = {}
-    app.elements.foreach.index = {}
-    app.elements.foreach.loops = {}
-    app.elements.init.index = {}
-
     app.elements.bound.nodes = document.querySelectorAll('[app-bind]')
     app.elements.logic.nodes = document.querySelectorAll('[app-if]')
     app.elements.show.nodes = document.querySelectorAll('[app-show]')
@@ -638,7 +637,6 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.init.nodes = document.querySelectorAll('[app-init]')
 
     app.elements.animation = document.querySelectorAll("[anim],[anim-enter],[anim-exit]")
-    parseAnimAttr()
 
     scope = Observable.create(test, true, function(changes) {
 
@@ -700,6 +698,10 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 window.addEventListener('load', () => {
+
+    controller()
+
+    parseAnimAttr()
 
     inViewChk()
 
