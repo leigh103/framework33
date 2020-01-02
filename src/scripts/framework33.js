@@ -291,7 +291,7 @@ app.methods = {
 
     onChangeElement(el, index, data, init){
 
-        let attr
+        let attr, set_val
 
         if (el.srcElement){
             el = el.srcElement
@@ -301,15 +301,20 @@ app.methods = {
 
         if (data){
 
-            if (init){
-                el.value = app.methods.getValue(data, attr)
+            set_val = app.methods.getValue(data, attr)
+
+            if (init && set_val){
+                el.value = set_val
             } else {
                 app.methods.setValue(data, attr, el.value)
             }
 
         } else {
-            if (init){
-                el.value = app.methods.getValue(scope, attr)
+
+            set_val = app.methods.getValue(scope, attr)
+
+            if (init && set_val){
+                el.value = set_val
             } else {
                 app.methods.setValue(scope, attr, el.value)
             }
