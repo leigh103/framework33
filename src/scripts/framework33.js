@@ -12,6 +12,7 @@ var test = {},
 app.elements = {}
 
     app.elements.bound = {}
+    app.elements.value = {}
     app.elements.logic = {}
     app.elements.show = {}
     app.elements.hide = {}
@@ -22,6 +23,7 @@ app.elements = {}
     app.elements.init = {}
 
     app.elements.bound.index = {}
+    app.elements.value.index = {}
     app.elements.logic.index = {}
     app.elements.show.index = {}
     app.elements.hide.index = {}
@@ -34,34 +36,29 @@ app.elements = {}
 
 app.methods = {
 
-    updateBoundElement(el){
+    updateBoundElement(el, index, data){
 
         // console.log(el)
 
-        let el_prop = el.getAttribute('app-bind')
-        let el_parent = el.parentNode
+        if (el.hasAttribute('app-value')){
 
-        if (!el_parent || !el_parent.getAttribute('app-for')){
+            let el_prop = el.getAttribute('app-value')
 
-            if (el_prop.match(/\((.*?)\)$/)){ // if function
-
-                let el_prop_params = el_prop.match(/\((.*?)\)$/)[1].split(',')
-                el_prop_params = el_prop_params.map((e)=>{
-                    return e.replace(/^['"]|['"]$/g,'')
-                })
-                el_prop = el_prop.replace(/\((.*?)\)/,'')
-
-                if (typeof scope[el_prop] == 'function'){
-                    el.innerHTML = scope[el_prop].apply(null,el_prop_params)
-                }
-
-            } else {
-
-                el.innerHTML = app.methods.getValue(scope, el_prop.replace(/^['"]|['"]/g,''))
-
-            }
+            el.value = app.methods.getValue(scope, el_prop,'')
 
             app.methods.addIndex(el, el_prop, 'bound')
+
+        } else {
+
+            let el_prop = el.getAttribute('app-bind')
+            let el_parent = el.parentNode
+
+            if (!el_parent || !el_parent.getAttribute('app-for')){
+
+                el.innerHTML = app.methods.getValue(scope, el_prop,'')
+                app.methods.addIndex(el, el_prop, 'bound')
+
+            }
 
         }
 
@@ -303,7 +300,7 @@ app.methods = {
 
             set_val = app.methods.getValue(data, attr)
 
-            if (init && set_val){
+            if (init && typeof set_val != 'undefined'){
                 el.value = set_val
             } else {
                 app.methods.setValue(data, attr, el.value)
@@ -313,7 +310,7 @@ app.methods = {
 
             set_val = app.methods.getValue(scope, attr)
 
-            if (init && set_val){
+            if (init && typeof set_val != 'undefined'){
                 el.value = set_val
             } else {
                 app.methods.setValue(scope, attr, el.value)
@@ -438,11 +435,15 @@ app.methods = {
                                     loop_children = self.el.querySelectorAll('[app-for]'),
                                     class_children = self.el.querySelectorAll('[app-class]'),
                                     model_children = self.el.querySelectorAll('[app-model]'),
+                                    value_children = self.el.querySelectorAll('[app-value]'),
                                     click_children = self.el.querySelectorAll('[app-click]')
 
                                 if (self.el.hasAttribute('app-bind')){
                                     self.el.innerHTML = app.methods.getValue(self, self.el.getAttribute('app-bind'))
+                                }
 
+                                if (self.el.hasAttribute('app-value')){
+                                    self.el.value = app.methods.getValue(self, self.el.getAttribute('app-value'))
                                 }
 
                                 for (let i = 0; i < children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
@@ -663,6 +664,7 @@ app.methods = {
 document.addEventListener('DOMContentLoaded', () => {
 
     app.elements.bound.nodes = document.querySelectorAll('[app-bind]')
+    app.elements.value.nodes = document.querySelectorAll('[app-value]')
     app.elements.logic.nodes = document.querySelectorAll('[app-if]')
     app.elements.show.nodes = document.querySelectorAll('[app-show]')
     app.elements.hide.nodes = document.querySelectorAll('[app-hide]')

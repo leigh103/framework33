@@ -56,7 +56,7 @@
 
                 <select app-model="appointment.service">
                     <option selected disabled>Start...</option>
-                    <option app-for="service in salon" app-bind="parseService(service.name)"></option>
+                    <option app-for="service in salon" app-value="service.price" app-bind="parseService(service.name)"></option>
                 </select>
 
                 <select>
