@@ -175,7 +175,7 @@ app.methods = {
     },
 
     clickElement(el, index, data){
-
+console.log(index, data)
         let attr,attr_name = 'app-click'
 
         if (el.hasAttribute && el.hasAttribute('app-init')){
@@ -226,11 +226,11 @@ app.methods = {
                 val = matches[3].replace(/\"|\'$/,''),
                 val_root = ''
 
-            if (index){ // if using a value from a for loop
-                val_root = val.split('.')[0]
-                let str = 'app.elements.foreach.loops.'+val_root+'['+index+'].'+val
-                val = eval(str)
-            }
+            // if (index){ // if using a value from a for loop
+            //     val_root = val.split('.')[0]
+            //     let str = 'app.elements.foreach.loops.'+val_root+'['+index+'].'+val
+            //     val = eval(str)
+            // }
 
             if (val.match(/^!/)){
                 scope[key] = !scope[key]
