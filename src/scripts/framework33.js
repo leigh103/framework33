@@ -305,17 +305,15 @@ app.methods = {
                 el.value = set_val
 
                 for (var i=0; i<el.children.length; i++){
-                    console.log(el.children[i].innerHTML.toString(),set_val.toString())
+
                     if (el.children[i].hasAttribute('value') && el.children[i].getAttribute('value') == set_val || el.children[i].innerHTML && el.children[i].innerHTML.toString() == set_val.toString()){
                         el.children[i].setAttribute('selected',true)
-                        console.log('setting', el.children[i])
+
                     } else {
                         el.children[i].removeAttribute('selected')
                     }
 
                 }
-
-
 
             } else {
                 app.methods.setValue(data, attr, el.value)
@@ -706,7 +704,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (app.elements.value.index[currentPath]){
-                console.log(currentPath, app.elements.value.index[currentPath])
                 app.elements.value.index[currentPath].forEach(function(el){
                     app.methods.updateBoundElement(el)
                 })
