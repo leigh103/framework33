@@ -19,6 +19,11 @@ controller = () => {
         console.log(panel, name.class)
     }
 
+    scope.getName = function(name, name2){
+        console.log(name, name2)
+        return name
+    }
+
     scope.parseDate = function(data){
         scope.menu_items = [
             {name: 'Welcome', panel:'Hi there', class:"text-red"},

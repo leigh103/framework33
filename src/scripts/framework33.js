@@ -71,13 +71,21 @@ app.methods = {
         if (path.match(/\((.*?)\)$/)){ // if function
 
             let params = path.match(/\((.*?)\)$/)[1].split(',')
+
             params = params.map((e)=>{
-                return app.methods.getValue(obj, e)
+                let obj_check = app.methods.getValue(obj, e)
+                if (obj_check){
+                    return obj_check
+                } else {
+                    return e.replace(/'|"/g,'')
+                }
+
             })
+
             path = path.replace(/\((.*?)\)/,'')
 
             if (typeof scope[path] == 'function'){
-                return scope[path].apply(null,params)
+                return scope[path].apply(this, params)
             }
 
         } else if (path.match(/\./)){
@@ -87,7 +95,13 @@ app.methods = {
             if (typeof result == 'function'){
                 return result()
             } else {
-                return result
+
+                if (typeof result == 'undefined'){
+                    return false
+                } else {
+                    return result
+                }
+
             }
 
         } else {
@@ -164,7 +178,7 @@ app.methods = {
             } else if (el_prop.match(/==|\!=|^!/)){
 
                 app.methods.evaluateProp(el_prop, function(test){
-                //    console.log(el, test)
+
                     if (test === false){
                         if (el.parentNode){
                             let div = document.createElement("div")
@@ -245,7 +259,7 @@ app.methods = {
 
             let matches = attr.match(/([a-za-zA-Z._]+)\s*(=)\s*'?((.*))'?/),
                 key = matches[1],
-                val = matches[3].replace(/\"|\'$/,''),
+                val = matches[3].replace(/\"|\'$g/,''),
                 val_root = ''
 
             // if (index){ // if using a value from a for loop
@@ -255,7 +269,11 @@ app.methods = {
             // }
 
             if (val.match(/^!/)){
-                scope[key] = !scope[key]
+
+                val = val.replace(/^!/,'')
+                let val_scope = app.methods.getValue(scope, val)
+                app.methods.setValue(scope, val, !val_scope)
+
             } else if (matches && matches.length > 2){
 
                 if (matches[2] == '='){
@@ -306,9 +324,12 @@ app.methods = {
 
                 for (var i=0; i<el.children.length; i++){
 
-                    if (el.children[i].hasAttribute('value') && el.children[i].getAttribute('value') == set_val || el.children[i].innerHTML && el.children[i].innerHTML.toString() == set_val.toString()){
+                    if (el.children[i].hasAttribute('value') && el.children[i].getAttribute('value') == set_val){
+                    //    console.log('using value',el.children[i].getAttribute('value'),set_val)
                         el.children[i].setAttribute('selected',true)
-
+                    } else if (el.children[i].innerHTML && el.children[i].innerHTML.toString() == set_val.toString()){
+                    //    console.log('using html',el.children[i].innerHTML.toString(), set_val.toString())
+                        el.children[i].setAttribute('selected',true)
                     } else {
                         el.children[i].removeAttribute('selected')
                     }
@@ -791,14 +812,14 @@ window.addEventListener('load', () => {
         app.methods.addClass(el)
     })
 
+    app.elements.init.nodes.forEach(function(el) {
+        app.methods.clickElement(el)
+    })
+
     app.elements.model.nodes.forEach(function(el) {
         el.addEventListener('change', app.methods.onChangeElement)
         el.self = el
         app.methods.onChangeElement(el, false, false, true)
-    })
-
-    app.elements.init.nodes.forEach(function(el) {
-        app.methods.clickElement(el)
     })
 
     app.elements.foreach.nodes.forEach(function(el) {
