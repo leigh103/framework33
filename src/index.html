@@ -18,6 +18,9 @@
 
     <section class="p-5 p-m-3 p-s-2 bg-light-grey">
 
+        <input type="text" app-model="view.selected_customer"><br>
+        <span app-bind="view.selected_customer"></span>
+
         <div class="row contain">
             <div class="block-20 block-m-50 block-s-100 margin align-top text-right text-s-left pr-2">
                 <div class="border p-1 clickable" app-for="item in menu_items">

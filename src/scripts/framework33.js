@@ -68,7 +68,11 @@ app.methods = {
 
         let result
 
-        if (path.match(/\((.*?)\)$/)){ // if function
+        if (!path || typeof path != 'string'){
+            return ''
+        }
+
+        if (path && path.match(/\((.*?)\)$/)){ // if function
 
             let params = path.match(/\((.*?)\)$/)[1].split(',')
 
@@ -97,7 +101,7 @@ app.methods = {
             } else {
 
                 if (typeof result == 'undefined'){
-                    return false
+                    return ''
                 } else {
                     return result
                 }
@@ -697,7 +701,7 @@ app.methods = {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    app.elements.bound.nodes = document.querySelectorAll('[app-bind]')
+    app.elements.bound.nodes = document.querySelectorAll('[app-bind],[app-model]')
     app.elements.value.nodes = document.querySelectorAll('[app-value]')
     app.elements.logic.nodes = document.querySelectorAll('[app-if]')
     app.elements.show.nodes = document.querySelectorAll('[app-show]')
@@ -716,6 +720,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             let property = changes[i].property
+
+            // console.log(changes[i], currentPath)
 
             // update any elements with object binding
             if (app.elements.bound.index[currentPath]){
@@ -770,7 +776,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
-    controller()
+
 
 
 })
@@ -817,8 +823,24 @@ window.addEventListener('load', () => {
     })
 
     app.elements.model.nodes.forEach(function(el) {
-        el.addEventListener('change', app.methods.onChangeElement)
+
+        if (el.tagName == "INPUT") {
+            if (el.type == "text") {
+                el.addEventListener('keyup', app.methods.onChangeElement)
+            }
+            if (el.type == "checkbox") {
+                el.addEventListener('click', app.methods.onChangeElement)
+            }
+            if (el.type == "radio") {
+                el.addEventListener('click', app.methods.onChangeElement)
+            }
+        }
+        if (el.tagName == "SELECT") {
+            el.addEventListener('change', app.methods.onChangeElement)
+        }
+
         el.self = el
+
         app.methods.onChangeElement(el, false, false, true)
     })
 
