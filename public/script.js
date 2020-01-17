@@ -2,8 +2,45 @@
 
 controller = () => {
 
+    scope.clients = []
+    scope.filteredClients = []
     scope.view = {}
     scope.view.test = {}
+    scope.view.search = ''
+
+    watch['view.search'] = function(newData, oldData){
+
+        if (newData.length > 2){
+
+            if (scope.clients){
+
+                scope.filteredClients = []
+                let clients = scope.clients.slice(0)
+
+                clients.map(function (client) {
+
+                    let re = RegExp(newData,'i')
+
+                    client.name_full = ''
+                    if (client.name.first && client.name.last){
+                        client.name_full = client.name.first+' '+client.name.last
+                    }
+
+                    if (client.name_full.match(re) ||
+                        client.email && client.email.match(re) ||
+                        client.tel && client.tel.match(re)
+                    ) {
+                        console.log(client)
+                        scope.filteredClients.push(client)
+                    }
+
+                })
+
+            }
+
+        }
+
+    }
     scope.view.selected_customer = ''
     scope.view.selected_customer_id = '393okk39393e.99w9_'
     scope.view.test.test1 = "text-blue"
@@ -15,12 +52,23 @@ controller = () => {
         {name: 'Responsive', panel:'Something else here', class:"text-red"}
     ]
 
+    scope.menuItems = function(){
+        http('get','http://davidrozman.reformedreality.com/dashboard/clients/get')
+            .then((data)=>{
+
+                data = JSON.parse(data)
+                scope.clients = data
+                return scope.clients
+
+            }).catch((err)=>{
+                console.log(err)
+            })
+    }
+
     scope.gotoPanel = (panel, name)=>{
-        console.log(panel, name.class)
     }
 
     scope.getName = function(name, name2){
-        console.log(name, name2)
         return name
     }
 

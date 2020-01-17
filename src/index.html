@@ -23,13 +23,23 @@
 
         <div class="row contain">
             <div class="block-20 block-m-50 block-s-100 margin align-top text-right text-s-left pr-2">
-                <div class="border p-1 clickable" app-for="item in menu_items">
+                <div class="border p-1 clickable" app-for="item in menuItems()">
                     <span app-click="view.selected_customer = item" app-bind="item.name" app-class="item.class" class="text-italic"></span>
                 </div>
             </div>
             <div class="block-80 block-m-50 block-s-100 margin align-top text-left" app-bind="panel">
 
             </div>
+        </div>
+
+    </section>
+
+    <section class="p-5 p-m-3 p-s-2 bg-white">
+
+        <input type="text" app-model="view.search"><br><br>
+        <span app-bind="view.search"></span><br><br>
+        <div class="border p-1 clickable" app-for="item in filteredClients" app-init="menuItems()">
+            <span app-bind="item.name.first"></span> <span app-bind="item.name.last"></span> <span app-bind="item.email"></span> <span app-bind="item.tel"></span>
         </div>
 
     </section>

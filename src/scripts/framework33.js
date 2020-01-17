@@ -4,6 +4,7 @@ import '../styles/style.scss';
 import Observable from 'observable-slim'
 
 global.scope = {}
+global.watch = {}
 global.http = ''
 
 var test = {},
@@ -71,7 +72,7 @@ app.methods = {
         if (!path || typeof path != 'string'){
             return ''
         }
-
+// console.log(obj, path)
         if (path && path.match(/\((.*?)\)$/)){ // if function
 
             let params = path.match(/\((.*?)\)$/)[1].split(',')
@@ -360,7 +361,7 @@ app.methods = {
     forElement(el, initial, data, key){
 
         var el_prop = el.getAttribute('app-for'),
-            el_props = el_prop.match(/([a-zA-Z._]+)\s*in\s*([a-zA-Z._]+)/i)
+            el_props = el_prop.match(/([a-zA-Z._]+)\s*in\s*([a-zA-Z._()]+)/i)
 
 
         if (initial){ // for the initial render, don't run the loop, just add it to the index
@@ -375,7 +376,7 @@ app.methods = {
             loop_arr = app.methods.getValue(scope, scope_key),
             el_remove = false,
             block = view_key
-
+// console.log(view_key, scope_key)
             if (el.hasAttribute('app-index')){
                 block = el.getAttribute('app-index')
             }
@@ -602,10 +603,10 @@ app.methods = {
     addClass(el){
 
         var el_prop = el.getAttribute('app-class');
-        var className = app.methods.getValue(scope, el_prop)
+        var class_name = app.methods.getValue(scope, el_prop)
 
-        if (typeof className == 'string'){
-            el.classList.add(className)
+        if (typeof class_name == 'string' && class_name.length > 0){
+            el.classList.add(class_name)
         }
 
         app.methods.addIndex(el, el_prop, 'class')
@@ -721,7 +722,9 @@ document.addEventListener('DOMContentLoaded', () => {
             let currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             let property = changes[i].property
 
-            // console.log(changes[i], currentPath)
+            if (watch[changes[i].currentPath]){ // fire any watch functions
+                watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue)
+            }
 
             // update any elements with object binding
             if (app.elements.bound.index[currentPath]){
