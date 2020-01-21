@@ -72,7 +72,7 @@ app.methods = {
         if (!path || typeof path != 'string'){
             return ''
         }
-// console.log(obj, path)
+
         if (path && path.match(/\((.*?)\)$/)){ // if function
 
             let params = path.match(/\((.*?)\)$/)[1].split(',')
@@ -109,7 +109,7 @@ app.methods = {
 
             }
 
-        } else {
+        } else if (obj[path]){
 
             result = obj[path]
 
@@ -118,6 +118,11 @@ app.methods = {
             } else {
                 return result
             }
+
+        } else {
+
+            return path.replace(/'|"/g,'')
+
         }
 
     },
@@ -217,7 +222,7 @@ app.methods = {
 
     clickElement(el, index, data){
 
-        let attr,attr_name = 'app-click'
+        let attr,attr_name = 'app-click', params
 
         if (el.hasAttribute && el.hasAttribute('app-init')){
             attr_name = 'app-init'
@@ -452,7 +457,7 @@ app.methods = {
 
                             for (let i = 0; i < app.elements.foreach.loops[block].length; ++i){
 
-                                if (typeof loop_arr[i] == 'undefined'){
+                                if (typeof loop_arr[i] == 'undefined' && el_parent){
 
                                     el_parent.removeChild(app.elements.foreach.loops[block][i].el)
                                     app.elements.foreach.loops[block].splice(i,1)
@@ -602,12 +607,26 @@ app.methods = {
 
     addClass(el){
 
-        var el_prop = el.getAttribute('app-class');
-        var class_name = app.methods.getValue(scope, el_prop)
+        var el_prop = el.getAttribute('app-class'),
+            class_name = app.methods.getValue(scope, el_prop),
+            orig_class_list = el.getAttribute('app-orig-class')
 
-        if (typeof class_name == 'string' && class_name.length > 0){
+        if (!el.getAttribute('app-initial')){
+            el.setAttribute('app-orig-class',el.classList)
+        }
+
+        if (class_name){
+
+            if (orig_class_list){
+                el.className = orig_class_list
+            } else {
+                el.className = ''
+            }
+
             el.classList.add(class_name)
         }
+
+        el.setAttribute('app-initial',true)
 
         app.methods.addIndex(el, el_prop, 'class')
 
@@ -719,8 +738,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (var i in changes){
 
-            let currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
-            let property = changes[i].property
+            let currentPath
+
+            if (isNaN(changes[i].property)){ // logic to use the index in the currentPath value
+                currentPath = changes[i].currentPath.replace(/\./g,'__')
+            } else {
+                currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
+            }
+
+            // console.log(changes[i], currentPath)
 
             if (watch[changes[i].currentPath]){ // fire any watch functions
                 watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue)
