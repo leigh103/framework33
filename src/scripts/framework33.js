@@ -814,6 +814,8 @@ window.addEventListener('load', () => {
 
     controller()
 
+    socketConnect("ws://52.16.150.64:6410")
+
     parseAnimAttr()
 
     inViewChk()
@@ -879,9 +881,36 @@ window.addEventListener('load', () => {
 
 })
 
-document.addEventListener('scroll', () => {if (document.body.scrollTop % 20 === 0){inViewChk()}})
+document.addEventListener('scroll', () => {
+    if (document.body.scrollTop % 20 === 0){
+        inViewChk()
+    }
+})
 
-function parseAnimAttr(){
+const socketConnect = (host) => {
+
+    console.log('Attempting to connect to ws host: '+host)
+    const socket = new WebSocket(host)
+
+    socket.onmessage = function(msg){
+        console.log(msg)
+    }
+
+    socket.onerror = function(err){
+        if (socket.readyState !== 1){
+            // setTimeout(()=>{
+            //     window.location.href="/"
+            // },3000)
+        }
+    }
+
+
+}
+
+
+
+
+const parseAnimAttr = () => {
     for (let i = 0; i < app.elements.animation.length; i++) {
 
         let self = app.elements.animation[i],
@@ -919,7 +948,7 @@ function parseAnimAttr(){
     }
 }
 
-function inView(el) {
+const inView = (el) => {
 
     let trigger_top = el.getAttribute('anim-trigger-top'),
         trigger_bottom = el.getAttribute('anim-trigger-bottom'),
@@ -943,7 +972,7 @@ function inView(el) {
 
 }
 
-function inViewChk(){
+const inViewChk = () => {
 
     for (let i = 0; i < app.elements.animation.length; i++) {
 
@@ -963,7 +992,7 @@ function inViewChk(){
 
 }
 
-function applyInViewClass(el) {
+const applyInViewClass = (el) => {
 
     if (el.classList.contains("exit-view")){
         el.classList.remove('exit-view')
@@ -987,7 +1016,7 @@ function applyInViewClass(el) {
 
 }
 
-function applyExitViewClass(el) {
+const applyExitViewClass = (el) => {
 
     if (el.getAttribute('anim-exit')){
 
