@@ -637,7 +637,8 @@ app.methods = {
             orig_class_list = el.getAttribute('app-orig-class')
 
         if (!el.getAttribute('app-initial')){
-            el.setAttribute('app-orig-class',el.classList)
+            orig_class_list = el.classList.value
+            el.setAttribute('app-orig-class',orig_class_list.replace(/app\-hidden/,''))
         }
 
         if (class_name){
