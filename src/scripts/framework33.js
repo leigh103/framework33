@@ -4,8 +4,10 @@ import '../styles/style.scss';
 import Observable from 'observable-slim'
 
 global.scope = {}
+global.scope.data = []
 global.watch = {}
 global.http = ''
+global.server = ''
 
 var test = {},
     app = {}
@@ -67,11 +69,23 @@ app.methods = {
 
     getValue(obj, path) {
 
-        let result
+        let result, string
 
         if (!path || typeof path != 'string'){
             return ''
         }
+
+        if (!obj){
+            obj = scope
+        }
+
+        if (path.match(/'|"/)){
+            string = true
+        } else {
+            string = false
+        }
+
+        path = path.replace(/'|"/g,'')
 
         if (path && path.match(/\((.*?)\)$/)){ // if function
 
@@ -95,7 +109,11 @@ app.methods = {
 
         } else if (path.match(/\./)){
 
-            result = path.split(".").reduce(function(obj, name){ if (obj && obj[name]){return obj[name]}}, obj);
+            result = path.split(".").reduce(function(obj, name){
+                        if (obj && obj[name]){
+                            return obj[name]
+                        }
+                    }, obj);
 
             if (typeof result == 'function'){
                 return result()
@@ -109,7 +127,7 @@ app.methods = {
 
             }
 
-        } else if (obj[path]){
+        } else if (obj[path] && string === false){
 
             result = obj[path]
 
@@ -249,7 +267,12 @@ app.methods = {
 
                     if (i == params.length-1){
                         params = params.map((e)=>{
-                            return e.replace(/^['"]|['"]$/g,'')
+                            if (typeof e == 'string'){
+                                return e.replace(/^['"]|['"]$/g,'')
+                            } else {
+                                return e
+                            }
+
                         })
                         scope[method].apply(null,params)
                     }
@@ -324,6 +347,8 @@ app.methods = {
 
         attr = el.getAttribute('app-model')
 
+        app.methods.addIndex(el, attr, 'model')
+
         if (data){
 
             set_val = app.methods.getValue(data, attr)
@@ -381,7 +406,7 @@ app.methods = {
             loop_arr = app.methods.getValue(scope, scope_key),
             el_remove = false,
             block = view_key
-// console.log(view_key, scope_key)
+
             if (el.hasAttribute('app-index')){
                 block = el.getAttribute('app-index')
             }
@@ -633,7 +658,7 @@ app.methods = {
     },
 
     addIndex(el, el_prop, key){
-//console.log(el_prop)
+
         if (el_prop && el_prop != null){
 
             el_prop = el_prop.replace(/^!/,'')
@@ -647,6 +672,8 @@ app.methods = {
                 el_prop = el_prop.split(/\s|==|!=|=|<=|>=|<|>/)[0]
 
             }
+
+            let orig_el_prop = el_prop+''
 
             if (el_prop.match(/\./)){ // if nested object, use the route as the index
                 let route_el_prop = el_prop.split('.')
@@ -669,10 +696,6 @@ app.methods = {
 
             if (app.elements[key].index[el_prop].indexOf(el) === -1){
                 app.elements[key].index[el_prop].push(el)
-            }
-
-            if (key == 'bound'){
-            //    console.log(app.elements[key].index)
             }
 
         }
@@ -749,7 +772,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // console.log(changes[i], currentPath)
 
             if (watch[changes[i].currentPath]){ // fire any watch functions
-                watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue)
+                watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue, currentPath)
             }
 
             // update any elements with object binding
@@ -801,6 +824,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             }
 
+            // update any elements with model
+            if (app.elements.model.index[currentPath]){
+                app.elements.model.nodes.forEach(function(el) {
+                    el.self = el
+                    app.methods.onChangeElement(el, false, false, true)
+                })
+            }
+
         }
 
     });
@@ -814,7 +845,7 @@ window.addEventListener('load', () => {
 
     controller()
 
-    socketConnect("ws://52.16.150.64:6410")
+    socketConnect("ws://davidrozman.reformedreality.com:6410")
 
     parseAnimAttr()
 
@@ -889,21 +920,29 @@ document.addEventListener('scroll', () => {
 
 const socketConnect = (host) => {
 
-    console.log('Attempting to connect to ws host: '+host)
-    const socket = new WebSocket(host)
+    server = new WebSocket(host)
 
-    socket.onmessage = function(msg){
-        console.log(msg)
+    server.onmessage = function(msg){
+
+        let data
+
+        if (typeof msg.data == 'string'){
+            data = JSON.parse(msg.data)
+        } else {
+            data = msg.data
+        }
+
+        scope.data = data
+
     }
 
-    socket.onerror = function(err){
-        if (socket.readyState !== 1){
+    server.onerror = function(err){
+        if (server.readyState !== 1){
             // setTimeout(()=>{
             //     window.location.href="/"
             // },3000)
         }
     }
-
 
 }
 
