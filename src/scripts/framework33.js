@@ -24,6 +24,7 @@ app.elements = {}
     app.elements.model = {}
     app.elements.foreach = {}
     app.elements.init = {}
+    app.elements.src = {}
 
     app.elements.bound.index = {}
     app.elements.value.index = {}
@@ -36,6 +37,7 @@ app.elements = {}
     app.elements.foreach.index = {}
     app.elements.foreach.loops = {}
     app.elements.init.index = {}
+    app.elements.src.index = {}
 
 app.methods = {
 
@@ -465,7 +467,9 @@ app.methods = {
                                             el_clone.classList.add('app-for-child-'+scope_key_parse)
                                             el_clone.removeAttribute('app-for')
 
-                                            el_parent.appendChild(el_clone)
+                                            if (el_parent){
+                                                el_parent.appendChild(el_clone)
+                                            }
 
                                             app.elements.foreach.loops[block][i] = el_arr_data
 
@@ -689,6 +693,19 @@ app.methods = {
 
     },
 
+    addSrc(el){
+
+        var el_prop = el.getAttribute('app-src'),
+            src_url = app.methods.getValue(scope, el_prop)
+
+        if (src_url){
+            el.setAttribute('src',src_url)
+        }
+
+        app.methods.addIndex(el, el_prop, 'src')
+
+    },
+
     addIndex(el, el_prop, key){
 
         if (el_prop && el_prop != null){
@@ -776,7 +793,7 @@ app.methods = {
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    app.elements.bound.nodes = document.querySelectorAll('[app-bind],[app-model]')
+    app.elements.bound.nodes = document.querySelectorAll('[app-bind]')
     app.elements.value.nodes = document.querySelectorAll('[app-value]')
     app.elements.logic.nodes = document.querySelectorAll('[app-if]')
     app.elements.show.nodes = document.querySelectorAll('[app-show]')
@@ -786,6 +803,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.model.nodes = document.querySelectorAll('[app-model]')
     app.elements.foreach.nodes = document.querySelectorAll('[app-for]')
     app.elements.init.nodes = document.querySelectorAll('[app-init]')
+    app.elements.src.nodes = document.querySelectorAll('[app-src]')
 
     app.elements.animation = document.querySelectorAll("[anim],[anim-enter],[anim-exit]")
 
@@ -861,6 +879,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 app.elements.model.nodes.forEach(function(el) {
                     el.self = el
                     app.methods.onChangeElement(el, false, false, true)
+                })
+            }
+
+            // update any elements with hide
+            if (app.elements.src.index[currentPath]){
+                app.elements.src.index[currentPath].forEach(function(el){
+                    app.methods.addSrc(el)
                 })
             }
 
@@ -940,6 +965,10 @@ window.addEventListener('load', () => {
 
     app.elements.foreach.nodes.forEach(function(el) {
         app.methods.forElement(el, true)
+    })
+
+    app.elements.src.nodes.forEach(function(el) {
+        app.methods.addSrc(el, true)
     })
 
 })

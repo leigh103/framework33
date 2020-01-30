@@ -7,6 +7,7 @@ controller = () => {
     scope.view = {}
     scope.view.test = {}
     scope.view.search = ''
+    scope.view.image = 'http://davidrozman.reformedreality.com/images/avatars/Test-Account2-1580413246402.png'
 
     watch['view.search'] = function(newData, oldData){
 
