@@ -426,46 +426,54 @@ app.methods = {
 
                         if (loop_arr && loop_arr != 'undefined'){
 
-                            for (let i = 0; i < loop_arr.length; ++i){
+                            if (loop_arr.length == 0){
 
-                                if (i == 0){
 
-                                    let el_arr_data = {el:el, [view_key]:loop_arr[i]}
 
-                                    if (!app.elements.foreach.loops[block]){
+                            } else {
 
-                                        app.elements.foreach.loops[block] = []
+                                for (let i = 0; i < loop_arr.length; ++i){
 
-                                    }
+                                    if (i == 0){
 
-                                    if (!app.elements.foreach.loops[block][i]){
+                                        let el_arr_data = {el:el, [view_key]:loop_arr[i]}
 
-                                        app.elements.foreach.loops[block][i] = el_arr_data
+                                        if (!app.elements.foreach.loops[block]){
 
-                                    } else {
+                                            app.elements.foreach.loops[block] = []
 
-                                        app.elements.foreach.loops[block][i][view_key] = loop_arr[i]
+                                        }
 
-                                    }
+                                        if (!app.elements.foreach.loops[block][i]){
 
-                                } else {
+                                            app.elements.foreach.loops[block][i] = el_arr_data
 
-                                    if (!app.elements.foreach.loops[block][i]){
+                                        } else {
 
-                                        let el_clone = el.cloneNode(true), // clone the parent node
-                                            el_arr_data = {el:el_clone, [view_key]:loop_arr[i]}
+                                            app.elements.foreach.loops[block][i][view_key] = loop_arr[i]
 
-                                        el_clone.classList.remove('app-for-parent-'+scope_key_parse)
-                                        el_clone.classList.add('app-for-child-'+scope_key_parse)
-                                        el_clone.removeAttribute('app-for')
-
-                                        el_parent.appendChild(el_clone)
-
-                                        app.elements.foreach.loops[block][i] = el_arr_data
+                                        }
 
                                     } else {
 
-                                        app.elements.foreach.loops[block][i][view_key] = loop_arr[i]
+                                        if (!app.elements.foreach.loops[block][i]){
+
+                                            let el_clone = el.cloneNode(true), // clone the parent node
+                                                el_arr_data = {el:el_clone, [view_key]:loop_arr[i]}
+
+                                            el_clone.classList.remove('app-for-parent-'+scope_key_parse)
+                                            el_clone.classList.add('app-for-child-'+scope_key_parse)
+                                            el_clone.removeAttribute('app-for')
+
+                                            el_parent.appendChild(el_clone)
+
+                                            app.elements.foreach.loops[block][i] = el_arr_data
+
+                                        } else {
+
+                                            app.elements.foreach.loops[block][i][view_key] = loop_arr[i]
+
+                                        }
 
                                     }
 
@@ -484,8 +492,28 @@ app.methods = {
 
                                 if (typeof loop_arr[i] == 'undefined' && el_parent){
 
-                                    el_parent.removeChild(app.elements.foreach.loops[block][i].el)
-                                    app.elements.foreach.loops[block].splice(i,1)
+                                    if (app.elements.foreach.loops[block][i].el.hasAttribute('app-for')){ // don't remove the original repeater
+
+                                        let child = app.elements.foreach.loops[block][i].el.firstChild,
+                                            nextSibling,
+                                            el = app.elements.foreach.loops[block][i].el
+
+                                            app.elements.foreach.loops[block][i] = {}
+                                            app.elements.foreach.loops[block][i].el = el
+
+                                        while (child) {
+                                            nextSibling = child.nextSibling;
+                                            if (child.nodeType == 3) {
+                                                child.parentNode.removeChild(child);
+                                            }
+                                            child = nextSibling;
+                                        }
+
+                                    } else {
+                                        el_parent.removeChild(app.elements.foreach.loops[block][i].el)
+                                        app.elements.foreach.loops[block].splice(i,1)
+                                    }
+
 
                                 }
                             }
@@ -520,9 +548,12 @@ app.methods = {
                                     let bind = children[i].getAttribute('app-bind'),
                                         val = app.methods.getValue(self, bind)
 
-                                    if (val){
+                                    if (val && val != 'undefined' && val != 'undefined undefined'){
                                         children[i].innerHTML = val
+                                    } else {
+                                        children[i].innerHTML = ''
                                     }
+
 
                                 }
 
@@ -927,7 +958,7 @@ const socketConnect = (host) => {
 
         let data
 
-        if (typeof msg.data == 'string'){
+        if (typeof msg.data == 'string' && msg.data.match(/\[|\{(.*?)}|\]/)){
             data = JSON.parse(msg.data)
         } else {
             data = msg.data
