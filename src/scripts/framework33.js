@@ -537,7 +537,8 @@ app.methods = {
                                     class_children = self.el.querySelectorAll('[app-class]'),
                                     value_children = self.el.querySelectorAll('[app-value]'),
                                     click_children = self.el.querySelectorAll('[app-click]'),
-                                    model_children = self.el.querySelectorAll('[app-model]')
+                                    model_children = self.el.querySelectorAll('[app-model]'),
+                                    src_children = self.el.querySelectorAll('[app-src]')
 
                                 if (self.el.hasAttribute('app-bind')){
                                     self.el.innerHTML = app.methods.getValue(self, self.el.getAttribute('app-bind'))
@@ -614,6 +615,12 @@ app.methods = {
                                     model_children[i].addEventListener('change', function(){
                                         app.methods.onChangeElement(model_children[i], self_key, self)
                                     })
+
+                                }
+                                for (let i = 0; i < src_children.length; ++i){
+
+                                    let val = src_children[i].getAttribute('app-src')
+                                    app.methods.addSrc(src_children[i], app.methods.getValue(self, val))
 
                                 }
 
@@ -693,12 +700,14 @@ app.methods = {
 
     },
 
-    addSrc(el){
+    addSrc(el, data){
 
         var el_prop = el.getAttribute('app-src'),
             src_url = app.methods.getValue(scope, el_prop)
 
-        if (src_url){
+        if (typeof data == 'string' && data.match(/png|jpg|jpeg|svg$/)){
+            el.setAttribute('src',data)
+        } else if (typeof data == 'string' && src_url.match(/png|jpg|jpeg|svg$/)) {
             el.setAttribute('src',src_url)
         }
 

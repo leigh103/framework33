@@ -820,8 +820,6 @@ a.mobile-hide,span.mobile-hide {
 
     body > .container, body > section, body > .row {
         width:100vw;
-        padding-left:2rem;
-        padding-right:2rem
     }
 
     .card,.image-card  {
@@ -935,12 +933,12 @@ a.mobile-hide,span.mobile-hide {
 
 }
 
-@import '../styles/framework33.nav.scss';
+// @import '../styles/framework33.nav.scss';
 @import '../styles/framework33.tables.scss';
 @import '../styles/framework33.layout.scss';
 @import '../styles/framework33.flex.scss';
 @import '../styles/framework33.typography.scss';
-@import '../styles/framework33.colors.scss';
+// @import '../styles/framework33.colors.scss';
 @import '../styles/framework33.grid.scss';
 @import '../styles/framework33.blocks.scss';
 @import '../styles/framework33.padding.scss';
