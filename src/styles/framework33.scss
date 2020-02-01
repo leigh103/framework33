@@ -1,3 +1,4 @@
+
 $phone-width: 850px;
 $tablet-width: 1180px;
 
@@ -19,13 +20,29 @@ $tablet-width: 1180px;
   }
 }
 
+// @import '../styles/framework33.nav.scss';
+@import '../styles/framework33.tables.scss';
+@import '../styles/framework33.layout.scss';
+@import '../styles/framework33.flex.scss';
+@import '../styles/framework33.typography.scss';
+@import '../styles/framework33.colors.scss';
+@import '../styles/framework33.grid.scss';
+@import '../styles/framework33.blocks.scss';
+@import '../styles/framework33.buttons.scss';
+@import '../styles/framework33.forms.scss';
+@import '../styles/framework33.animations.scss';
+@import '../styles/framework33.app.scss';
+@import '../styles/framework33.padding.scss';
+@import '../styles/framework33.margin.scss';
+
+
 html {
     width:100%;
     padding:0;
     margin:0;
     text-align:center;
     position:relative;
-    font-size:1vw;
+    font-size: 16px;
     line-height: 1.5em;
      -webkit-font-smoothing: antialiased;
 }
@@ -935,18 +952,3 @@ a.mobile-hide,span.mobile-hide {
 
 
 }
-
-// @import '../styles/framework33.nav.scss';
-@import '../styles/framework33.tables.scss';
-@import '../styles/framework33.layout.scss';
-@import '../styles/framework33.flex.scss';
-@import '../styles/framework33.typography.scss';
-@import '../styles/framework33.colors.scss';
-@import '../styles/framework33.grid.scss';
-@import '../styles/framework33.blocks.scss';
-@import '../styles/framework33.buttons.scss';
-@import '../styles/framework33.forms.scss';
-@import '../styles/framework33.animations.scss';
-@import '../styles/framework33.app.scss';
-@import '../styles/framework33.padding.scss';
-@import '../styles/framework33.margin.scss';

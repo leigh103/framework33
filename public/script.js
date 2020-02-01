@@ -48,12 +48,13 @@ controller = () => {
 
     }
 
-    scope.panel = 'Start'
     scope.menu_items = [
-        {name: 'Welcome', panel:'Hi there', class:"text-green", img:"https://i.imgur.com/4Kuye6W.jpg"},
-        {name: 'What\'s it about?', panel:'<h1>What\'s it about?</h1>Something here', class:"text-bold", img:"https://i.imgur.com/emBm6jv.jpg"},
-        {name: 'Responsive', panel:'Something else here', class:"text-red", img:"https://i.imgur.com/l49aYS3.jpg"}
+        {name: 'Welcome', panel:'<h1>Welcome</h1>Something here', img:"https://i.imgur.com/4Kuye6W.jpg"},
+        {name: 'What\'s it about?', panel:'<h1>What\'s it about?</h1>Something here', img:"https://i.imgur.com/emBm6jv.jpg"},
+        {name: 'Responsive', panel:'<h1>Something Else</h1>Something else here', img:"https://i.imgur.com/l49aYS3.jpg"}
     ]
+    
+    scope.panel = scope.menu_items[0]
 
     scope.menuItems = function(){
         scope.menu_items.push({name: 'New Page', panel:'Hi there', class:"text-green"})

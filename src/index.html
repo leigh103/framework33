@@ -5,41 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Framework33 | CSS and ECMA Script Framework</title>
 
+    <style>
+        .active {
+            border-bottom: 2px solid blue;
+        }
+    </style>
+
 </head>
 <body>
 
-    <section class="hero bg-33-topaz text-33-white text-middle p-s-2">
+    <section class="hero bg-33-topaz text-33-white flex middle p-s-2">
 
-        <h1 class="biggest"><span class="inline-block" anim="{'enter':'move-down','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'1s'}">Frame</span><span class="inline-block" anim="{'enter':'move-up','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'1s'}">work33</h1>
-        <h4 class="text-light"anim="{'enter':'fade-in','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'2s'}">A Simple CSS and ECMA Script Framework</h4>
-        <a anim="{'enter':'move-down','exit':'fade-out','duration':'1s','easing':'ease','delay':'3s'}" class="mt-2" app-class="view.text.class"><span app-bind="getName('This is text added in by a function')"></span></a>
+        <div class="">
+            <h1 class="biggest"><span class="inline-block" anim="{'enter':'move-down','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'1s'}">Frame</span><span class="inline-block" anim="{'enter':'move-up','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'1s'}">work33</h1>
+            <h4 class="text-light"anim="{'enter':'fade-in','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'2s'}">A Simple CSS and ECMA Script Framework</h4>
+            <a anim="{'enter':'move-down','exit':'fade-out','duration':'1s','easing':'ease','delay':'3s'}" class="mt-2" app-class="view.text.class"><span app-bind="getName('This is text added in by a function')"></span></a>
+        </div>
 
     </section>
 
-    <section class="mt-2 mb-4">
+    <section class="mt-2 mb-4 px-m-2 px-s-2">
 
         <div class="row contain">
-            <div class="block-20 block-m-50 block-s-100 margin align-top text-right text-s-left pr-2">
+
+            <div class="block-20 block-s-100 align-top text-right text-s-left pr-2 hidden-s">
                 <div class="py-1-children">
-                    <div class="clickable" app-for="item in menu_items" app-click="panel = item">
-                        <span app-bind="item.name" app-class="item.class" class="text-italic"></span>
+                    <div class="clickable" app-for="item in menu_items" app-click="panel = item" app-class="{active:panel == item}">
+                        <span app-bind="item.name" app-class="item.class"></span>
                     </div>
                 </div>
                 <div class="mt-2">
                     <a class="btn" app-click="menuItems()">Add to Menu</a>
                 </div>
             </div>
-            <div class="block-80 block-m-50 block-s-100 margin align-top text-left">
-                <div class="vh50 overflow-hidden mb-1">
+
+            <div class="block-100 hidden hidden-m overflow-x mb-2">
+                <div class="inline-block clickable p-1" app-for="item in menu_items" app-click="panel = item" app-class="{active:panel == item}">
+                    <span app-bind="item.name" app-class="item.class"></span>
+                </div>
+            </div>
+
+            <div class="block-80 block-s-100 align-top text-left">
+                <div class="vh-25 overflow-hidden mb-1">
                     <img app-src="panel.img" src="https://i.imgur.com/a0bs8oJ.jpg" class="object-fit">
                 </div>
                 <div app-bind="panel.panel"></div>
             </div>
+
         </div>
 
     </section>
 
-    <section class="bg-33-light-grey py-9">
+    <section class="bg-33-light-grey py-9 px-m-2 px-s-2">
 
         <div class="contain">
 
@@ -92,7 +109,7 @@
 
     </section>
 
-    <section class="p-5 p-m-3 p-s-2 bg-white">
+    <section class="p-5 px-m-2 p-s-2 bg-white">
 
         <div class="row contain">
             <div anim="{'enter':'move-up','exit':'move-up', 'duration':'200ms'}" class="block-33 block-s-100 p-2">
@@ -111,7 +128,7 @@
     </section>
 
 
-    <section class="py-3 bg-33-dark-grey text-33-white text-left">
+    <section class="py-3 px-m-2 bg-33-dark-grey text-33-white text-left">
         <div class="row contain">
             <div class="block-33 block-s-100">
                 Footer<br>

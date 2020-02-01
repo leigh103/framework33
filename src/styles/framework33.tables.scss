@@ -96,6 +96,21 @@ table.no-style td {
     word-wrap:normal;
 }
 
+
+@include small {
+    .table {
+        display:block;
+        width: 100%;
+        overflow-x: auto;
+
+        .row {
+            .cell {
+                min-width: 33vw;
+            }
+        }
+    }
+}
+
 .table.no-padding-children .cell {
     padding:0
 }

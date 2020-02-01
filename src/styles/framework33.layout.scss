@@ -36,6 +36,12 @@ div.background {
     overflow:hidden;
 }
 
+@include small {
+    .hero {
+        min-height:40vh;
+    }
+}
+
 .float-left {
     float:left;
 }
@@ -48,11 +54,11 @@ div.background {
     width:auto;
 }
 
-.width-full, .w100 {
+.width-full, .w-100 {
     width:100%;
 }
 
-.height-full, .h100, .fh100 {
+.height-full, .h-100, .fh-100 {
     height:100%;
 }
 
@@ -64,7 +70,7 @@ div.background {
     height:auto;
 }
 
-.height-half, .h50 {
+.height-half, .h-50 {
     height:50%;
 }
 
@@ -82,67 +88,29 @@ div.background {
 }
 
 .container > *, .row > * {
-    font-size:1rem
+    font-size: 1rem
 }
 
-.h10 {
-    height:10rem;
-}
+@for $i from 1 through 100 {
 
-.h15 {
-    height:15rem;
-}
+    $value: $i * 5;
 
-.h20 {
-    height:20rem;
-}
+    .h-#{$value} {
+        height: #{0% + $value};
+    }
 
-.h25 {
-    height:25%;
-}
+    .w-#{$value} {
+        width: #{0% + $value};
+    }
 
-.h30 {
-    height:30%;
-}
+    .vh-#{$value} {
+        height: #{0vh + $value};
+    }
 
-.h40 {
-    height:40%;
-}
+    .vw-#{$value} {
+        width: #{0vh + $value};
+    }
 
-.h100 {
-    height:100%;
-}
-
-.vh100 {
-    height:100vh;
-}
-
-.vw100 {
-    width:100vw;
-}
-
-.vh90 {
-    height:90vh;
-}
-
-.vh75 {
-    height:75vh;
-}
-
-.vh50 {
-    height:50vh;
-}
-
-.vw50 {
-    width:50vw;
-}
-
-.vh25 {
-    height:25vh;
-}
-
-.vw25 {
-    width:25vw;
 }
 
 .relative {
@@ -156,7 +124,7 @@ div.background {
 img.absolute {
     position: absolute
 }
-;
+
  .fixed {
     position:fixed;
 }
@@ -220,39 +188,12 @@ img.absolute {
     right:0px;
 }
 
-.layer0,.layer-0 {
-    position:relative;
-    z-index:-1;
-}
+@for $i from 1 through 10 {
 
-.layer1,.layer-1 {
-    position:relative;
-    z-index:1;
-}
+    .layer-#{$i} {
+        z-index: #{$i};
+    }
 
-.layer2,.layer-2 {
-    position:relative;
-    z-index:100;
-}
-
-.layer3,.layer-3 {
-    position:relative;
-    z-index:200;
-}
-
-.layer4,.layer-4 {
-    position:relative;
-    z-index:300;
-}
-
-.layer5,.layer-5 {
-    position:relative;
-    z-index:400;
-}
-
-.layer6,.layer-6 {
-    position:relative;
-    z-index:500;
 }
 
 .layer-top {

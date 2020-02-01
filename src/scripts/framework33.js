@@ -109,6 +109,28 @@ app.methods = {
                 return scope[path].apply(this, params)
             }
 
+        } else if (path.match(/\{(.*?)\}/)) { // if logic eg, {active: obj.path == 1} - if true, returns the first string
+
+            let matches = path.match(/\{([a-z0-9.]+)\:([a-z0-9.]+)\s([!=<>]+)\s([a-z0-9.]+)\}/),
+                result = matches[1],
+                val1_obj = app.methods.getValue(obj,matches[2]),
+                val1_scope = app.methods.getValue(scope,matches[2]),
+                op = matches[3],
+                val2_obj = app.methods.getValue(obj,matches[4]),
+                val2_scope = app.methods.getValue(scope,matches[4])
+
+            if (op == '=='){
+
+                if (val1_obj == val2_obj ||
+                    val1_obj == val2_scope ||
+                    val1_scope == val2_obj ||
+                    val1_scope == val2_scope
+                ){
+                    return result
+                }
+
+            }
+
         } else if (path.match(/\./)){
 
             result = path.split(".").reduce(function(obj, name){
@@ -542,6 +564,20 @@ app.methods = {
                                     self.el.innerHTML = app.methods.getValue(self, self.el.getAttribute('app-bind'))
                                 }
 
+                                if (self.el.hasAttribute('app-class')){
+
+                                    let el_prop = self.el.getAttribute('app-class'),
+                                        val = app.methods.getValue(self, el_prop),
+                                        matches = el_prop.match(/\{([a-z0-9.]+)\:([a-z0-9.]+)\s([!=<>]+)\s([a-z0-9.]+)\}/)
+
+                                        app.methods.addIndex(self.el, matches[2],'class')
+
+                                    if (typeof val != 'undefined'){
+                                        app.methods.addClass(self.el, val)
+                                    }
+
+                                }
+
                                 if (self.el.hasAttribute('app-click')){
                                     self.el.removeEventListener('click',app.methods.clickElement)
 
@@ -678,11 +714,14 @@ app.methods = {
 
     },
 
-    addClass(el){
+    addClass(el, class_name){
 
         var el_prop = el.getAttribute('app-class'),
-            class_name = app.methods.getValue(scope, el_prop),
             orig_class_list = el.getAttribute('app-orig-class')
+
+        if (!class_name){
+            class_name = app.methods.getValue(scope, el_prop)
+        }
 
         if (!el.getAttribute('app-initial')){
             orig_class_list = el.classList.value
@@ -710,7 +749,7 @@ app.methods = {
 
         var el_prop = el.getAttribute('app-src'),
             src_url = app.methods.getValue(scope, el_prop)
-            
+
         if (typeof data == 'string' && data.match(/png|jpg|jpeg|svg$/)){
             el.setAttribute('src',data)
         } else if (typeof data == 'string' && src_url.match(/png|jpg|jpeg|svg$/)) {
@@ -724,6 +763,10 @@ app.methods = {
     },
 
     addIndex(el, el_prop, key){
+
+        if (el_prop.match(/\{(.*?)\}/)){
+            return false
+        }
 
         if (el_prop && el_prop != null){
 
@@ -836,8 +879,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             }
 
-            // console.log(changes[i], currentPath, app.elements.foreach.index)
-
             if (watch[changes[i].currentPath]){ // fire any watch functions
                 watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue, currentPath)
             }
@@ -884,7 +925,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             }
 
-            // update any elements with hide
+            // update any elements with class
             if (app.elements.class.index[currentPath]){
                 app.elements.class.index[currentPath].forEach(function(el){
                     app.methods.addClass(el)
