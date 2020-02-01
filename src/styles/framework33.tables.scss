@@ -53,7 +53,6 @@ table.no-style td {
 .table .row {
     display:table-row;
     font-size: 1rem;
-    margin:0 1rem 1rem 0;
     width:100%;
     word-wrap: break-word;
 }
@@ -72,10 +71,21 @@ table.no-style td {
     position:relative;
     vertical-align:top;
     display:table-cell;
-    margin:0 1rem 1rem 0;
-    padding:0.7rem;
+    padding-top:1rem;
+    padding-right:0.5rem;
+    padding-bottom:1rem;
+    padding-left:0.5rem;
     overflow:hidden;
     word-wrap:break-word;
+
+    &:first-child {
+        padding-left: 0;
+    }
+
+    &:last-child {
+        padding-right: 0;
+    }
+
 }
 
 .table .row .cell.middle {

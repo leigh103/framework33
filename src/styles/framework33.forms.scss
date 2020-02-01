@@ -10,40 +10,15 @@
 
 input[type=text],input[type=password],input[type=email],input[type=file],input[type=date],input[type=color],input[type=number],input[type=month],input[type=search],input[type=tel],input[type=time],input[type=url],input[type=week],input[type=range] {
     position:relative;
-    width:100%;
+    width: 100%;
     font:inherit;
     padding:0.55rem;
     border:none;
-    border:1px solid #ccc;
-    margin-bottom:1%;
+    height: 1.95rem;
 }
 
-input.no-border {
-    border: none;
-    padding:0.55rem;
-    margin-bottom:1%;
-}
-
-input.no-margin {
-    margin:0;
-}
-
-input.no-padding {
-    padding:0
-}
-
-input.inline {
-    width:80%;
-}
-
-input.bold {
-    font-weight:bold;
-}
-
-.content input[type=text] + a {
-    position:relative;
-    top:-1.5rem;
-    margin-left:0.5rem;
+input.border {
+    border: 1px solid #f2f2f2;
 }
 
 textarea {
@@ -84,45 +59,6 @@ select.valid,input.valid,textarea.valid {
 
 select.invalid,input.invalid,textarea.invalid {
     border:1px solid rgb(222, 72, 72)
-}
-
-input[type=text].inline {
-    width:calc(100% - 100px);
-     height:34px
-}
-
-input[type=text].inline + button {
-    position:relative;
-    width:100px;
-    box-shadow:none;
-    margin:0;
-    padding:calc(0.7rem + 0.5px);
-    top:1px;
-}
-
-input[type=submit] {
-    padding:1rem;
-    border:0 none;
-    cursor:pointer;
-    -webkit-border-radius:5px;
-    border-radius:5px;
-    margin-bottom:0.2rem;
-}
-
-input[type=submit].red {
-    background:#c40000;
-}
-
-input[type=submit].blue {
-    background:#0000c4;
-}
-
-input[type=submit].green {
-    background:#00c400;
-}
-
-input[type=submit].grey {
-    background:#ccc;
 }
 
 select {

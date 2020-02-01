@@ -8,77 +8,86 @@
 </head>
 <body>
 
-    <section class="hero bg-ruby text-white text-middle p-s-2">
+    <section class="hero bg-33-topaz text-33-white text-middle p-s-2">
 
-        <h1 class="biggest">Framework33</h1>
-        <img app-src="view.image">
-        <h4 class="text-light" anim="{'enter':'move-down','exit':'fade-out','duration':'5s','easing':'ease'}">A Simple CSS and ECMA Script Framework</h4>
-        <a app-init="getThings()" class="mt-2" app-class="view.test.test1"><span app-bind="getName('This is some text')"></span></a>
+        <h1 class="biggest"><span class="inline-block" anim="{'enter':'move-down','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'1s'}">Frame</span><span class="inline-block" anim="{'enter':'move-up','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'1s'}">work33</h1>
+        <h4 class="text-light"anim="{'enter':'fade-in','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'2s'}">A Simple CSS and ECMA Script Framework</h4>
+        <a anim="{'enter':'move-down','exit':'fade-out','duration':'1s','easing':'ease','delay':'3s'}" class="mt-2" app-class="view.text.class"><span app-bind="getName('This is text added in by a function')"></span></a>
 
     </section>
 
-    <section class="p-5 p-m-3 p-s-2 bg-light-grey">
+    <section class="mt-2 mb-4">
 
         <div class="row contain">
             <div class="block-20 block-m-50 block-s-100 margin align-top text-right text-s-left pr-2">
-                <div>
-                    <div class="border p-1 clickable" app-for="item in menu_items">
-                        <span app-click="item.panel = panel" app-bind="item.name" app-class="item.class" class="text-italic"></span>
+                <div class="py-1-children">
+                    <div class="clickable" app-for="item in menu_items" app-click="panel = item">
+                        <span app-bind="item.name" app-class="item.class" class="text-italic"></span>
                     </div>
                 </div>
                 <div class="mt-2">
                     <a class="btn" app-click="menuItems()">Add to Menu</a>
                 </div>
             </div>
-            <div class="block-80 block-m-50 block-s-100 margin align-top text-left" app-bind="panel">
-
+            <div class="block-80 block-m-50 block-s-100 margin align-top text-left">
+                <div class="vh50 overflow-hidden mb-1">
+                    <img app-src="panel.img" src="https://i.imgur.com/a0bs8oJ.jpg" class="object-fit">
+                </div>
+                <div app-bind="panel.panel"></div>
             </div>
         </div>
 
     </section>
 
-    <section class="p-5 p-m-3 p-s-2 bg-white">
+    <section class="bg-33-light-grey py-9">
 
-        <input type="text" app-model="view.search" placeholder="Search names in the table"><br><br>
+        <div class="contain">
 
-        <div class="table text-left">
-            <div class="row text-bold">
-                <div class="cell middle clickable" app-click="sortTable('name.first')">Name</div>
-                <div class="cell middle clickable" app-click="sortTable('description')">Description</div>
-                <div class="cell middle clickable" app-click="sortTable('gender')">Gender</div>
-                <div class="cell middle clickable" app-click="sortTable('age')">Age</div>
-                <div class="cell middle text-right">Action</div>
+            <div>
+                <input type="text" app-model="view.search" placeholder="Search names in the table"><br><br>
             </div>
-            <div class="row" app-for="item in filteredTable">
-                <div class="cell middle text-bold" app-bind="parseName(item.name)"></div>
-                <div class="cell middle" app-bind="item.description"></div>
-                <div class="cell middle" app-bind="item.gender"></div>
-                <div class="cell middle" app-bind="item.age"></div>
-                <div class="cell middle text-right">
-                    <button app-click="edit('table_items',item)">Edit</button>
-                    <button app-click="delete('table_items',item)">Delete</button>
+            <div class="table text-left">
+                <div class="row text-bold border-bottom">
+                    <div class="cell middle clickable" app-click="sortTable('name.first')">Name</div>
+                    <div class="cell middle clickable" app-click="sortTable('description')">Description</div>
+                    <div class="cell middle clickable" app-click="sortTable('gender')">Gender</div>
+                    <div class="cell middle clickable" app-click="sortTable('age')">Age</div>
+                    <div class="cell middle text-right">Action</div>
                 </div>
-            </div>
-        </div>
-
-        <div class="table">
-            <div class="row">
-                <div class="cell middle">
-                    <div class="grid col-2">
-                        <div class="mr-1">
-                            <input type="text" app-model="new.name.first" placeholder="First name">
-                        </div>
-                        <div>
-                            <input type="text" app-model="new.name.last" placeholder="Last name">
-                        </div>
+                <div class="row" app-for="item in filteredTable">
+                    <div class="cell middle text-bold" app-bind="parseName(item.name)"></div>
+                    <div class="cell middle" app-bind="item.description"></div>
+                    <div class="cell middle" app-bind="item.gender"></div>
+                    <div class="cell middle" app-bind="item.age"></div>
+                    <div class="cell middle text-right">
+                        <button app-click="edit('table_items',item)" class="bg-33-blue">Edit</button>
+                        <button app-click="delete('table_items',item)" class="bg-33-blue">Delete</button>
                     </div>
                 </div>
-                <div class="cell middle"><input type="text" app-model="new.description" placeholder="Description"></div>
-                <div class="cell middle"><input type="text" app-model="new.gender" placeholder="Gender"></div>
-                <div class="cell middle"><input type="number" app-model="new.age" placeholder="Age"></div>
-                <div class="cell middle text-right" app-hide="view.save"><button class="btn btn-outline" app-click="addNew('table_items',new)">Add</button></div>
-                <div class="cell middle text-right" app-show="view.save"><button class="btn btn-outline" app-click="update('table_items',new)">Save</button></div>
             </div>
+
+            <div class="table">
+                <div class="row border-top">
+                    <div class="cell middle">
+                        <div class="grid col-2">
+                            <div class="mr-05">
+                                <input type="text" app-model="new.name.first" placeholder="First name">
+                            </div>
+                            <div class="ml-05">
+                                <input type="text" app-model="new.name.last" placeholder="Last name">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cell middle"><input type="text" app-model="new.description" placeholder="Description"></div>
+                    <div class="cell middle"><input type="text" app-model="new.gender" placeholder="Gender"></div>
+                    <div class="cell middle"><input type="number" app-model="new.age" placeholder="Age"></div>
+                    <div class="cell middle text-right">
+                        <button class="btn bg-33-green" app-hide="view.save" app-click="addNew('table_items',new)">Add</button>
+                        <button app-show="view.save" class="btn bg-33-green" app-click="update('table_items',new)">Save</button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
     </section>
@@ -102,7 +111,7 @@
     </section>
 
 
-    <section class="p-5 p-m-3 p-s-2 bg-dark-grey text-white text-left">
+    <section class="py-3 bg-33-dark-grey text-33-white text-left">
         <div class="row contain">
             <div class="block-33 block-s-100">
                 Footer<br>

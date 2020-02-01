@@ -75,8 +75,10 @@ div.background {
     margin:auto;
 }
 
-.container.contain,.row.contain {
+.contain {
     max-width: 1140px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .container > *, .row > * {

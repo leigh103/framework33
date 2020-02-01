@@ -197,87 +197,70 @@
 
 .grid.m-1 {
     grid-gap: 1rem;
-    margin: 0 0 1rem 0 !important
 }
 
 .grid.m-2 {
     grid-gap: 2rem;
-    margin: 0 0 2rem 0 !important
 }
 
 .grid.m-3 {
     grid-gap: 3rem;
-    margin: 0 0 3rem 0 !important
 }
 
 .grid.m-4 {
     grid-gap: 4rem;
-    margin: 0 0 4rem 0 !important
 }
 
 .grid.m-5 {
     grid-gap: 5rem;
-    margin: 0 0 5rem 0 !important
 }
 
 .grid.mx-05 {
     grid-gap: auto 0.5rem;
-    margin: 0 !important
 }
 
 .grid.mx-1 {
     grid-gap: auto 1rem;
-    margin: 0 !important
 }
 
 .grid.mx-2 {
     grid-gap: auto 2rem;
-    margin: 0 !important
 }
 
 .grid.mx-3 {
     grid-gap: auto 3rem;
-    margin: 0 !important
 }
 
 .grid.mx-4 {
     grid-gap: auto 4rem;
-    margin: 0 !important
 }
 
 .grid.mx-5 {
     grid-gap: auto 5rem;
-    margin: 0 !important
 }
 
 .grid.my-05 {
     grid-gap: 0.5rem auto;
-    margin: 0 0 0.5rem 0 !important
 }
 
 .grid.my-1 {
     grid-gap: 1rem auto;
-    margin: 0 0 1rem 0 !important
 }
 
 .grid.my-2 {
     grid-gap: 2rem auto;
-    margin: 0 0 2rem 0 !important
 }
 
 .grid.my-3 {
     grid-gap: 3rem auto;
-    margin: 0 0 3rem 0 !important
 }
 
 .grid.my-4 {
     grid-gap: 4rem auto;
-    margin: 0 0 4rem 0 !important
 }
 
 .grid.my-5 {
     grid-gap: 5rem auto;
-    margin: 0 0 5rem 0 !important
 }
 
 @include medium {

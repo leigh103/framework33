@@ -4,7 +4,8 @@ controller = () => {
 
     scope.new = {}
     scope.view = {}
-    scope.view.test = {}
+    scope.view.text = {}
+    scope.view.text.class = "text-bold"
     scope.view.asc = true
 
     scope.view.image = 'http://davidrozman.reformedreality.com/images/avatars/Test-Account2-1580413246402.png'
@@ -47,11 +48,11 @@ controller = () => {
 
     }
 
-    scope.panel = false
+    scope.panel = 'Start'
     scope.menu_items = [
-        {name: 'Welcome', panel:'Hi there', class:"text-green"},
-        {name: 'What\'s it about?', panel:'<h1>What\'s it about?</h1>Something here', class:"text-bold"},
-        {name: 'Responsive', panel:'Something else here', class:"text-red"}
+        {name: 'Welcome', panel:'Hi there', class:"text-green", img:"https://i.imgur.com/4Kuye6W.jpg"},
+        {name: 'What\'s it about?', panel:'<h1>What\'s it about?</h1>Something here', class:"text-bold", img:"https://i.imgur.com/emBm6jv.jpg"},
+        {name: 'Responsive', panel:'Something else here', class:"text-red", img:"https://i.imgur.com/l49aYS3.jpg"}
     ]
 
     scope.menuItems = function(){
@@ -122,7 +123,7 @@ controller = () => {
     }
 
     scope.update = function(collection, obj){
-console.log(obj)
+
         if (obj){
             scope[collection][scope.view.save_id] = JSON.parse(JSON.stringify(obj))
             scope.filteredTable = []
@@ -192,6 +193,10 @@ console.log(obj)
         for (var i in scope.new){
             scope.new[i] = ''
         }
+    }
+
+    scope.getName = function(text){
+        return text+'!'
     }
 
     scope.getHrs = function() {

@@ -76,7 +76,10 @@ img.inline {
 
 .object-fit img, img.object-fit,.object-fit video, video.object-fit {
     display:block;
-    object-fit: cover
+    object-fit: cover;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
 }
 
 background {
@@ -938,12 +941,12 @@ a.mobile-hide,span.mobile-hide {
 @import '../styles/framework33.layout.scss';
 @import '../styles/framework33.flex.scss';
 @import '../styles/framework33.typography.scss';
-// @import '../styles/framework33.colors.scss';
+@import '../styles/framework33.colors.scss';
 @import '../styles/framework33.grid.scss';
 @import '../styles/framework33.blocks.scss';
-@import '../styles/framework33.padding.scss';
-@import '../styles/framework33.margin.scss';
 @import '../styles/framework33.buttons.scss';
 @import '../styles/framework33.forms.scss';
 @import '../styles/framework33.animations.scss';
 @import '../styles/framework33.app.scss';
+@import '../styles/framework33.padding.scss';
+@import '../styles/framework33.margin.scss';

@@ -150,15 +150,14 @@ app.methods = {
     setValue(obj, path, val) {
 
         path = path.split(".")
-        // console.log('setting', path, val)
+
         let result = path.reduce(
                         function(obj_ref, name){
 
-                            if (!obj_ref[name]){
+                            if (obj_ref && !obj_ref[name]){
                                 obj_ref[name] = {}
                             }
                             if (obj_ref && typeof obj_ref[path[path.length-1]] != 'undefined'){
-
                                 obj_ref[path[path.length-1]] = val
                             } else if (obj_ref && obj_ref[name]){
                                 return obj_ref[name]
@@ -301,12 +300,6 @@ app.methods = {
                 key = matches[1],
                 val = matches[3].replace(/\"|\'$g/,''),
                 val_root = ''
-
-            // if (index){ // if using a value from a for loop
-            //     val_root = val.split('.')[0]
-            //     let str = 'app.elements.foreach.loops.'+val_root+'['+index+'].'+val
-            //     val = eval(str)
-            // }
 
             if (val.match(/^!/)){
 
@@ -549,6 +542,14 @@ app.methods = {
                                     self.el.innerHTML = app.methods.getValue(self, self.el.getAttribute('app-bind'))
                                 }
 
+                                if (self.el.hasAttribute('app-click')){
+                                    self.el.removeEventListener('click',app.methods.clickElement)
+
+                                    self.el.addEventListener('click', function(){
+                                        app.methods.clickElement(self.el, self_key, self)
+                                    })
+                                }
+
                                 if (self.el.hasAttribute('app-value')){
                                     self.el.value = app.methods.getValue(self, self.el.getAttribute('app-value'))
                                 }
@@ -709,10 +710,12 @@ app.methods = {
 
         var el_prop = el.getAttribute('app-src'),
             src_url = app.methods.getValue(scope, el_prop)
-
+            
         if (typeof data == 'string' && data.match(/png|jpg|jpeg|svg$/)){
             el.setAttribute('src',data)
         } else if (typeof data == 'string' && src_url.match(/png|jpg|jpeg|svg$/)) {
+            el.setAttribute('src',src_url)
+        } else if (src_url.match(/png|jpg|jpeg|svg$/)) {
             el.setAttribute('src',src_url)
         }
 
@@ -1076,7 +1079,7 @@ const inView = (el) => {
     }
 
     if (!trigger_bottom){
-        trigger_bottom = viewport_h - 100
+        trigger_bottom = viewport_h - 200
     } else {
         trigger_bottom = viewport_h * (parseFloat(trigger_bottom.replace('%',''))/100)
         trigger_bottom = viewport_h - trigger_bottom
@@ -1109,7 +1112,9 @@ const inViewChk = () => {
 const applyInViewClass = (el) => {
 
     if (el.classList.contains("exit-view")){
-        el.classList.remove('exit-view')
+        setTimeout(function(){ // stop flickering
+            el.classList.remove('exit-view')
+        },1000)
     }
 
     if (!el.classList.contains("in-view")){
@@ -1152,40 +1157,7 @@ const applyExitViewClass = (el) => {
 
 }
 
-let document_navs = document.getElementsByClassName("nav");
-for (let i = 0; i < document_navs.length; i++) {
-    document_navs[i].addEventListener('click', showNavLinks, false);
-}
 
-function showNavLinks() {
-    this.classList.toggle("open");
-}
-let document_nav_bars = document.getElementsByClassName("nav-bar");
-for (let i = 0; i < document_nav_bars.length; i++) {
-    document_nav_bars[i].addEventListener('click', showNavBarLinks, false);
-}
-
-function showNavBarLinks() {
-    this.classList.toggle("open");
-}
-
-document.onclick = function(event) {
-    let hasParent = false;
-    for (let node = event.target; node != document.body; node = node.parentNode) {
-        if (node && node.classList && node.classList.contains('nav') || node.classList.contains('nav-bar')) {
-            hasParent = true;
-            break;
-        }
-    }
-    if (hasParent) {} else {
-        for (let i = 0; i < document_navs.length; i++) {
-            document_navs[i].classList.remove('open');
-        }
-        for (let i = 0; i < document_nav_bars.length; i++) {
-            document_nav_bars[i].classList.remove('open');
-        }
-    }
-};
 
 window.onresize = function(event) {
     let ch_height = 0;
