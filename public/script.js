@@ -2,50 +2,51 @@
 
 controller = () => {
 
-    scope.clients = []
-    scope.filteredClients = []
+    scope.new = {}
     scope.view = {}
     scope.view.test = {}
-    scope.view.search = ''
+    scope.view.asc = true
+
     scope.view.image = 'http://davidrozman.reformedreality.com/images/avatars/Test-Account2-1580413246402.png'
+
+    scope.view.search = ''
 
     watch['view.search'] = function(newData, oldData){
 
-        if (newData.length > 2){
+        if (newData.length > 0){
 
-            if (scope.clients){
+            if (scope.table_items){
 
-                scope.filteredClients = []
-                let clients = scope.clients.slice(0)
+                scope.filteredTable = []
+                let table_items = scope.table_items.slice(0)
 
-                clients.map(function (client) {
+                table_items.map(function (table_item) {
 
                     let re = RegExp(newData,'i')
 
-                    client.name_full = ''
-                    if (client.name.first && client.name.last){
-                        client.name_full = client.name.first+' '+client.name.last
+                    table_item.name_full = ''
+                    if (table_item.name.first && table_item.name.last){
+                        table_item.name_full = table_item.name.first+' '+table_item.name.last
                     }
 
-                    if (client.name_full.match(re) ||
-                        client.email && client.email.match(re) ||
-                        client.tel && client.tel.match(re)
-                    ) {
-                        console.log(client)
-                        scope.filteredClients.push(client)
+                    if (table_item.name_full.match(re)) {
+                        scope.filteredTable.push(table_item)
                     }
 
                 })
 
             }
 
+        } else {
+            scope.filteredTable = []
+            scope.table_items.map(function (table_item) {
+                scope.filteredTable.push(table_item)
+            })
+
         }
 
     }
-    scope.view.selected_customer = ''
-    scope.view.selected_customer_id = '393okk39393e.99w9_'
-    scope.view.test.test1 = "text-blue"
-    scope.test = "Start"
+
     scope.panel = false
     scope.menu_items = [
         {name: 'Welcome', panel:'Hi there', class:"text-green"},
@@ -57,21 +58,140 @@ controller = () => {
         scope.menu_items.push({name: 'New Page', panel:'Hi there', class:"text-green"})
     }
 
-    scope.gotoPanel = (panel, name)=>{
-    }
-
-    scope.getName = function(name, name2){
-        return name
-    }
-
-    scope.parseDate = function(data){
-        scope.menu_items = [
-            {name: 'Welcome', panel:'Hi there', class:"text-red"},
-            {name: 'What\'s it about?', panel:'<h1>What\'s it about?</h1>Something here', class:"text-light"},
-            {name: 'Responsive', panel:'Something else here', class:"text-green"}
+    if (localStorage.getItem('table_items')){
+        scope.table_items = JSON.parse(localStorage.getItem('table_items'))
+    } else {
+        scope.table_items = [
+            {id:0,name:{first:'Lee',last:'Roberts'},description:'An exemplary employee',gender:'male',age:35},
+            {id:1,name:{first:'Dilbert',last:'Andrews'},description:'An good employee',gender:'male',age:34},
+            {id:3,name:{first:'Katie',last:'Roberts'},description:'An exemplary employee',gender:'female',age:33},
+            {id:4,name:{first:'Scott',last:'Peterson'},description:'An exemplary employee',gender:'male',age:34},
+            {id:6,name:{first:'Bredan',last:'McCaffery'},description:'A medium employee',gender:'male',age:32},
+            {id:7,name:{first:'Jo',last:'Anderson'},description:'An good employee',gender:'female',age:31},
+            {id:8,name:{first:'Sam',last:'Gamgee'},description:'An ok employee',gender:'male',age:30},
+            {id:9,name:{first:'David',last:'Rozmand'},description:'An exemplary employee',gender:'male',age:45},
+            {id:10,name:{first:'Sean',last:'Holtby'},description:'An exemplary employee',gender:'male',age:44},
+            {id:11,name:{first:'Andy',last:'Burnham'},description:'An ok employee',gender:'female',age:43},
+            {id:12,name:{first:'Dan',last:'Bold'},description:'An exemplary employee',gender:'male',age:42},
+            {id:13,name:{first:'Sarah',last:'Frederik'},description:'An exemplary employee',gender:'female',age:41},
+            {id:14,name:{first:'Mike',last:'Haggis'},description:'An ok employee',gender:'male',age:40},
+            {id:15,name:{first:'Robert',last:'Bartrum'},description:'An terrible employee',gender:'male',age:39}
         ]
-        scope.menu_items.push({name: data, panel:'Something else here', class:"text-red"})
+    }
 
+
+    scope.filteredTable = scope.table_items
+
+
+    scope.addNew = function(collection, obj){
+
+        if (obj){
+            let new_obj = JSON.parse(JSON.stringify(obj))
+            scope[collection].push(new_obj)
+            scope.filteredTable = []
+            scope.table_items.map(function (table_item) {
+                scope.filteredTable.push(table_item)
+            })
+            scope.resetNew()
+            scope.saveTable(scope.table_items)
+        }
+
+    }
+
+    scope.delete = function(collection, obj){
+
+        let i = scope[collection].indexOf(obj)
+
+        if (i >= 0){
+            scope[collection].splice(i,1)
+            scope.filteredTable = []
+            scope.table_items.map(function (table_item) {
+                scope.filteredTable.push(table_item)
+            })
+            scope.saveTable(scope.table_items)
+        }
+
+    }
+
+    scope.edit = function(collection, obj){
+
+        scope.view.save_id = scope[collection].indexOf(obj)
+        scope.new = obj
+        scope.view.save = true
+
+    }
+
+    scope.update = function(collection, obj){
+console.log(obj)
+        if (obj){
+            scope[collection][scope.view.save_id] = JSON.parse(JSON.stringify(obj))
+            scope.filteredTable = []
+            scope.table_items.map(function (table_item) {
+                scope.filteredTable.push(table_item)
+            })
+            scope.resetNew()
+            setTimeout(function(){
+                scope.view.save_id = ''
+                scope.saveTable(scope.table_items)
+            },500)
+
+        }
+
+    }
+
+    scope.saveTable = function(obj){
+        localStorage.setItem('table_items',JSON.stringify(obj))
+    }
+
+    scope.sortTable = function(field, asc){
+
+        field = field.split('.');
+        var len = field.length;
+
+        if (scope.view.asc){
+
+            scope.filteredTable.sort(function (a, b) {
+                var i = 0;
+                while( i < len ) { a = a[field[i]]; b = b[field[i]]; i++; }
+                if (a < b) {
+                    return -1;
+                } else if (a > b) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            })
+
+            scope.view.asc = false
+
+        } else {
+
+            scope.filteredTable.sort(function (b, a) {
+                var i = 0;
+                while( i < len ) { a = a[field[i]]; b = b[field[i]]; i++; }
+                if (a < b) {
+                    return -1;
+                } else if (a > b) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            })
+
+            scope.view.asc = true
+
+        }
+
+    }
+
+    scope.sortTable('name.last')
+
+    scope.resetNew = function(){
+        scope.view.save = false
+        let new_obj = []
+        for (var i in scope.new){
+            scope.new[i] = ''
+        }
     }
 
     scope.getHrs = function() {
@@ -130,52 +250,11 @@ controller = () => {
 
     }
 
-    scope.parseService = function(obj){
+    scope.parseName = function(obj){
         if (obj){
-            return obj.first+' - £'+obj.last
+            return obj.first+' '+obj.last
         }
 
     }
 
-    scope.appointments = [
-        {start_time:'',duration:0,service:'75',staff_id:0}
-    ]
-
-    scope.newAppointment = function(){
-        scope.appointments.push({start_time:'',duration:0,service:'',staff_id:0})
-    }
-
-    scope.getThings = function(){
-
-    //    setTimeout(function(){
-
-
-        scope.salon =[
-          {
-            name: {
-                first: "hair",
-                last:"cut"
-            },
-            price: "50"
-          },
-          {
-              name: {
-                  first: "haircut",
-                  last:"and color"
-              },
-            price: "75"
-          },
-          {
-              name: {
-                  first: "cut",
-                  last:"and dry"
-              },
-            price: "65"
-          }
-        ]
-
-
-//    },2000)
-
-}
 }

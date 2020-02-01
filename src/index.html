@@ -19,13 +19,15 @@
 
     <section class="p-5 p-m-3 p-s-2 bg-light-grey">
 
-        <input type="text" app-model="view.selected_customer"><br>
-        <span app-bind="view.selected_customer"></span>
-
         <div class="row contain">
             <div class="block-20 block-m-50 block-s-100 margin align-top text-right text-s-left pr-2">
-                <div class="border p-1 clickable" app-for="item in menu_items">
-                    <span app-click="view.selected_customer = item" app-bind="item.name" app-class="item.class" class="text-italic"></span>
+                <div>
+                    <div class="border p-1 clickable" app-for="item in menu_items">
+                        <span app-click="item.panel = panel" app-bind="item.name" app-class="item.class" class="text-italic"></span>
+                    </div>
+                </div>
+                <div class="mt-2">
+                    <a class="btn" app-click="menuItems()">Add to Menu</a>
                 </div>
             </div>
             <div class="block-80 block-m-50 block-s-100 margin align-top text-left" app-bind="panel">
@@ -37,10 +39,46 @@
 
     <section class="p-5 p-m-3 p-s-2 bg-white">
 
-        <input type="text" app-model="view.search"><br><br>
-        <span app-bind="view.search"></span><br><br>
-        <div class="border p-1 clickable" app-for="item in filteredClients">
-            <span app-bind="item.name.first"></span> <span app-bind="item.name.last"></span> <span app-bind="item.email"></span> <span app-bind="item.tel"></span>
+        <input type="text" app-model="view.search" placeholder="Search names in the table"><br><br>
+
+        <div class="table text-left">
+            <div class="row text-bold">
+                <div class="cell middle clickable" app-click="sortTable('name.first')">Name</div>
+                <div class="cell middle clickable" app-click="sortTable('description')">Description</div>
+                <div class="cell middle clickable" app-click="sortTable('gender')">Gender</div>
+                <div class="cell middle clickable" app-click="sortTable('age')">Age</div>
+                <div class="cell middle text-right">Action</div>
+            </div>
+            <div class="row" app-for="item in filteredTable">
+                <div class="cell middle text-bold" app-bind="parseName(item.name)"></div>
+                <div class="cell middle" app-bind="item.description"></div>
+                <div class="cell middle" app-bind="item.gender"></div>
+                <div class="cell middle" app-bind="item.age"></div>
+                <div class="cell middle text-right">
+                    <button app-click="edit('table_items',item)">Edit</button>
+                    <button app-click="delete('table_items',item)">Delete</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="table">
+            <div class="row">
+                <div class="cell middle">
+                    <div class="grid col-2">
+                        <div class="mr-1">
+                            <input type="text" app-model="new.name.first" placeholder="First name">
+                        </div>
+                        <div>
+                            <input type="text" app-model="new.name.last" placeholder="Last name">
+                        </div>
+                    </div>
+                </div>
+                <div class="cell middle"><input type="text" app-model="new.description" placeholder="Description"></div>
+                <div class="cell middle"><input type="text" app-model="new.gender" placeholder="Gender"></div>
+                <div class="cell middle"><input type="number" app-model="new.age" placeholder="Age"></div>
+                <div class="cell middle text-right" app-hide="view.save"><button class="btn btn-outline" app-click="addNew('table_items',new)">Add</button></div>
+                <div class="cell middle text-right" app-show="view.save"><button class="btn btn-outline" app-click="update('table_items',new)">Save</button></div>
+            </div>
         </div>
 
     </section>
@@ -63,47 +101,6 @@
 
     </section>
 
-<div>
-        <section class="p-5 p-m-3 p-s-2 bg-light-grey" app-show="view.selected_customer">
-
-            <div class="form-wrap grid col-12 mt-2" app-for="appointment in appointments">
-
-                <select app-model="appointment.service">
-                    <option value="">Start...</option>
-                    <option app-for="service in salon" app-value="service.price" app-bind="parseService(service.name)"></option>
-                </select>
-
-                <select>
-                    <option app-for="hr in getHrs()" app-bind="hr"></option>
-                </select>
-                <select>
-                    <option app-for="hr in getHrs()" app-bind="hr"></option>
-                </select>
-                <select>
-
-                    <option app-for="min in getMins()" app-bind="min"></option>
-
-                </select>
-
-                <select>
-
-                    <option app-for="min in getMins" app-bind="min"></option>
-
-                </select>
-
-            </div>
-
-
-        </section>
-
-        <section class="p-5 p-m-3 p-s-2 bg-light-grey" app-show="view.selected_customer">
-
-                <span app-bind="view.selected_customer"></span>
-
-
-        </section>
-</div>
-        <a class="btn" app-click="menuItems()">Add +</a>
 
     <section class="p-5 p-m-3 p-s-2 bg-dark-grey text-white text-left">
         <div class="row contain">

@@ -150,16 +150,21 @@ app.methods = {
     setValue(obj, path, val) {
 
         path = path.split(".")
+        // console.log('setting', path, val)
         let result = path.reduce(
-                            function(obj_ref, name){
+                        function(obj_ref, name){
 
-                                if (obj_ref && typeof obj_ref[path[path.length-1]] != 'undefined'){
-                                    obj_ref[path[path.length-1]] = val
-                                } else if (obj_ref && obj_ref[name]){
-                                    return obj_ref[name]
-                                }
+                            if (!obj_ref[name]){
+                                obj_ref[name] = {}
+                            }
+                            if (obj_ref && typeof obj_ref[path[path.length-1]] != 'undefined'){
 
-                            }, obj)
+                                obj_ref[path[path.length-1]] = val
+                            } else if (obj_ref && obj_ref[name]){
+                                return obj_ref[name]
+                            }
+
+                        }, obj)
 
     },
 
@@ -341,7 +346,7 @@ app.methods = {
 
     onChangeElement(el, index, data, init){
 
-        let attr, set_val
+        let attr, attr_val, set_val
 
         if (el.srcElement){
             el = el.srcElement
@@ -397,7 +402,7 @@ app.methods = {
 
 
         if (initial){ // for the initial render, don't run the loop, just add it to the index
-            app.methods.addIndex(el, el_prop.replace(/\.[0-9a-z]+/g,''), 'foreach')
+            app.methods.addIndex(el, el_prop, 'foreach') // .replace(/\.[0-9a-z]+/g,'')
             return false
         }
 
@@ -723,7 +728,7 @@ app.methods = {
 
             if (el_prop.match(/\sin\s/)){ // if the property is a foreach loop
 
-                el_prop = el_prop.split(/\sin\s/)[1].replace(/\./g,'_')
+                el_prop = el_prop.split(/\sin\s/)[1].replace(/\./g,'__')
 
             } else if (el_prop.match(/\s|=|!|<|>/)){ // if the property is an expression, get the object key we need to index
 
@@ -828,7 +833,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             }
 
-            // console.log(changes[i], currentPath)
+            // console.log(changes[i], currentPath, app.elements.foreach.index)
 
             if (watch[changes[i].currentPath]){ // fire any watch functions
                 watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue, currentPath)
@@ -953,7 +958,7 @@ window.addEventListener('load', () => {
     app.elements.model.nodes.forEach(function(el) {
 
         if (el.tagName == "INPUT") {
-            if (el.type == "text") {
+            if (el.type == "text" || el.type == "number" || el.type == "password") {
                 el.addEventListener('keyup', app.methods.onChangeElement)
             }
             if (el.type == "checkbox") {

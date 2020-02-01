@@ -3012,27 +3012,14 @@ blockquote p {
 
 button, .btn {
   display: inline-block;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
   position: relative;
   cursor: pointer;
-  background-color: #ccc;
+  background-color: #aaa;
   color: white;
   font-size: 0.9em;
   line-height: 1rem;
-  padding: 0.8rem 1.2rem 0.8rem 1.2rem;
-  border-radius: 2px;
-  border: none;
-  text-transform: uppercase; }
-
-a.btn {
-  position: relative;
-  top: 1px; }
-
-button a {
-  color: white !important; }
+  padding: 0.5rem 1.2rem 0.5rem 1.2rem;
+  border: none; }
 
 button:after, .btn:after {
   content: '';
@@ -3043,8 +3030,8 @@ button:after, .btn:after {
   left: 0;
   background-color: rgba(255, 255, 255, 0.3);
   opacity: 0;
-  transition: all 0.2s;
-  -webkit-transition: all 0.2s; }
+  transition: all 0.75s;
+  -webkit-transition: all 0.75s; }
 
 button:hover:after, .btn:hover:after {
   opacity: 1; }
@@ -3056,11 +3043,13 @@ button.shadow, .btn.shadow {
 
 .btn.btn-outline {
   background: none;
-  border: 3px solid #fff; }
+  border: 3px solid #aaa;
+  color: inherit; }
 
 .btn.btn-outline-dark {
   background: none;
-  border: 3px solid #444; }
+  border: 3px solid #444;
+  color: inherit; }
 
 *:focus {
   outline: none;
