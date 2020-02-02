@@ -1,14 +1,58 @@
 button,.btn {
-    display:inline-block;
+    display:inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    height: 2.188rem;
+    padding: 0 1em;
     position:relative;
     cursor:pointer;
     background-color:#aaa;
     color:white;
     font-size:0.9em;
-    line-height:1rem;
-    padding:0.5rem 1.2rem 0.5rem 1.2rem;
+    font-weight: 500;
+    line-height:1.2rem;
     border:none;
     margin:0;
+
+    &.rounded {
+        border-radius: 1.2rem;
+    }
+
+    &.rounded-left {
+        border-top-left-radius: 1.2rem;
+        border-bottom-left-radius: 1.2rem;
+    }
+
+    &.rounded-right {
+        border-top-right-radius: 1.2rem;
+        border-bottom-right-radius: 1.2rem;
+    }
+
+
+    &.thick {
+        height: 3rem;
+        padding: 0 1.6em;
+
+        &.rounded {
+            border-radius: 1.5rem;
+        }
+
+        &.rounded-left {
+            border-top-left-radius: 1.5rem;
+            border-bottom-left-radius: 1.5rem;
+        }
+
+        &.rounded-right {
+            border-top-right-radius: 1.5rem;
+            border-bottom-right-radius: 1.5rem;
+        }
+
+    }
+
+
+    &.border {
+        border: 1px solid #f2f2f2;
+    }
 }
 
 button:after,.btn:after  {

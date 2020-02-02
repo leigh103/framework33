@@ -7,6 +7,7 @@ controller = () => {
     scope.view.text = {}
     scope.view.text.class = "text-bold"
     scope.view.asc = true
+    scope.view.search_field = ''
 
     scope.view.image = 'http://davidrozman.reformedreality.com/images/avatars/Test-Account2-1580413246402.png'
 
@@ -30,9 +31,14 @@ controller = () => {
                         table_item.name_full = table_item.name.first+' '+table_item.name.last
                     }
 
-                    if (table_item.name_full.match(re)) {
+                    if (scope.view.search_field == 'name' && table_item.name_full.match(re) ||
+                        !scope.view.search_field && table_item.name_full.match(re)) {
+                        scope.filteredTable.push(table_item)
+                    } else if (scope.view.search_field && table_item[scope.view.search_field].match(re)) {
                         scope.filteredTable.push(table_item)
                     }
+
+
 
                 })
 
@@ -49,11 +55,11 @@ controller = () => {
     }
 
     scope.menu_items = [
-        {name: 'Welcome', panel:'<h1>Welcome</h1>Something here', img:"https://i.imgur.com/4Kuye6W.jpg"},
+        {name: 'Welcome', panel:'<h1>H1 Heading</h1><h2>H2 Heading</h2><h3>H3 Heading</h3><h4>Heading</h4><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Egestas sed sed risus pretium quam vulputate dignissim suspendisse in. Sed vulputate odio ut enim. Faucibus a pellentesque sit amet. Quam lacus suspendisse faucibus interdum posuere lorem. Porttitor massa id neque aliquam. Amet facilisis magna etiam tempor orci eu lobortis.</p><p>Integer eget aliquet nibh praesent tristique magna. Leo vel orci porta non pulvinar neque laoreet. Tincidunt tortor aliquam nulla facilisi cras. Ac turpis egestas maecenas pharetra convallis. Mattis vulputate enim nulla aliquet porttitor lacus luctus accumsan tortor.</p>', img:"https://i.imgur.com/4Kuye6W.jpg"},
         {name: 'What\'s it about?', panel:'<h1>What\'s it about?</h1>Something here', img:"https://i.imgur.com/emBm6jv.jpg"},
         {name: 'Responsive', panel:'<h1>Something Else</h1>Something else here', img:"https://i.imgur.com/l49aYS3.jpg"}
     ]
-    
+
     scope.panel = scope.menu_items[0]
 
     scope.menuItems = function(){

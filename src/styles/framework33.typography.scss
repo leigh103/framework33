@@ -14,7 +14,7 @@ a h1 {
 h1,h2,h3,h4 {
     margin:0;
     padding:0;
-     line-height: 1em
+    line-height: 1.2em
 }
 
 h1  {
@@ -38,30 +38,6 @@ h4,h1.small  {
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.4em
-}
-
-h1.big:not(.small), .big h1:not(.small),h1.text-big:not(.small), .text-big h1:not(.small)  {
-    font-size: 6rem;
-    font-weight: 700;
-}
-
-h2.big, .big h2,.text-big h2, h2.text-big  {
-    font-size: 4.5rem;
-    font-weight: 700;
-}
-
-h3.big, .big h3,.text-big h3, h3.text-big  {
-    font-size: 3rem;
-    font-weight: 700;
-}
-
-h4.big, .big h4,.text-big h4, h4.text-big  {
-    font-size: 2.5rem;
-    font-weight: 700;
-}
-
-.biggest {
-    font-size:8vw
 }
 
 h1.underline:after,h2.underline:after,h3.underline:after,h4.underline:after  {
@@ -173,36 +149,100 @@ highlight {
         columns:4;
     }
 
+    &-small {
+        font-size: 0.9rem;
+    }
+
+    @for $i from 1 through 5 {
+
+        &-small-#{$i} {
+            font-size:#{$i*2/100 + 0.8}rem
+        }
+
+    }
+
+    @for $i from 1 through 5 {
+
+        &-small-#{$i + 4} {
+            font-size:#{$i*2/100 + 0.88}rem
+        }
+
+    }
+
+    @for $i from 1 through 9 {
+
+        &-size-#{$i} {
+            font-size:#{$i}rem
+        }
+
+    }
+
+    &-ultra-light,
+    &-ultra-light * {
+        font-weight: 100
+    }
+
+    &-light,
+    &-light * {
+        font-weight: 200
+    }
+
+    &-normal,
+    &-normal * {
+        font-weight: 300
+    }
+
+    &-bold,
+    &-bold * {
+        font-weight: 600
+    }
+
+    @for $i from 1 through 9 {
+
+        &-width-#{$i} {
+            font-size:#{$i}vw
+        }
+
+    }
+
+    @for $i from 1 through 9 {
+
+        &-weight-#{$i * 100},
+        &-weight-#{$i * 100} *, {
+            font-weight:#{$i * 100}
+        }
+
+    }
 
     @include medium {
 
-        &-m-left {
+        &-left-m {
             text-align:left;
         }
 
-        &-m-center {
+        &-center-m {
             text-align:center;
         }
 
-        &-m-right {
+        &-right-m {
             text-align:right;
         }
 
-        &-m-justify {
+        &-justify-m {
             text-align:justify;
         }
 
-        &-m-justify:after {
+        &-justify-m:after {
             content:"";
             display:inline-block;
             width:100%;
         }
 
-        &-m-col p {
+        &-col-m p {
             margin-bottom:1.5rem;
         }
 
-        &-m-col {
+        &-col-m {
             min-height:initial;
             -webkit-column-gap:2rem;
             -moz-column-gap:2rem;
@@ -212,38 +252,70 @@ highlight {
             break-inside:avoid;
         }
 
-        &-m-col.span {
+        &-col-m.span {
             -webkit-column-span:all;
             column-span:all;
         }
 
-        &-m-col.span2 {
+        &-col-m.span2 {
             -webkit-column-span:2;
             column-span:2;
         }
 
-        &-m-col.x1 {
+        &-col-m.x1 {
             -webkit-columns:1;
             -moz-columns:1;
             columns:1;
         }
 
-        &-m-col.x2 {
+        &-col-m.x2 {
             -webkit-columns:2;
             -moz-columns:2;
             columns:2;
         }
 
-        &-m-col.x3 {
+        &-col-m.x3 {
             -webkit-columns:3;
             -moz-columns:3;
             columns:3;
         }
 
-        &-m-col.x4 {
+        &-col-m.x4 {
             -webkit-columns:4;
             -moz-columns:4;
             columns:4;
+        }
+
+        @for $i from 1 through 5 {
+
+            &-small-m-#{$i} {
+                font-size:#{$i*2/100 + 0.8}rem
+            }
+
+        }
+
+        @for $i from 1 through 5 {
+
+            &-small-m-#{$i + 4} {
+                font-size:#{$i*2/100 + 0.88}rem
+            }
+
+        }
+
+        @for $i from 1 through 9 {
+
+            &-size-m-#{$i} {
+                font-size:#{$i}rem
+            }
+
+        }
+
+        @for $i from 1 through 9 {
+
+            &-width-m-#{$i} {
+                font-size:#{$i}vw
+            }
+
         }
 
     }
@@ -251,33 +323,33 @@ highlight {
 
     @include small {
 
-        &-s-left {
+        &-left-s {
             text-align:left;
         }
 
-        &-s-center {
+        &-center-s {
             text-align:center;
         }
 
-        &-s-right {
+        &-right-s {
             text-align:right;
         }
 
-        &-s-justify {
+        &-justify-s {
             text-align:justify;
         }
 
-        &-s-justify:after {
+        &-justify-s:after {
             content:"";
             display:inline-block;
             width:100%;
         }
 
-        &-s-col p {
+        &-col-s p {
             margin-bottom:1.5rem;
         }
 
-        &-s-col {
+        &-col-s {
             min-height:initial;
             -webkit-column-gap:2rem;
             -moz-column-gap:2rem;
@@ -287,40 +359,72 @@ highlight {
             break-inside:avoid;
         }
 
-        &-s-col.span {
+        &-col-s.span {
             -webkit-column-span:all;
             column-span:all;
         }
 
-        &-s-col.span2 {
+        &-col-s.span2 {
             -webkit-column-span:2;
             column-span:2;
         }
 
-        &-s-col.x1 {
+        &-col-s.x1 {
             -webkit-columns:1;
             -moz-columns:1;
             columns:1;
         }
 
-        &-s-col.x2 {
+        &-col-s.x2 {
             -webkit-columns:2;
             -moz-columns:2;
             columns:2;
         }
 
-        &-s-col.x3 {
+        &-col-s.x3 {
             -webkit-columns:3;
             -moz-columns:3;
             columns:3;
         }
 
-        &-s-col.x4 {
+        &-col-s.x4 {
             -webkit-columns:4;
             -moz-columns:4;
             columns:4;
         }
-        
+
+        @for $i from 1 through 5 {
+
+            &-small-s-#{$i} {
+                font-size:#{$i*2/100 + 0.8}rem
+            }
+
+        }
+
+        @for $i from 1 through 5 {
+
+            &-small-s-#{$i + 4} {
+                font-size:#{$i*2/100 + 0.88}rem
+            }
+
+        }
+
+        @for $i from 1 through 9 {
+
+            &-size-s-#{$i} {
+                font-size:#{$i}rem
+            }
+
+        }
+
+        @for $i from 1 through 9 {
+
+            &-width-s-#{$i} {
+                font-size:#{$i}vw
+            }
+
+        }
+
     }
 
 }
@@ -331,42 +435,6 @@ highlight {
 
 .vertical-align-top {
     vertical-align:top;
-}
-
-.bold50, .text-weight-50, .text-ultra-light {
-    font-weight:50 !important;
-}
-
-.bold100, .text-weight-100, .text-light {
-    font-weight:100 !important;
-}
-
-.bold100, .text-weight-100, .text-light {
-    font-weight:100 !important;
-}
-
-.bold200, .text-weight-200 {
-    font-weight:200 !important;
-}
-
-.bold300, .text-weight-300, .text-normal {
-    font-weight:300 !important;
-}
-
-.bold400, .text-weight-400 {
-    font-weight:400 !important;
-}
-
-.bold600, .text-weight-600, .text-bold, .bold {
-    font-weight:600 !important;
-}
-
-.bold700, .text-weight-700 {
-    font-weight:700 !important;
-}
-
-.bold800, .text-weight-800 {
-    font-weight:800 !important;
 }
 
 .lh1 {
@@ -661,7 +729,7 @@ blockquote p  {
 @include small {
 
     html {
-       font-size: 3.6vw;
+       font-size: 3.6vw !important;
     }
 
     h1 span,h2 span,h3 span,h4 span  {

@@ -1,4 +1,4 @@
-@for $i from 1 through 9 {
+@for $i from 0 through 9 {
 
     $ii : $i/10;
 
@@ -36,7 +36,7 @@
     }
 }
 
-@for $i from 1 through 9 {
+@for $i from 0 through 9 {
     .m-#{$i}, .m-#{$i}-children > * {
         margin-top: #{$i}rem !important;
         margin-right: #{$i}rem !important;
@@ -70,7 +70,7 @@
         margin-right: #{$i}rem !important;
     }
 
-    @for $ii from 1 through 9 {
+    @for $ii from 0 through 9 {
 
         $iii : $ii/10 + $i;
 
@@ -113,7 +113,7 @@
 
 
 @include medium {
-    @for $i from 1 through 9 {
+    @for $i from 0 through 9 {
 
         $ii : $i/10;
 
@@ -151,7 +151,7 @@
         }
     }
 
-    @for $i from 1 through 5 {
+    @for $i from 0 through 5 {
         .m-m-#{$i}, .m-m-#{$i}-children > * {
             margin-top: #{$i}rem !important;
             margin-right: #{$i}rem !important;
@@ -185,7 +185,7 @@
             margin-right: #{$i}rem !important;
         }
 
-        @for $ii from 1 through 9 {
+        @for $ii from 0 through 9 {
 
             $iii : $ii/10 + $i;
 
@@ -228,7 +228,7 @@
 }
 
 @include small {
-    @for $i from 1 through 9 {
+    @for $i from 0 through 9 {
 
         $ii : $i/10;
 
@@ -266,7 +266,7 @@
         }
     }
 
-    @for $i from 1 through 5 {
+    @for $i from 0 through 5 {
         .m-s-#{$i}, .m-s-#{$i}-children > * {
             margin-top: #{$i}rem !important;
             margin-right: #{$i}rem !important;
@@ -300,7 +300,7 @@
             margin-right: #{$i}rem !important;
         }
 
-        @for $ii from 1 through 9 {
+        @for $ii from 0 through 9 {
 
             $iii : $ii/10 + $i;
 

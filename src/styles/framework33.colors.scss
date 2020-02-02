@@ -36,12 +36,16 @@
        color: rgba(18, 222, 173, 1)
     }
 
+    &-yellow {
+        color: #ffe650 !important
+    }
+
     &-light-grey {
-       color:#ccc;
+       color:#f2f2f2;
     }
 
     &-grey {
-       color:#aaa;
+       color:#ccc;
     }
 
     &-dark-grey {
@@ -92,7 +96,7 @@
     }
 
     &-yellow {
-        background-color: rgba(222, 195, 18, 1) !important
+        background-color: #ffe650 !important
     }
 
     &-orange {
@@ -104,15 +108,15 @@
     }
 
     &-dark-grey {
-        background-color: rgba(50,50,50,1) !important
+        background-color: #323232 !important
     }
 
     &-grey {
-        background-color: rgba(120,120,120,1) !important
+        background-color: #c2c2c2 !important
     }
 
     &-light-grey {
-        background-color: rgba(240,240,240,1) !important
+        background-color: #f2f2f2 !important
     }
 
     &-white {

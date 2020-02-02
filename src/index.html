@@ -4,27 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Framework33 | CSS and ECMA Script Framework</title>
-
+    <script src="https://kit.fontawesome.com/e7faa1906b.js" crossorigin="anonymous"></script>
     <style>
         .active {
-            border-bottom: 2px solid blue;
+            -webkit-box-shadow: inset 0px -2px 0px 0px rgba(4,213,220,1);
+            -moz-box-shadow: inset 0px -2px 0px 0px rgba(4,213,220,1);
+            box-shadow: inset 0px -2px 0px 0px rgba(4,213,220,1);
         }
     </style>
 
 </head>
 <body>
 
-    <section class="hero bg-33-topaz text-33-white flex middle p-s-2">
+    <section class="hero bg-33-topaz flex flex-middle text-33-white">
 
-        <div class="">
-            <h1 class="biggest"><span class="inline-block" anim="{'enter':'move-down','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'1s'}">Frame</span><span class="inline-block" anim="{'enter':'move-up','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'1s'}">work33</h1>
-            <h4 class="text-light"anim="{'enter':'fade-in','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'2s'}">A Simple CSS and ECMA Script Framework</h4>
-            <a anim="{'enter':'move-down','exit':'fade-out','duration':'1s','easing':'ease','delay':'3s'}" class="mt-2" app-class="view.text.class"><span app-bind="getName('This is text added in by a function')"></span></a>
+        <div class="contain flex">
+            <div class="text-left text-center-m flex-2">
+                <h1 class="text-size-5 text-size-s-3"><span class="inline-block" anim="{'enter':'move-down','exit':'fade-out','duration':'1s','easing':'ease-in'}">Frame</span><span class="inline-block" anim="{'enter':'move-up','exit':'fade-out','duration':'1s','easing':'ease-in'}">work33</h1>
+                <h4 class="text-light" anim="{'enter':'fade-in','exit':'fade-out','duration':'1s','easing':'ease', 'delay':'2s'}">A Simple CSS and ECMA Script Framework</h4>
+                <h4 class="text-light" anim="{'enter':'move-down','exit':'fade-out','duration':'1s','easing':'ease','delay':'3s'}"><span app-bind="getName('With a sprinkle of reactivity')"></span></a>
+            </div>
+
+            <div class="text-right flex-1 hidden-m hidden-s">
+            </div>
         </div>
 
     </section>
 
-    <section class="mt-2 mb-4 px-m-2 px-s-2">
+    <section class="py-4">
 
         <div class="row contain">
 
@@ -33,9 +40,6 @@
                     <div class="clickable" app-for="item in menu_items" app-click="panel = item" app-class="{active:panel == item}">
                         <span app-bind="item.name" app-class="item.class"></span>
                     </div>
-                </div>
-                <div class="mt-2">
-                    <a class="btn" app-click="menuItems()">Add to Menu</a>
                 </div>
             </div>
 
@@ -46,22 +50,41 @@
             </div>
 
             <div class="block-80 block-s-100 align-top text-left">
-                <div class="vh-25 overflow-hidden mb-1">
+                <div class="h-10 overflow-hidden mb-1">
                     <img app-src="panel.img" src="https://i.imgur.com/a0bs8oJ.jpg" class="object-fit">
                 </div>
-                <div app-bind="panel.panel"></div>
+                <div app-bind="panel.panel">
+
+
+                </div>
             </div>
 
         </div>
 
     </section>
 
-    <section class="bg-33-light-grey py-9 px-m-2 px-s-2">
+    <section class="bg-33-light-grey py-4">
 
-        <div class="contain">
+        <div class="contain text-left">
 
-            <div>
-                <input type="text" app-model="view.search" placeholder="Search names in the table"><br><br>
+            <h2>Reactive Tables</h2>
+
+            <p>Using object arrays, Framework33 can add, update, delete and sort tables with ease. Try searching the data, adding a new row and also sorting the data by clicking on the column headings. <span app-show="view.search_field">Currently searching on: <span app-bind="view.search_field"></span></span></p>
+
+            <div class="mt-3 flex mb-3">
+                <div class="flex-4 flex">
+                    <button class="btn bg-33-white"><i class="fas fa-search text-33-grey"></i></button>
+                    <input type="text" class="pl-0" placeholder="Search table data" app-model="view.search">
+                </div>
+                <div class="flex-1">
+                    <select app-model="view.search_field">
+                        <option selected disabled value="">Select search field...</option>
+                        <option value="name">Name</option>
+                        <option value="description">Description</option>
+                        <option value="gender">Gender</option>
+                        <option value="age">Age</option>
+                    </select>
+                </div>
             </div>
             <div class="table text-left">
                 <div class="row text-bold border-bottom">
@@ -109,7 +132,7 @@
 
     </section>
 
-    <section class="p-5 px-m-2 p-s-2 bg-white">
+    <section class="py-4">
 
         <div class="row contain">
             <div anim="{'enter':'move-up','exit':'move-up', 'duration':'200ms'}" class="block-33 block-s-100 p-2">
@@ -127,8 +150,97 @@
 
     </section>
 
+    <section class="bg-33-light-grey py-4">
 
-    <section class="py-3 px-m-2 bg-33-dark-grey text-33-white text-left">
+        <div class="contain text-left">
+
+            <h2>Forms</h2>
+
+            <p>Using grid and flex, you can create a great looking form. Add to that positionable rounded corners and consistent heights across input fields and buttons, and you got yourself something awesome</p>
+
+            <div class="grid col-3 col-s-1 gap-2 mt-2">
+                <div>
+                    <label class="indent">Field One</label>
+                    <input type="text" class="thick rounded" placeholder="Field">
+                </div>
+                <div>
+                    <label class="indent">Field Two</label>
+                    <input type="text" class="thick rounded" placeholder="Field">
+                </div>
+                <div>
+                    <label class="indent">Field Three</label>
+                    <select class="thick rounded">
+                        <option disabled selected>Please select...</option>
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-2 flex">
+                <input type="text" class="thick rounded-left" placeholder="This is a text input and a button in a flex wrapper">
+                <button class="btn bg-33-blue thick rounded-right">Submit</button>
+            </div>
+
+            <div class="mt-2 flex">
+                <button class="btn bg-33-white thick rounded-left"><i class="fas fa-search text-33-grey"></i></button>
+                <input type="text" class="pl-0 thick rounded-right" placeholder="This is also a text input with a button, in a flex wrapper">
+            </div>
+
+            <div class="mt-2">
+                <textarea placeholder="This is a thick rounded textarea" class="thick rounded resize"></textarea>
+            </div>
+
+            <div class="mt-4 grid col-3 gap-2">
+                <div class="colspan-1 flex flex-middle-right">
+                    Label
+                </div>
+                <div class="colspan-2">
+                    <input type="text" class="thick rounded" placeholder="Field">
+                </div>
+            </div>
+
+            <div class="mt-2 grid col-3 gap-2">
+                <div class="colspan-1 flex flex-middle-right">
+                    Label
+                </div>
+                <div class="colspan-2">
+                    <select class="thick">
+                        <option disabled selected>Please select...</option>
+                        <option>Option 1</option>
+                        <option>Option 2</option>
+                        <option>Option 3</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-2 grid col-3 gap-2">
+                <div class="colspan-1 flex flex-middle-right">
+                    Label
+                </div>
+                <div class="colspan-2 flex">
+                    <input type="text" class="" placeholder="Field">
+                    <button class="btn bg-33-blue">Submit</button>
+                </div>
+            </div>
+
+            <div class="mt-2 grid col-3 gap-2">
+                <div class="colspan-1 flex flex-middle-right">
+
+                </div>
+                <div class="colspan-2 flex">
+
+                    <button class="btn bg-33-blue thick rounded">This is a just a regular button</button>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <section class="py-4 bg-33-dark-grey text-33-white text-left">
         <div class="row contain">
             <div class="block-33 block-s-100">
                 Footer<br>

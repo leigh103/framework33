@@ -190,77 +190,36 @@
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
-.grid.m-05 {
-    grid-gap: 0.5rem;
-    margin: 0 0 0.5rem 0!important
+@for $i from 0 through 9 {
+
+    .grid.gap-0#{$i} {
+        grid-gap: #{i/10}rem;
+    }
+
+    .grid.gap-x-0#{$i} {
+        grid-gap: auto #{i/10}rem;
+    }
+
+    .grid.gap-y-0#{$i} {
+        grid-gap: #{i/10}rem auto;
+    }
+
 }
 
-.grid.m-1 {
-    grid-gap: 1rem;
-}
+@for $i from 0 through 9 {
 
-.grid.m-2 {
-    grid-gap: 2rem;
-}
+    .grid.gap-#{$i} {
+        grid-gap: #{$i}rem;
+    }
 
-.grid.m-3 {
-    grid-gap: 3rem;
-}
+    .grid.gap-x-#{$i} {
+        grid-gap: auto #{$i}rem;
+    }
 
-.grid.m-4 {
-    grid-gap: 4rem;
-}
+    .grid.gap-y-#{$i} {
+        grid-gap: #{$i}rem auto;
+    }
 
-.grid.m-5 {
-    grid-gap: 5rem;
-}
-
-.grid.mx-05 {
-    grid-gap: auto 0.5rem;
-}
-
-.grid.mx-1 {
-    grid-gap: auto 1rem;
-}
-
-.grid.mx-2 {
-    grid-gap: auto 2rem;
-}
-
-.grid.mx-3 {
-    grid-gap: auto 3rem;
-}
-
-.grid.mx-4 {
-    grid-gap: auto 4rem;
-}
-
-.grid.mx-5 {
-    grid-gap: auto 5rem;
-}
-
-.grid.my-05 {
-    grid-gap: 0.5rem auto;
-}
-
-.grid.my-1 {
-    grid-gap: 1rem auto;
-}
-
-.grid.my-2 {
-    grid-gap: 2rem auto;
-}
-
-.grid.my-3 {
-    grid-gap: 3rem auto;
-}
-
-.grid.my-4 {
-    grid-gap: 4rem auto;
-}
-
-.grid.my-5 {
-    grid-gap: 5rem auto;
 }
 
 @include medium {
@@ -407,6 +366,38 @@
     .grid .rowspan-m-12 {
         grid-row-end: span 12
     }
+
+    @for $i from 0 through 9 {
+
+        .grid.gap-m-0#{$i} {
+            grid-gap: #{i/10}rem;
+        }
+
+        .grid.gap-m-x-0#{$i} {
+            grid-gap: auto #{i/10}rem;
+        }
+
+        .grid.gap-m-y-0#{$i} {
+            grid-gap: #{i/10}rem auto;
+        }
+
+    }
+
+    @for $i from 0 through 9 {
+
+        .grid.gap-m-#{$i} {
+            grid-gap: #{$i}rem;
+        }
+
+        .grid.gap-m-x-#{$i} {
+            grid-gap: auto #{$i}rem;
+        }
+
+        .grid.gap-m-y-#{$i} {
+            grid-gap: #{$i}rem auto;
+        }
+
+    }
 }
 
 @include small {
@@ -552,5 +543,38 @@
 
     .grid .rowspan-s-12 {
         grid-row-end: span 12
+    }
+
+    @for $i from 0 through 9 {
+
+        .grid.gap-s-0#{$i} {
+            grid-gap: #{i/10}rem;
+        }
+
+        .grid.gap-s-x-0#{$i} {
+            grid-gap: auto #{i/10}rem;
+        }
+
+        .grid.gap-s-y-0#{$i} {
+            grid-gap: #{i/10}rem auto;
+        }
+
+    }
+
+    @for $i from 0 through 9 {
+
+        .grid.gap-s-#{$i} {
+            grid-gap: #{$i}rem;
+        }
+
+        .grid.gap-s-x-#{$i} {
+            grid-gap: auto #{$i}rem;
+
+        }
+
+        .grid.gap-s-y-#{$i} {
+            grid-gap: #{$i}rem auto;
+        }
+
     }
 }

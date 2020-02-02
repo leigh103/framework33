@@ -96,11 +96,11 @@ div.background {
     $value: $i * 5;
 
     .h-#{$value} {
-        height: #{0% + $value};
+        height: #{$value}rem;
     }
 
     .w-#{$value} {
-        width: #{0% + $value};
+        width: #{$value}rem;
     }
 
     .vh-#{$value} {
@@ -328,6 +328,10 @@ img.absolute {
         float:right;
     }
 
+    .contain {
+        width: calc(100% - 4rem);
+    }
+
 
 }
 
@@ -340,6 +344,10 @@ img.absolute {
 
     .float-right-s {
         float:right;
+    }
+
+    .contain {
+        width: calc(100% - 4rem);
     }
 
 }

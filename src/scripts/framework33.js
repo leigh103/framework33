@@ -129,6 +129,66 @@ app.methods = {
                     return result
                 }
 
+            } else if (op == '==='){
+
+                if (val1_obj === val2_obj ||
+                    val1_obj === val2_scope ||
+                    val1_scope === val2_obj ||
+                    val1_scope === val2_scope
+                ){
+                    return result
+                }
+
+            } else if (op == '!='){
+
+                if (val1_obj != val2_obj ||
+                    val1_obj != val2_scope ||
+                    val1_scope != val2_obj ||
+                    val1_scope != val2_scope
+                ){
+                    return result
+                }
+
+            } else if (op == '>'){
+
+                if (val1_obj > val2_obj ||
+                    val1_obj > val2_scope ||
+                    val1_scope > val2_obj ||
+                    val1_scope > val2_scope
+                ){
+                    return result
+                }
+
+            } else if (op == '<'){
+
+                if (val1_obj < val2_obj ||
+                    val1_obj < val2_scope ||
+                    val1_scope < val2_obj ||
+                    val1_scope < val2_scope
+                ){
+                    return result
+                }
+
+            } else if (op == '>='){
+
+                if (val1_obj >= val2_obj ||
+                    val1_obj >= val2_scope ||
+                    val1_scope >= val2_obj ||
+                    val1_scope >= val2_scope
+                ){
+                    return result
+                }
+
+            } else if (op == '<='){
+
+                if (val1_obj <= val2_obj ||
+                    val1_obj <= val2_scope ||
+                    val1_scope <= val2_obj ||
+                    val1_scope <= val2_scope
+                ){
+                    return result
+                }
+
             }
 
         } else if (path.match(/\./)){
@@ -450,8 +510,6 @@ app.methods = {
 
                             if (loop_arr.length == 0){
 
-
-
                             } else {
 
                                 for (let i = 0; i < loop_arr.length; ++i){
@@ -461,19 +519,13 @@ app.methods = {
                                         let el_arr_data = {el:el, [view_key]:loop_arr[i]}
 
                                         if (!app.elements.foreach.loops[block]){
-
                                             app.elements.foreach.loops[block] = []
-
                                         }
 
                                         if (!app.elements.foreach.loops[block][i]){
-
                                             app.elements.foreach.loops[block][i] = el_arr_data
-
                                         } else {
-
                                             app.elements.foreach.loops[block][i][view_key] = loop_arr[i]
-
                                         }
 
                                     } else {
@@ -568,7 +620,12 @@ app.methods = {
 
                                     let el_prop = self.el.getAttribute('app-class'),
                                         val = app.methods.getValue(self, el_prop),
-                                        matches = el_prop.match(/\{([a-z0-9.]+)\:([a-z0-9.]+)\s([!=<>]+)\s([a-z0-9.]+)\}/)
+                                        matches = el_prop.match(/\{([a-z0-9.]+)\:([a-z0-9.]+)\s([!=<>]+)\s([a-z0-9.]+)\}/),
+                                        el_data = Object.assign({},self)
+
+                                        delete el_data.el
+
+                                        self.el.scoped_data = el_data
 
                                         app.methods.addIndex(self.el, matches[2],'class')
 
@@ -720,7 +777,11 @@ app.methods = {
             orig_class_list = el.getAttribute('app-orig-class')
 
         if (!class_name){
-            class_name = app.methods.getValue(scope, el_prop)
+            if (el.scoped_data){
+                class_name = app.methods.getValue(el.scoped_data, el_prop)
+            } else {
+                class_name = app.methods.getValue(scope, el_prop)
+            }
         }
 
         if (!el.getAttribute('app-initial')){
@@ -728,14 +789,13 @@ app.methods = {
             el.setAttribute('app-orig-class',orig_class_list.replace(/app\-hidden/,''))
         }
 
+        if (orig_class_list){
+            el.className = orig_class_list
+        } else {
+            el.className = ''
+        }
+
         if (class_name){
-
-            if (orig_class_list){
-                el.className = orig_class_list
-            } else {
-                el.className = ''
-            }
-
             el.classList.add(class_name)
         }
 
@@ -1114,13 +1174,13 @@ const inView = (el) => {
         _top = el.getBoundingClientRect().top
 
     if (!trigger_top){
-        trigger_top = 100
+        trigger_top = 10
     } else {
         trigger_top = viewport_h * (parseFloat(trigger_top.replace('%',''))/100)
     }
 
     if (!trigger_bottom){
-        trigger_bottom = viewport_h - 200
+        trigger_bottom = viewport_h - 10
     } else {
         trigger_bottom = viewport_h * (parseFloat(trigger_bottom.replace('%',''))/100)
         trigger_bottom = viewport_h - trigger_bottom
