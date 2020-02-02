@@ -74,21 +74,16 @@ div.background {
     height:50%;
 }
 
-.container,.row {
-    display: block;
-    font-size:0;
-    max-width:100%;
-    margin:auto;
-}
-
-.contain {
+.contain, .container {
     max-width: 1140px;
     margin-left: auto;
     margin-right: auto;
-}
 
-.container > *, .row > * {
-    font-size: 1rem
+    .contain, .container {
+        max-width: 960px;
+        margin-left: auto;
+        margin-right: auto;
+    }
 }
 
 @for $i from 1 through 100 {
@@ -109,6 +104,58 @@ div.background {
 
     .vw-#{$value} {
         width: #{0vh + $value};
+    }
+
+}
+
+@include medium {
+
+    @for $i from 1 through 100 {
+
+        $value: $i * 5;
+
+        .h-m-#{$value} {
+            height: #{$value}rem;
+        }
+
+        .w-m-#{$value} {
+            width: #{$value}rem;
+        }
+
+        .vh-m-#{$value} {
+            height: #{0vh + $value};
+        }
+
+        .vw-m-#{$value} {
+            width: #{0vh + $value};
+        }
+
+    }
+
+}
+
+@include small {
+
+    @for $i from 1 through 100 {
+
+        $value: $i * 5;
+
+        .h-s-#{$value} {
+            height: #{$value}rem;
+        }
+
+        .w-s-#{$value} {
+            width: #{$value}rem;
+        }
+
+        .vh-s-#{$value} {
+            height: #{0vh + $value};
+        }
+
+        .vw-s-#{$value} {
+            width: #{0vh + $value};
+        }
+
     }
 
 }
@@ -328,8 +375,12 @@ img.absolute {
         float:right;
     }
 
-    .contain {
+    .contain, .container {
         width: calc(100% - 4rem);
+
+        .contain, .container {
+            width: 100%;
+        }
     }
 
 
@@ -346,8 +397,12 @@ img.absolute {
         float:right;
     }
 
-    .contain {
+    .contain, .container {
         width: calc(100% - 4rem);
+
+        .contain, .container {
+            width: 100%;
+        }
     }
 
 }
