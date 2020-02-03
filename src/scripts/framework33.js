@@ -2,6 +2,7 @@
 import '../styles/framework33.scss';
 import '../styles/style.scss';
 import Observable from 'observable-slim'
+import _ from 'lodash'
 
 global.scope = {}
 global.scope.data = []
@@ -193,11 +194,7 @@ app.methods = {
 
         } else if (path.match(/\./)){
 
-            result = path.split(".").reduce(function(obj, name){
-                        if (obj && obj[name]){
-                            return obj[name]
-                        }
-                    }, obj);
+            result = _.get(obj, path)
 
             if (typeof result == 'function'){
                 return result()
@@ -231,21 +228,7 @@ app.methods = {
 
     setValue(obj, path, val) {
 
-        path = path.split(".")
-
-        let result = path.reduce(
-                        function(obj_ref, name){
-
-                            if (obj_ref && !obj_ref[name]){
-                                obj_ref[name] = {}
-                            }
-                            if (obj_ref && typeof obj_ref[path[path.length-1]] != 'undefined'){
-                                obj_ref[path[path.length-1]] = val
-                            } else if (obj_ref && obj_ref[name]){
-                                return obj_ref[name]
-                            }
-
-                        }, obj)
+        _.set(obj, path, val)
 
     },
 
@@ -253,31 +236,29 @@ app.methods = {
 
         if (type == 'show'){
 
-            var el_prop = el.getAttribute('app-show')
+            let el_prop = el.getAttribute('app-show'),
+                val = app.methods.getValue(scope, el_prop)
 
             app.methods.addIndex(el, el_prop, 'show')
 
-            app.methods.evaluateProp(el_prop, function(result){
-                if (result){
-                    el.classList.remove('app-hidden')
-                } else {
-                    el.classList.add('app-hidden')
-                }
-            })
+            if (val){
+                el.style.visibility = 'visible';
+            } else {
+                el.style.visibility = 'hidden';
+            }
 
         } else if (type == 'hide'){
 
-            var el_prop = el.getAttribute('app-hide')
+            var el_prop = el.getAttribute('app-hide'),
+                val = app.methods.getValue(scope, el_prop)
 
             app.methods.addIndex(el, el_prop, 'hide')
 
-            app.methods.evaluateProp(el_prop, function(result){
-                if (result){
-                    el.classList.add('app-hidden')
-                } else {
-                    el.classList.remove('app-hidden')
-                }
-            })
+            if (val){
+                el.style.visibility = 'hidden';
+            } else {
+                el.style.visibility = 'visible';
+            }
 
         } else {
 
@@ -387,6 +368,7 @@ app.methods = {
 
                 val = val.replace(/^!/,'')
                 let val_scope = app.methods.getValue(scope, val)
+                //console.log(val, !val_scope)
                 app.methods.setValue(scope, val, !val_scope)
 
             } else if (matches && matches.length > 2){
