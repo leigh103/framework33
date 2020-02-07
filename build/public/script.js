@@ -5,7 +5,7 @@ controller = () => {
     scope.new = {}
     scope.view = {}
     scope.view.text = {}
-    scope.view.show = {search:false}
+    scope.view.show = {search:false, tab:'one'}
     scope.view.text.class = "text-bold"
     scope.view.asc = true
     scope.view.search_field = ''

@@ -72,11 +72,6 @@
             <p>Using object arrays, Framework33 can add, update, delete and sort tables with ease. Try searching the data, adding a new row and also sorting the data by clicking on the column headings. <span app-show="view.search_field">Currently searching on: <span app-bind="view.search_field"></span></span></p>
 
             <div class="mt-3 flex mb-3">
-                <div class="flex-4 flex">
-                    <button class="btn bg-33-blue rounded thick" app-click="view.show.search = !view.show.search"><i class="fas fa-search mr-1"></i> Show Search Bar</button>
-                </div>
-            </div>
-            <div class="mt-3 flex mb-3" app-show="view.show.search">
 
                 <div class="flex-4 flex">
                     <button class="btn bg-33-white rounded-left"><i class="fas fa-search text-33-grey"></i></button>
@@ -239,6 +234,30 @@
 
                     <button class="btn bg-33-blue thick rounded w-s-100">This is a just a regular button</button>
                 </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="bg-33-light-grey py-4">
+
+        <div class="contain text-left">
+
+            <h2>Tabs</h2>
+
+            <p>Tabs can be created using Framework33's reactive functionality.</p>
+
+            <div class="mt-2 overflow-x">
+                <div class="inline-block clickable p-1" app-click="view.show.tab = 'one'">One</div>
+                <div class="inline-block clickable p-1" app-click="view.show.tab = 'two'">Two</div>
+                <div class="inline-block clickable p-1" app-click="view.show.tab = 'three'">Three</div>
+            </div>
+
+            <div class="mt-2">
+                <div app-show="view.show.tab == 'one'">This is tab one</div>
+                <div app-show="view.show.tab == 'two'">This is tab two</div>
+                <div app-show="view.show.tab == 'three'">This is tab three</div>
             </div>
 
         </div>

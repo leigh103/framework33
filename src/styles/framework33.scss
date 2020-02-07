@@ -404,13 +404,13 @@ a.card.hover:hover,a.image-card.hover:hover {
 
 .overflow-y {
     max-height:100%;
-    overflow-y:scroll;
+    overflow-y:scroll !important;
     overflow-x:hidden;
     -webkit-overflow-scrolling: touch;
 }
 
 .overflow-x.scroll:not(.mobile) {
-    overflow-x:scroll;
+    overflow-x:scroll !important;
     -webkit-overflow-scrolling:touch;
     -webkit-backface-visibility: hidden;
 }
@@ -423,7 +423,7 @@ a.card.hover:hover,a.image-card.hover:hover {
 }
 
 .overflow-hidden {
-    overflow:hidden;
+    overflow:hidden !important;
 }
 
 .scroll-hide {

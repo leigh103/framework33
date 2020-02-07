@@ -2,10 +2,6 @@
     display:grid;
 }
 
-.grid > * {
-    overflow-y:auto
-}
-
 .grid .colspan-2 {
     grid-column-end: span 2
 }

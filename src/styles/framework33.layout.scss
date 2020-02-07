@@ -86,7 +86,7 @@ div.background {
     }
 }
 
-@for $i from 1 through 100 {
+@for $i from 1 through 20 {
 
     $value: $i * 5;
 
@@ -110,7 +110,7 @@ div.background {
 
 @include medium {
 
-    @for $i from 1 through 100 {
+    @for $i from 1 through 20 {
 
         $value: $i * 5;
 
@@ -136,7 +136,7 @@ div.background {
 
 @include small {
 
-    @for $i from 1 through 100 {
+    @for $i from 1 through 20 {
 
         $value: $i * 5;
 

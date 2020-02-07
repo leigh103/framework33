@@ -110,6 +110,70 @@ app.methods = {
                 return scope[path].apply(this, params)
             }
 
+        } else if (path.match(/([a-zA-Z._!]+)\s*(!=|==|>|>=|<|<=)\s*'?([a-zA-Z._]+)'?/)){
+
+            let matches = path.match(/([a-zA-Z._!]+)\s*(!=|==|===|>|>=|<|<=)\s*'?([a-zA-Z._]+)'?/),
+                val1 = app.methods.getValue(scope,matches[1]),
+                op = matches[2],
+                val2 = app.methods.getValue(scope,matches[3])
+
+                if (op == '=='){
+
+                    if (val1 == val2){
+                        return true
+                    } else {
+                        return false
+                    }
+
+                } else if (op == '==='){
+
+                    if (val1 === val2){
+                        return true
+                    } else {
+                        return false
+                    }
+
+                } else if (op == '!='){
+
+                    if (val1 != val2){
+                        return true
+                    } else {
+                        return false
+                    }
+
+                } else if (op == '>'){
+
+                    if (val1 > val2){
+                        return result
+                    }
+
+                } else if (op == '<'){
+
+                    if (val1 < val2){
+                        return true
+                    } else {
+                        return false
+                    }
+
+                } else if (op == '>='){
+
+                    if (val1 >= val2){
+                        return true
+                    } else {
+                        return false
+                    }
+
+                } else if (op == '<='){
+
+                    if (val1 <= val2){
+                        return true
+                    } else {
+                        return false
+                    }
+
+                }
+
+
         } else if (path.match(/\{(.*?)\}/)) { // if logic eg, {active: obj.path == 1} - if true, returns the first string
 
             let matches = path.match(/\{([a-z0-9.]+)\:([a-z0-9.]+)\s([!=<>]+)\s([a-z0-9.]+)\}/),
@@ -242,9 +306,20 @@ app.methods = {
             app.methods.addIndex(el, el_prop, 'show')
 
             if (val){
-                el.style.visibility = 'visible';
+
+                if (el.classList.contains('grid')){
+                    el.style.display = 'grid'
+                } else if (el.classList.contains('flex')){
+                    el.style.display = 'flex'
+                } else {
+                    el.style.display = 'block'
+                }
+
+
             } else {
-                el.style.visibility = 'hidden';
+
+                el.style.display = 'none'
+
             }
 
         } else if (type == 'hide'){
@@ -255,9 +330,19 @@ app.methods = {
             app.methods.addIndex(el, el_prop, 'hide')
 
             if (val){
-                el.style.visibility = 'hidden';
+
+                el.style.display = 'none'
+
             } else {
-                el.style.visibility = 'visible';
+
+                if (el.classList.contains('grid')){
+                    el.style.display = 'grid'
+                } else if (el.classList.contains('flex')){
+                    el.style.display = 'flex'
+                } else {
+                    el.style.display = 'block'
+                }
+
             }
 
         } else {
@@ -389,7 +474,6 @@ app.methods = {
                         app.methods.setValue(scope, key, val)
                     }
 
-                //    console.log(scope, key,obj)
                 }
 
             } else {
@@ -921,6 +1005,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             }
 
+            // console.log(currentPath)
+
             if (watch[changes[i].currentPath]){ // fire any watch functions
                 watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue, currentPath)
             }
@@ -1002,7 +1088,7 @@ window.addEventListener('load', () => {
 
     controller()
 
-    socketConnect("ws://davidrozman.reformedreality.com:6410")
+    // socketConnect("ws://davidrozman.reformedreality.com:6410")
 
     parseAnimAttr()
 
