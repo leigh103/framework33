@@ -26,6 +26,7 @@ app.elements = {}
     app.elements.foreach = {}
     app.elements.init = {}
     app.elements.src = {}
+    app.elements.data = {}
 
     app.elements.bound.index = {}
     app.elements.value.index = {}
@@ -39,6 +40,7 @@ app.elements = {}
     app.elements.foreach.loops = {}
     app.elements.init.index = {}
     app.elements.src.index = {}
+    app.elements.data.index = {}
 
 app.methods = {
 
@@ -309,6 +311,8 @@ app.methods = {
 
                 if (el.classList.contains('grid')){
                     el.style.display = 'grid'
+                } else if (el.classList.contains('btn')){
+                    el.style.display = 'inline-flex'
                 } else if (el.classList.contains('flex')){
                     el.style.display = 'flex'
                 } else {
@@ -337,6 +341,8 @@ app.methods = {
 
                 if (el.classList.contains('grid')){
                     el.style.display = 'grid'
+                } else if (el.classList.contains('btn')){
+                    el.style.display = 'inline-flex'
                 } else if (el.classList.contains('flex')){
                     el.style.display = 'flex'
                 } else {
@@ -937,6 +943,16 @@ app.methods = {
 
     },
 
+    parseData(el){
+
+        let data = el.getAttribute('app-data').split('|')[0],
+            key = el.getAttribute('app-data').split('|')[1]
+
+        scope[key] = JSON.parse(data)
+
+
+    },
+
     evaluateProp(el_prop, callback){
 
         let matches = el_prop.match(/([a-zA-Z._!]+)\s*(!=|==|>|>=|<|<=)\s*'?([a-zA-Z._]+)'?/)
@@ -990,6 +1006,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.foreach.nodes = document.querySelectorAll('[app-for]')
     app.elements.init.nodes = document.querySelectorAll('[app-init]')
     app.elements.src.nodes = document.querySelectorAll('[app-src]')
+    app.elements.data.nodes = document.querySelectorAll('[app-data]')
 
     app.elements.animation = document.querySelectorAll("[anim],[anim-enter],[anim-exit]")
 
@@ -1155,6 +1172,10 @@ window.addEventListener('load', () => {
 
     app.elements.src.nodes.forEach(function(el) {
         app.methods.addSrc(el, true)
+    })
+
+    app.elements.data.nodes.forEach(function(el) {
+        app.methods.parseData(el, true)
     })
 
 })
