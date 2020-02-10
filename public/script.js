@@ -61,6 +61,27 @@ controller = () => {
         {name: 'Responsive', panel:'<h1>Something Else</h1>Something else here', img:"https://i.imgur.com/l49aYS3.jpg"}
     ]
 
+    scope.view.fields = [
+        {name:'field group 1',selected_option:'one'},
+        {name:'field group 2',selected_option:'two'},
+        {name:'field group 13',selected_option:'three'},
+        {name:'field group 4',selected_option:'four'},
+    ]
+
+    scope.view.options = [
+        {name:'This is option 1',value:'one'},
+        {name:'This is option 2',value:'two'},
+        {name:'This is option 3',value:'three'},
+        {name:'This is option 4',value:'four'},
+        {name:'This is option 5',value:'five'}
+    ]
+
+    scope.showFields = function(){
+        console.log(scope.view.fields)
+    }
+
+    scope.view.selected_option = ''
+
     scope.panel = scope.menu_items[0]
 
     scope.menuItems = function(){
