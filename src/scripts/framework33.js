@@ -47,8 +47,6 @@ app.methods = {
 
     updateBoundElement(el, index, data){
 
-        // console.log(el)
-
         if (el.hasAttribute('app-value')){
 
             let el_prop = el.getAttribute('app-value')
@@ -182,7 +180,7 @@ app.methods = {
 
         } else if (path.match(/\{(.*?)\}/)) { // if logic eg, {active: obj.path == 1} - if true, returns the first string
 
-            let matches = path.match(/\{([a-z0-9.]+)\:([a-z0-9.]+)\s([!=<>]+)\s([a-z0-9.]+)\}/),
+            let matches = path.match(/\{([a-z0-9._]+)\:([a-z0-9._]+)\s([!=<>]+)\s([a-z0-9._]+)\}/),
                 result = matches[1],
                 val1_obj = app.methods.getValue(obj,matches[2]),
                 val1_scope = app.methods.getValue(scope,matches[2]),
@@ -262,7 +260,7 @@ app.methods = {
 
             }
 
-        } else if (path.match(/\./)){
+        } else if (path.match(/\.|\[\d+\]/)){
 
             result = _.get(obj, path)
 
@@ -305,8 +303,7 @@ app.methods = {
                     return scope[path]
                 }
             } else {
-                // console.log(path)
-                return false //path.replace(/'|"/g,'')
+                return path.replace(/'|"/g,'')
             }
 
         }
@@ -514,6 +511,8 @@ app.methods = {
 
     onChangeElement(el, index, data, init){
 
+        setTimeout(()=>{
+
         let attr, attr_val, set_val
 
         if (el.srcElement){
@@ -532,18 +531,22 @@ app.methods = {
 
                 el.value = set_val
 
-                for (var i=0; i<el.children.length; i++){
+                if (set_val){
 
-                    if (el.children[i].hasAttribute('value') && el.children[i].getAttribute('value') == set_val){
-                    //    console.log('using value',el.children[i].getAttribute('value'),set_val)
-                        el.children[i].setAttribute('selected',true)
-                    } else if (el.children[i].innerHTML && el.children[i].innerHTML.toString() == set_val.toString()){
-                    //    console.log('using html',el.children[i].innerHTML.toString(), set_val.toString())
-                        el.children[i].setAttribute('selected',true)
-                    } else {
-                        el.children[i].removeAttribute('selected')
+                    for (var i=0; i<el.children.length; i++){
+
+                        if (el.children[i].hasAttribute('value') && el.children[i].getAttribute('value') == set_val){
+                            // console.log('using value',el.children[i].getAttribute('value'),set_val)
+                            el.children[i].setAttribute('selected',true)
+                        } else if (el.children[i].innerHTML && el.children[i].innerHTML.toString() == set_val.toString()){
+                            // console.log('using html',el.children[i].innerHTML.toString(), set_val.toString())
+                            el.children[i].setAttribute('selected',true)
+                        } else {
+                            // console.log('removing')
+                            el.children[i].removeAttribute('selected')
+                        }
+
                     }
-
                 }
 
             } else {
@@ -561,11 +564,16 @@ app.methods = {
             }
         }
 
+
+    },10)
+
+
     },
 
     forElement(el, data, key){
 
         let el_prop
+
         if (data){
             el_prop = el.getAttribute('app-for-sub')
         } else {
@@ -584,6 +592,7 @@ app.methods = {
             el_remove = false,
             block = view_key,
             block_key = block,
+            init = false,
             loop_arr
 
         if (data){
@@ -593,7 +602,7 @@ app.methods = {
             loop_arr = app.methods.getValue(scope, scope_key)
         }
 
-        if (!app.elements.foreach.root[block_key]){
+        if (el_parent){
 
             el_parent.classList.add('app-parent-'+block_key)
             app.methods.addIndex(el, el_prop, 'foreach') // .replace(/\.[0-9a-z]+/g,'')
@@ -603,62 +612,73 @@ app.methods = {
             }
 
             el_parent.removeChild(el)
-        //    return false
+
+            if (!data){
+                return false
+            }
 
         }
 
-        return Promise.resolve()
+            let app_for_children = app.elements.foreach.root[block_key].parent.querySelectorAll('.app-for-'+block_key)
 
-            .then(function() {
+            for (let i=0; i < app_for_children.length; i++){
+                app.elements.foreach.root[block_key].parent.removeChild(app_for_children[i])
+            }
 
-                    let app_for_children = app.elements.foreach.root[block_key].parent.querySelectorAll('.app-for-'+block)
-                    for (var i=0; i < app_for_children.length; i++){
-                        app.elements.foreach.root[block_key].parent.removeChild(app_for_children[i])
-                    }
 
-            }).then(function() {
+                    for (let idx=0; idx < loop_arr.length; idx++){
 
-                for (var i=0; i < loop_arr.length; i++){
+                        if (typeof loop_arr[idx] == 'object'){
 
-                    if (typeof loop_arr[i] == 'object'){
+                            let el_clone = {
+                                    el:app.elements.foreach.root[block_key].el.cloneNode(true),
+                                    index:idx
+                                }
 
-                        let el_clone = {
-                                el:app.elements.foreach.root[block_key].el.cloneNode(true),
-                                index:i
+                            el_clone[block] = loop_arr[idx]
+
+                            el_clone.el.removeAttribute('app-for')
+                            el_clone.el.removeAttribute('app-for-sub')
+                            el_clone.el.classList.add('app-for-'+block_key)
+
+                            app.elements.foreach.root[block_key].parent.appendChild(el_clone.el)
+
+                            let bind_children = el_clone.el.querySelectorAll('[app-bind]'),
+                                loop_children = el_clone.el.querySelectorAll('[app-for-sub]'),
+                                class_children = el_clone.el.querySelectorAll('[app-class]'),
+                                value_children = el_clone.el.querySelectorAll('[app-value]'),
+                                click_children = el_clone.el.querySelectorAll('[app-click]'),
+                                model_children = el_clone.el.querySelectorAll('[app-model]'),
+                                src_children = el_clone.el.querySelectorAll('[app-src]')
+
+                            if (el_clone.el.hasAttribute('app-bind')){
+
+                                let val = app.methods.getValue(el_clone, el_clone.el.getAttribute('app-bind'))
+
+                                if (val){
+                                    el_clone.el.innerHTML = val
+                                }
+
                             }
 
-                        el_clone[block] = loop_arr[i]
+                            if (el_clone.el.hasAttribute('app-click')){
+                                el_clone.el.removeEventListener('click',app.methods.clickElement)
 
-                        el_clone.el.removeAttribute('app-for')
-                        el_clone.el.removeAttribute('app-for-sub')
-                        el_clone.el.classList.add('app-for-'+block_key)
-
-                        app.elements.foreach.root[block_key].parent.appendChild(el_clone.el)
-
-                        let bind_children = el_clone.el.querySelectorAll('[app-bind]'),
-                            loop_children = el_clone.el.querySelectorAll('[app-for-sub]'),
-                            class_children = el_clone.el.querySelectorAll('[app-class]'),
-                            value_children = el_clone.el.querySelectorAll('[app-value]'),
-                            click_children = el_clone.el.querySelectorAll('[app-click]'),
-                            model_children = el_clone.el.querySelectorAll('[app-model]'),
-                            src_children = el_clone.el.querySelectorAll('[app-src]')
-
-                        if (el_clone.el.hasAttribute('app-bind')){
-
-                            let val = app.methods.getValue(el_clone, el_clone.el.getAttribute('app-bind'))
-
-                            if (val){
-                                el_clone.el.innerHTML = val
+                                el_clone.el.addEventListener('click', function(){
+                                    app.methods.clickElement(el_clone.el, el_clone.index, el_clone)
+                                })
                             }
 
-                        }
+                            if (el_clone.el.hasAttribute('app-value')){
+                                el_clone.el.value = app.methods.getValue(el_clone, el_clone.el.getAttribute('app-value'))
+                            }
 
-                        if (el_clone.el.hasAttribute('app-class')){
+                            if (el_clone.el.hasAttribute('app-class')){
 
-                            let el_prop = el_clone.el.getAttribute('app-class'),
-                                val = app.methods.getValue(el_clone, el_prop),
-                                matches = el_prop.match(/\{([a-z0-9.]+)\:([a-z0-9.]+)\s([!=<>]+)\s([a-z0-9.]+)\}/),
-                                el_data = Object.assign({},el_clone)
+                                let el_prop = el_clone.el.getAttribute('app-class'),
+                                    val = app.methods.getValue(el_clone, el_prop),
+                                    matches = el_prop.match(/\{([a-z0-9._]+)\:([a-z0-9._]+)\s([!=<>]+)\s([a-z0-9._]+)\}/),
+                                    el_data = Object.assign({},el_clone)
 
                                 delete el_data.el
 
@@ -666,40 +686,93 @@ app.methods = {
 
                                 app.methods.addIndex(el_clone.el, matches[2],'class')
 
-                            if (typeof val != 'undefined'){
-                                app.methods.addClass(el_clone.el, val)
+                                if (typeof val != 'undefined'){
+                                    app.methods.addClass(el_clone.el, val)
+                                }
+
                             }
 
-                        }
+                            for (let i = 0; i < model_children.length; ++i){
 
-                        for (let i = 0; i < bind_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
+                                model_children[i].removeEventListener('change',app.methods.onChangeElement)
 
-                            let bind = bind_children[i].getAttribute('app-bind'),
-                                val = app.methods.getValue(el_clone, bind)
+                                app.methods.onChangeElement(model_children[i], el_clone.index, el_clone, true)
+                                model_children[i].addEventListener('change', function(){
+                                    app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
+                                })
 
-                            if (val && val != 'undefined' && val != 'undefined undefined'){
-                                bind_children[i].innerHTML = val
-                            } else {
-                                bind_children[i].innerHTML = ''
                             }
 
-                        }
+                            for (let i = 0; i < bind_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
 
-                        for (let i = 0; i < loop_children.length; ++i) { // for each child that has a repeater, call the forElement method
 
-                            let bind = loop_children[i].getAttribute('app-for-sub'),
-                                cl_props = bind.match(/([a-zA-Z._]+)\s*in\s*([a-zA-Z._()]+)/i),
-                                val = app.methods.getValue(el_clone, cl_props[2])
+                                let bind = bind_children[i].getAttribute('app-bind'),
+                                    val = app.methods.getValue(el_clone, bind)
 
-                            app.methods.forElement(loop_children[i], val, el_clone.index)
+                                if (val && val != 'undefined' && val != 'undefined undefined'){
+                                    bind_children[i].innerHTML = val
+                                } else {
+                                    bind_children[i].innerHTML = ''
+                                }
+
+                            }
+
+                            for (let i = 0; i < loop_children.length; ++i) { // for each child that has a repeater, call the forElement method
+
+                                let bind = loop_children[i].getAttribute('app-for-sub'),
+                                    cl_props = bind.match(/([a-zA-Z._]+)\s*in\s*([a-zA-Z._()]+)/i),
+                                    val = app.methods.getValue(el_clone, cl_props[2])
+
+                                app.methods.forElement(loop_children[i], val, el_clone.index)
+
+                            }
+
+                            for (let i = 0; i < click_children.length; ++i){
+
+                                click_children[i].removeEventListener('click',app.methods.clickElement)
+
+                                click_children[i].addEventListener('click', function(){
+                                    app.methods.clickElement(click_children[i], el_clone.index, el_clone)
+                                })
+
+                            }
+
+                            for (let i = 0; i < src_children.length; ++i){
+
+                                let val = src_children[i].getAttribute('app-src')
+                                app.methods.addSrc(src_children[i], app.methods.getValue(el_clone, val))
+
+                            }
+
+                            for (let i = 0; i < class_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
+
+                                let bind = class_children[i].getAttribute('app-class'),
+                                    val = app.methods.getValue(el_clone, bind),
+                                    orig_class_list = class_children[i].getAttribute('app-orig-class')
+
+                                if (!class_children[i].getAttribute('app-initial')){
+                                    class_children[i].setAttribute('app-orig-class',class_children[i].classList)
+                                }
+
+                                if (val){
+
+                                    if (orig_class_list){
+                                        class_children[i].className = orig_class_list
+                                    } else {
+                                        class_children[i].className = ''
+                                    }
+
+                                    class_children[i].classList.add(val)
+                                }
+
+                                class_children[i].setAttribute('app-initial',true)
+
+                            }
 
                         }
 
                     }
 
-                }
-
-            })
 
     },
 
@@ -783,15 +856,11 @@ app.methods = {
                                             if (el_parent){
                                                 el_parent.appendChild(el_clone)
                                             }
-                                            // if (block.match(/member/)){
-                                            //     console.log('el_arr',el_arr_data)
-                                            // }
+
                                             app.elements.foreach.loops[block][i] = el_arr_data
 
                                         } else {
-                                            // if (block.match(/member/)){
-                                            //     console.log('view_key',view_key,loop_arr[i])
-                                            // }
+
                                             app.elements.foreach.loops[block][i][view_key] = loop_arr[i]
 
                                         }
@@ -806,9 +875,7 @@ app.methods = {
 
                     })
                     .then(function() { // remove any elements where the data has been removed also
-                        if (block.match(/member/)){
-                            console.log(app.elements.foreach.loops[block].length)
-                        }
+
 
                         if (loop_arr && app.elements.foreach.loops[block] && loop_arr.length < app.elements.foreach.loops[block].length){
 
@@ -860,14 +927,10 @@ app.methods = {
                                     model_children = self.el.querySelectorAll('[app-model]'),
                                     src_children = self.el.querySelectorAll('[app-src]')
 
-                                    // if (block.match(/member/)){
-                                    //     console.log(block,i, app.elements.foreach.loops[block])
-                                    // }
-
 
                                 if (self.el.hasAttribute('app-bind')){
                                     let val = app.methods.getValue(self, self.el.getAttribute('app-bind'))
-// console.log('adding '+val)
+
                                     if (val){
                                         self.el.innerHTML = val
                                     }
@@ -878,7 +941,7 @@ app.methods = {
 
                                     let el_prop = self.el.getAttribute('app-class'),
                                         val = app.methods.getValue(self, el_prop),
-                                        matches = el_prop.match(/\{([a-z0-9.]+)\:([a-z0-9.]+)\s([!=<>]+)\s([a-z0-9.]+)\}/),
+                                        matches = el_prop.match(/\{([a-z0-9._]+)\:([a-z0-9._]+)\s([!=<>]+)\s([a-z0-9._]+)\}/),
                                         el_data = Object.assign({},self)
 
                                         delete el_data.el
@@ -1069,9 +1132,7 @@ app.methods = {
 
         if (typeof data == 'string' && data.match(/png|jpg|jpeg|svg$/)){
             el.setAttribute('src',data)
-        } else if (typeof data == 'string' && src_url.match(/png|jpg|jpeg|svg$/)) {
-            el.setAttribute('src',src_url)
-        } else if (src_url.match(/png|jpg|jpeg|svg$/)) {
+        } else if (typeof src_url == 'string' && src_url.match(/png|jpg|jpeg|svg$/)) {
             el.setAttribute('src',src_url)
         }
 
@@ -1343,7 +1404,7 @@ window.addEventListener('load', () => {
             }
         }
         if (el.tagName == "SELECT") {
-            el.addEventListener('change', app.methods.onChangeElement)
+            el.addEventListener('input', app.methods.onChangeElement)
         }
 
         el.self = el

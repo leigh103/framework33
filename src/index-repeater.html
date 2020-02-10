@@ -28,7 +28,7 @@
                 <label>Start Time</label>
                 <div class="">
                     <select app-model="appointment.start_time">
-                        <option app-for="hr in appointment.hrs" app-bind="hr" app-value="hr"></option>
+                        <option app-for-sub="hr in getHrs()" app-bind="hr" app-value="hr"></option>
                     </select>
                 </div>
 
@@ -39,7 +39,7 @@
                 <label>Service</label>
                 <select app-model="appointment.service">
                     <option selected disabled value="">Choose Service</option>
-                    <option app-for="service in appointment.services" app-bind="service.name"></option>
+                    <option app-for-sub="service in services" app-value="service.name" app-bind="service.name"></option>
                 </select>
 
             </div>
@@ -49,7 +49,7 @@
                 <label>Duration</label>
                 <div class="">
                     <select app-model="appointment.duration">
-                        <option app-for="hrs in appointment.duration" app-bind="hrs"></option>
+                        <option app-for-sub="hrs in getDurationHrs()" app-bind="hrs"></option>
                     </select>
                 </div>
 
@@ -60,7 +60,7 @@
                 <label>Staff</label>
                 <select app-model="appointment.staff_id">
                     <option selected disabled value="">Choose Staff</option>
-                    <option app-for="member in appointment.staff" app-value="member._key" app-bind="member.name.first"></option>
+                    <option app-for-sub="member in staff" app-value="member._key" app-bind="member.name.first"></option>
                 </select>
 
             </div>
@@ -68,6 +68,9 @@
     </div>
         <a class="btn mt-3" app-click="newAppointment()">
             Add
+        </a>
+        <a class="btn mt-3" app-click="removeAppointment()">
+            Remove
         </a>
 
     </div>
