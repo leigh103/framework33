@@ -572,31 +572,34 @@ app.methods = {
 
     forElement(el, data, key){
 
-        let el_prop
+        let el_prop = el.getAttribute('app-for'),
+            sub = false
 
-        if (data){
+        if (!el_prop){
             el_prop = el.getAttribute('app-for-sub')
-        } else {
-            el_prop = el.getAttribute('app-for')
+            sub = true
         }
 
         if (!el_prop){
             return false
         }
 
+        if (!key){
+            key = 0
+        }
+
         let el_props = el_prop.match(/([a-zA-Z._]+)\s*in\s*([a-zA-Z._()]+)/i),
             el_parent = el.parentNode,
-            view_key = el_props[1],
+            block = el_props[1],
             scope_key = el_props[2],
-            scope_key_parse = scope_key.replace(/\./g,'_'),
-            el_remove = false,
-            block = view_key,
             block_key = block,
-            init = false,
             loop_arr
 
         if (data){
             loop_arr = data
+            block_key = block+key
+        } else if (sub){
+            loop_arr = app.methods.getValue(scope, scope_key)
             block_key = block+key
         } else {
             loop_arr = app.methods.getValue(scope, scope_key)
@@ -605,7 +608,7 @@ app.methods = {
         if (el_parent){
 
             el_parent.classList.add('app-parent-'+block_key)
-            app.methods.addIndex(el, el_prop, 'foreach') // .replace(/\.[0-9a-z]+/g,'')
+            app.methods.addIndex(el, el_prop, 'foreach')
             app.elements.foreach.root[block_key] = {
                 parent: el_parent,
                 el: el
@@ -613,444 +616,167 @@ app.methods = {
 
             el_parent.removeChild(el)
 
-            if (!data){
-                return false
-            }
-
         }
 
-            let app_for_children = app.elements.foreach.root[block_key].parent.querySelectorAll('.app-for-'+block_key)
 
-            for (let i=0; i < app_for_children.length; i++){
-                app.elements.foreach.root[block_key].parent.removeChild(app_for_children[i])
-            }
+        // delete the child nodes from the parent
 
 
-                    for (let idx=0; idx < loop_arr.length; idx++){
+        let app_for_children = app.elements.foreach.root[block_key].parent.querySelectorAll('.app-for-'+block_key)
 
-                        if (typeof loop_arr[idx] == 'object'){
-
-                            let el_clone = {
-                                    el:app.elements.foreach.root[block_key].el.cloneNode(true),
-                                    index:idx
-                                }
-
-                            el_clone[block] = loop_arr[idx]
-
-                            el_clone.el.removeAttribute('app-for')
-                            el_clone.el.removeAttribute('app-for-sub')
-                            el_clone.el.classList.add('app-for-'+block_key)
-
-                            app.elements.foreach.root[block_key].parent.appendChild(el_clone.el)
-
-                            let bind_children = el_clone.el.querySelectorAll('[app-bind]'),
-                                loop_children = el_clone.el.querySelectorAll('[app-for-sub]'),
-                                class_children = el_clone.el.querySelectorAll('[app-class]'),
-                                value_children = el_clone.el.querySelectorAll('[app-value]'),
-                                click_children = el_clone.el.querySelectorAll('[app-click]'),
-                                model_children = el_clone.el.querySelectorAll('[app-model]'),
-                                src_children = el_clone.el.querySelectorAll('[app-src]')
-
-                            if (el_clone.el.hasAttribute('app-bind')){
-
-                                let val = app.methods.getValue(el_clone, el_clone.el.getAttribute('app-bind'))
-
-                                if (val){
-                                    el_clone.el.innerHTML = val
-                                }
-
-                            }
-
-                            if (el_clone.el.hasAttribute('app-click')){
-                                el_clone.el.removeEventListener('click',app.methods.clickElement)
-
-                                el_clone.el.addEventListener('click', function(){
-                                    app.methods.clickElement(el_clone.el, el_clone.index, el_clone)
-                                })
-                            }
-
-                            if (el_clone.el.hasAttribute('app-value')){
-                                el_clone.el.value = app.methods.getValue(el_clone, el_clone.el.getAttribute('app-value'))
-                            }
-
-                            if (el_clone.el.hasAttribute('app-class')){
-
-                                let el_prop = el_clone.el.getAttribute('app-class'),
-                                    val = app.methods.getValue(el_clone, el_prop),
-                                    matches = el_prop.match(/\{([a-z0-9._]+)\:([a-z0-9._]+)\s([!=<>]+)\s([a-z0-9._]+)\}/),
-                                    el_data = Object.assign({},el_clone)
-
-                                delete el_data.el
-
-                                el_clone.el.scoped_data = el_data
-
-                                app.methods.addIndex(el_clone.el, matches[2],'class')
-
-                                if (typeof val != 'undefined'){
-                                    app.methods.addClass(el_clone.el, val)
-                                }
-
-                            }
-
-                            for (let i = 0; i < model_children.length; ++i){
-
-                                model_children[i].removeEventListener('change',app.methods.onChangeElement)
-
-                                app.methods.onChangeElement(model_children[i], el_clone.index, el_clone, true)
-                                model_children[i].addEventListener('change', function(){
-                                    app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
-                                })
-
-                            }
-
-                            for (let i = 0; i < bind_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
+        for (let i=0; i < app_for_children.length; i++){
+            app.elements.foreach.root[block_key].parent.removeChild(app_for_children[i])
+        }
 
 
-                                let bind = bind_children[i].getAttribute('app-bind'),
-                                    val = app.methods.getValue(el_clone, bind)
+        // loop through the data array and add in the children. no need to be async
 
-                                if (val && val != 'undefined' && val != 'undefined undefined'){
-                                    bind_children[i].innerHTML = val
-                                } else {
-                                    bind_children[i].innerHTML = ''
-                                }
+        for (let idx=0; idx < loop_arr.length; idx++){
 
-                            }
+            if (typeof loop_arr[idx] == 'object' || typeof loop_arr[idx] == 'string'){
 
-                            for (let i = 0; i < loop_children.length; ++i) { // for each child that has a repeater, call the forElement method
-
-                                let bind = loop_children[i].getAttribute('app-for-sub'),
-                                    cl_props = bind.match(/([a-zA-Z._]+)\s*in\s*([a-zA-Z._()]+)/i),
-                                    val = app.methods.getValue(el_clone, cl_props[2])
-
-                                app.methods.forElement(loop_children[i], val, el_clone.index)
-
-                            }
-
-                            for (let i = 0; i < click_children.length; ++i){
-
-                                click_children[i].removeEventListener('click',app.methods.clickElement)
-
-                                click_children[i].addEventListener('click', function(){
-                                    app.methods.clickElement(click_children[i], el_clone.index, el_clone)
-                                })
-
-                            }
-
-                            for (let i = 0; i < src_children.length; ++i){
-
-                                let val = src_children[i].getAttribute('app-src')
-                                app.methods.addSrc(src_children[i], app.methods.getValue(el_clone, val))
-
-                            }
-
-                            for (let i = 0; i < class_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
-
-                                let bind = class_children[i].getAttribute('app-class'),
-                                    val = app.methods.getValue(el_clone, bind),
-                                    orig_class_list = class_children[i].getAttribute('app-orig-class')
-
-                                if (!class_children[i].getAttribute('app-initial')){
-                                    class_children[i].setAttribute('app-orig-class',class_children[i].classList)
-                                }
-
-                                if (val){
-
-                                    if (orig_class_list){
-                                        class_children[i].className = orig_class_list
-                                    } else {
-                                        class_children[i].className = ''
-                                    }
-
-                                    class_children[i].classList.add(val)
-                                }
-
-                                class_children[i].setAttribute('app-initial',true)
-
-                            }
-
-                        }
-
+                let el_clone = {
+                        el:app.elements.foreach.root[block_key].el.cloneNode(true),
+                        index:idx
                     }
 
+                el_clone[block] = loop_arr[idx]
 
-    },
+                el_clone.el.removeAttribute('app-for')
+                el_clone.el.removeAttribute('app-for-sub')
+                el_clone.el.classList.add('app-for-'+block_key)
 
-    forElementOLD(el, initial, data, key){
+                app.elements.foreach.root[block_key].parent.appendChild(el_clone.el)
 
-        let el_prop
+                let bind_children = el_clone.el.querySelectorAll('[app-bind]'),
+                    loop_children = el_clone.el.querySelectorAll('[app-for-sub]'),
+                    class_children = el_clone.el.querySelectorAll('[app-class]'),
+                    value_children = el_clone.el.querySelectorAll('[app-value]'),
+                    click_children = el_clone.el.querySelectorAll('[app-click]'),
+                    model_children = el_clone.el.querySelectorAll('[app-model]'),
+                    src_children = el_clone.el.querySelectorAll('[app-src]')
 
-        if (data){
-            el_prop = el.getAttribute('app-for-sub')
-        } else {
-            el_prop = el.getAttribute('app-for')
+                if (el_clone.el.hasAttribute('app-bind')){
+
+                    let val = app.methods.getValue(el_clone, el_clone.el.getAttribute('app-bind'))
+
+                    if (val){
+                        el_clone.el.innerHTML = val
+                    }
+
+                }
+
+                if (el_clone.el.hasAttribute('app-click')){
+                    el_clone.el.removeEventListener('click',app.methods.clickElement)
+
+                    el_clone.el.addEventListener('click', function(){
+                        app.methods.clickElement(el_clone.el, el_clone.index, el_clone)
+                    })
+                }
+
+                if (el_clone.el.hasAttribute('app-value')){
+                    el_clone.el.value = app.methods.getValue(el_clone, el_clone.el.getAttribute('app-value'))
+                }
+
+                if (el_clone.el.hasAttribute('app-class')){
+
+                    let el_prop = el_clone.el.getAttribute('app-class'),
+                        val = app.methods.getValue(el_clone, el_prop),
+                        matches = el_prop.match(/\{([a-z0-9._]+)\:([a-z0-9._]+)\s([!=<>]+)\s([a-z0-9._]+)\}/),
+                        el_data = Object.assign({},el_clone)
+
+                    delete el_data.el
+
+                    el_clone.el.scoped_data = el_data
+
+                    app.methods.addIndex(el_clone.el, matches[2],'class')
+
+                    if (typeof val != 'undefined'){
+                        app.methods.addClass(el_clone.el, val)
+                    }
+
+                }
+
+                for (let i = 0; i < model_children.length; ++i){
+
+                    model_children[i].removeEventListener('change',app.methods.onChangeElement)
+
+                    app.methods.onChangeElement(model_children[i], el_clone.index, el_clone, true)
+                    model_children[i].addEventListener('change', function(){
+                        app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
+                    })
+
+                }
+
+                for (let i = 0; i < bind_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
+
+
+                    let bind = bind_children[i].getAttribute('app-bind'),
+                        val = app.methods.getValue(el_clone, bind)
+
+                    if (val && val != 'undefined' && val != 'undefined undefined'){
+                        bind_children[i].innerHTML = val
+                    } else {
+                        bind_children[i].innerHTML = ''
+                    }
+
+                }
+
+                for (let i = 0; i < loop_children.length; ++i) { // for each child that has a repeater, call the forElement method
+
+                    let bind = loop_children[i].getAttribute('app-for-sub'),
+                        cl_props = bind.match(/([a-zA-Z._]+)\s*in\s*([a-zA-Z._()]+)/i),
+                        val = app.methods.getValue(el_clone, cl_props[2])
+
+                    app.methods.forElement(loop_children[i], val, el_clone.index)
+
+                }
+
+                for (let i = 0; i < click_children.length; ++i){
+
+                    click_children[i].removeEventListener('click',app.methods.clickElement)
+
+                    click_children[i].addEventListener('click', function(){
+                        app.methods.clickElement(click_children[i], el_clone.index, el_clone)
+                    })
+
+                }
+
+                for (let i = 0; i < src_children.length; ++i){
+
+                    let val = src_children[i].getAttribute('app-src')
+                    app.methods.addSrc(src_children[i], app.methods.getValue(el_clone, val))
+
+                }
+
+                for (let i = 0; i < class_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
+
+                    let bind = class_children[i].getAttribute('app-class'),
+                        val = app.methods.getValue(el_clone, bind),
+                        orig_class_list = class_children[i].getAttribute('app-orig-class')
+
+                    if (!class_children[i].getAttribute('app-initial')){
+                        class_children[i].setAttribute('app-orig-class',class_children[i].classList)
+                    }
+
+                    if (val){
+
+                        if (orig_class_list){
+                            class_children[i].className = orig_class_list
+                        } else {
+                            class_children[i].className = ''
+                        }
+
+                        class_children[i].classList.add(val)
+                    }
+
+                    class_children[i].setAttribute('app-initial',true)
+
+                }
+
+            }
+
         }
-
-        let el_props = el_prop.match(/([a-zA-Z._]+)\s*in\s*([a-zA-Z._()]+)/i)
-
-        if (initial){ // for the initial render, don't run the loop, just add it to the index
-            app.methods.addIndex(el, el_prop, 'foreach') // .replace(/\.[0-9a-z]+/g,'')
-            return false
-        }
-
-        let el_parent = el.parentNode,
-            view_key = el_props[1],
-            scope_key = el_props[2],
-            scope_key_parse = scope_key.replace(/\./g,'_'),
-            loop_arr = app.methods.getValue(scope, scope_key),
-            el_remove = false,
-            block = view_key
-
-            if (el.hasAttribute('app-index')){
-                block = el.getAttribute('app-index')
-            }
-
-            if (data){ // if this is a nested repeater
-
-                loop_arr = data
-                block = view_key+key
-
-            }
-
-            function runLoop() {
-
-                return Promise.resolve()
-
-                    .then(function() { // create the elements needed at first run, but after that just update the content
-
-                        if (loop_arr && loop_arr != 'undefined'){
-
-                            if (loop_arr.length == 0){
-
-                            } else {
-
-                                for (let i = 0; i < loop_arr.length; ++i){
-
-                                    if (i == 0){
-
-                                        let el_arr_data = {el:el, [view_key]:loop_arr[i]}
-
-                                        if (!app.elements.foreach.loops[block]){
-                                            app.elements.foreach.loops[block] = []
-                                        }
-
-                                        if (!app.elements.foreach.loops[block][i]){
-
-                                            app.elements.foreach.loops[block][i] = el_arr_data
-                                        } else {
-
-                                            app.elements.foreach.loops[block][i][view_key] = loop_arr[i]
-                                        }
-
-                                    } else {
-
-                                        if (!app.elements.foreach.loops[block][i]){
-
-                                            let el_clone = el.cloneNode(true), // clone the parent node
-                                                el_arr_data = {el:el_clone, [view_key]:loop_arr[i]}
-
-                                            el_clone.classList.remove('app-for-parent-'+scope_key_parse)
-                                            el_clone.classList.add('app-for-child-'+scope_key_parse)
-                                            el_clone.removeAttribute('app-for')
-
-                                            if (el_parent){
-                                                el_parent.appendChild(el_clone)
-                                            }
-
-                                            app.elements.foreach.loops[block][i] = el_arr_data
-
-                                        } else {
-
-                                            app.elements.foreach.loops[block][i][view_key] = loop_arr[i]
-
-                                        }
-
-                                    }
-
-                                }
-
-                            }
-
-                        }
-
-                    })
-                    .then(function() { // remove any elements where the data has been removed also
-
-
-                        if (loop_arr && app.elements.foreach.loops[block] && loop_arr.length < app.elements.foreach.loops[block].length){
-
-                            for (let i = 0; i < app.elements.foreach.loops[block].length; ++i){
-
-                                if (typeof loop_arr[i] == 'undefined' && el_parent){
-
-                                    if (app.elements.foreach.loops[block][i].el.hasAttribute('app-for')){ // don't remove the original repeater
-
-                                        let child = app.elements.foreach.loops[block][i].el.firstChild,
-                                            nextSibling,
-                                            el = app.elements.foreach.loops[block][i].el
-
-                                            app.elements.foreach.loops[block][i] = {}
-                                            app.elements.foreach.loops[block][i].el = el
-
-                                        while (child) {
-                                            nextSibling = child.nextSibling;
-                                            if (child.nodeType == 3) {
-                                                child.parentNode.removeChild(child);
-                                            }
-                                            child = nextSibling;
-                                        }
-
-                                    } else {
-                                        el_parent.removeChild(app.elements.foreach.loops[block][i].el)
-                                        app.elements.foreach.loops[block].splice(i,1)
-                                    }
-
-
-                                }
-                            }
-                        }
-
-                    })
-                    .then(function() { // add in or update the content
-
-                        if (app.elements.foreach.loops[block]){
-
-                            for (let i = 0; i < app.elements.foreach.loops[block].length; ++i){
-
-                                let self = app.elements.foreach.loops[block][i],
-                                    self_key = i,
-                                    children = self.el.querySelectorAll('[app-bind]'),
-                                    loop_children = self.el.querySelectorAll('[app-for-sub]'),
-                                    class_children = self.el.querySelectorAll('[app-class]'),
-                                    value_children = self.el.querySelectorAll('[app-value]'),
-                                    click_children = self.el.querySelectorAll('[app-click]'),
-                                    model_children = self.el.querySelectorAll('[app-model]'),
-                                    src_children = self.el.querySelectorAll('[app-src]')
-
-
-                                if (self.el.hasAttribute('app-bind')){
-                                    let val = app.methods.getValue(self, self.el.getAttribute('app-bind'))
-
-                                    if (val){
-                                        self.el.innerHTML = val
-                                    }
-
-                                }
-
-                                if (self.el.hasAttribute('app-class')){
-
-                                    let el_prop = self.el.getAttribute('app-class'),
-                                        val = app.methods.getValue(self, el_prop),
-                                        matches = el_prop.match(/\{([a-z0-9._]+)\:([a-z0-9._]+)\s([!=<>]+)\s([a-z0-9._]+)\}/),
-                                        el_data = Object.assign({},self)
-
-                                        delete el_data.el
-
-                                        self.el.scoped_data = el_data
-
-                                        app.methods.addIndex(self.el, matches[2],'class')
-
-                                    if (typeof val != 'undefined'){
-                                        app.methods.addClass(self.el, val)
-                                    }
-
-                                }
-
-                                if (self.el.hasAttribute('app-click')){
-                                    self.el.removeEventListener('click',app.methods.clickElement)
-
-                                    self.el.addEventListener('click', function(){
-                                        app.methods.clickElement(self.el, self_key, self)
-                                    })
-                                }
-
-                                if (self.el.hasAttribute('app-value')){
-                                    self.el.value = app.methods.getValue(self, self.el.getAttribute('app-value'))
-                                }
-
-                                for (let i = 0; i < children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
-
-                                    let bind = children[i].getAttribute('app-bind'),
-                                        val = app.methods.getValue(self, bind)
-
-                                    if (val && val != 'undefined' && val != 'undefined undefined'){
-                                        children[i].innerHTML = val
-                                    } else {
-                                        children[i].innerHTML = ''
-                                    }
-
-                                }
-
-                                for (let i = 0; i < class_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
-
-                                    let bind = children[i].getAttribute('app-class'),
-                                        val = app.methods.getValue(self, bind),
-                                        orig_class_list = children[i].getAttribute('app-orig-class')
-
-                                    if (!children[i].getAttribute('app-initial')){
-                                        children[i].setAttribute('app-orig-class',children[i].classList)
-                                    }
-
-                                    if (val){
-
-                                        if (orig_class_list){
-                                            children[i].className = orig_class_list
-                                        } else {
-                                            children[i].className = ''
-                                        }
-
-                                        children[i].classList.add(val)
-                                    }
-
-                                    children[i].setAttribute('app-initial',true)
-
-                                }
-
-                                for (let i = 0; i < loop_children.length; ++i) { // for each child that has a repeater, call the forElement method
-
-                                    let bind = loop_children[i].getAttribute('app-for-sub'),
-                                        cl_props = bind.match(/(.*) in (.*)/),
-                                        val = app.methods.getValue(self, cl_props[2])
-
-                                    app.methods.forElement(loop_children[i], false, val, self_key)
-
-                                }
-
-                                for (let i = 0; i < click_children.length; ++i){
-
-                                    click_children[i].removeEventListener('click',app.methods.clickElement)
-
-                                    click_children[i].addEventListener('click', function(){
-                                        app.methods.clickElement(click_children[i], self_key, self)
-                                    })
-
-                                }
-
-                                for (let i = 0; i < model_children.length; ++i){
-
-                                    model_children[i].removeEventListener('change',app.methods.onChangeElement)
-
-                                    app.methods.onChangeElement(model_children[i], self_key, self, true)
-                                    model_children[i].addEventListener('change', function(){
-                                        app.methods.onChangeElement(model_children[i], self_key, self)
-                                    })
-
-                                }
-                                for (let i = 0; i < src_children.length; ++i){
-
-                                    let val = src_children[i].getAttribute('app-src')
-                                    app.methods.addSrc(src_children[i], app.methods.getValue(self, val))
-
-                                }
-
-                            }
-
-                        }
-                    })
-
-            }
-
-            runLoop()
 
     },
 
@@ -1268,7 +994,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             }
 
-        //    console.log(currentPath)
+            // console.log(currentPath)
 
             if (watch[changes[i].currentPath]){ // fire any watch functions
                 watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue, currentPath)
