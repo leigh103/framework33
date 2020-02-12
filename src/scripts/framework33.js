@@ -9,6 +9,7 @@ global.scope.data = []
 global.watch = {}
 global.http = ''
 global.server = ''
+global.typing = ''
 
 var test = {},
     app = {}
@@ -1053,7 +1054,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (app.elements.model.index[currentPath]){
                 app.elements.model.nodes.forEach(function(el) {
                     el.self = el
-                    app.methods.onChangeElement(el, false, false, true)
+                    clearTimeout(global.typing)
+                    global.typing = setTimeout(function(){
+                        app.methods.onChangeElement(el, false, false, true)
+                    }, 1000)
+
                 })
             }
 
