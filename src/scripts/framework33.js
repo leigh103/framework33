@@ -296,7 +296,7 @@ app.methods = {
 
         } else {
 
-            if (scope[path]){
+            if (scope[path] && string === false){
                 if (typeof scope[path] == 'function'){
                     return scope[path]()
                 } else {
@@ -557,7 +557,7 @@ app.methods = {
 
             set_val = app.methods.getValue(scope, attr)
 
-            if (init && typeof set_val != 'undefined'){
+            if (init && set_val){
                 el.value = set_val
             } else {
                 app.methods.setValue(scope, attr, el.value)

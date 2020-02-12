@@ -156,7 +156,7 @@
             <p>Using grid and flex, you can create a great looking form. Add to that positionable rounded corners and consistent heights across input fields and buttons, and you got yourself something awesome</p>
 
             <div>
-                <div class="grid col-3 col-s-1 gap-2 mt-2" app-for="field in view.fields">
+                <div class="grid col-3 col-s-1 gap-2 mt-2">
                     <div>
                         <label class="indent">Field One</label>
                         <input type="text" class="thick rounded" placeholder="Field">
@@ -167,9 +167,9 @@
                     </div>
                     <div>
                         <label class="indent" app-bind="field.selected_option">Field Three</label>
-                        <select class="thick rounded" app-model="field.selected_option">
+                        <select class="thick rounded">
                             <option disabled selected>Please select...</option>
-                            <option app-for-sub="option in view.options" app-bind="option.name" app-value="option.value"></option>
+                            <option app-for="option in view.options" app-bind="option.name" app-value="option.value"></option>
                         </select>
                     </div>
                 </div>
@@ -236,7 +236,7 @@
 
     </section>
 
-    <section class="bg-33-light-grey py-4">
+    <section class="bg-33-white py-4">
 
         <div class="contain text-left">
 
@@ -263,69 +263,74 @@
 
     <section class="py-4 bg-33-light-grey text-left">
 
-    <div class="contain">
-        <div>
-        <div class="form-wrap grid col-12 mt-2" app-for="appointment in appointments">
-            <div class="colspan-12">
-                <span app-bind="appointment.item"></span> <span app-bind="appointment.list"></span>
-            </div>
+        <div class="contain">
 
-            <div class="colspan-3">
+            <h2>Repeating Elements</h2>
 
-                <label>Start Time</label>
-                <div class="">
-                    <select app-model="appointment.start_time">
-                        <option app-for-sub="hr in getHrs()" app-bind="hr" app-value="hr"></option>
-                    </select>
+            <p>What's a framework without a repeater? Framework33 supports repeating and nested repeating elements.</p>
+
+            <div>
+
+                <div class="form-wrap grid col-12 mt-2" app-for="appointment in appointments">
+
+                    <div class="colspan-12 mb-1">
+                        <h4 class="text-light"><span app-bind="appointment.item"></span> <span app-bind="appointment.list"></span></h4>
+                    </div>
+
+                    <div class="colspan-3">
+
+                        <label>Start Time</label>
+                        <div class="">
+                            <select app-model="appointment.start_time">
+                                <option app-for-sub="hr in getHrs()" app-bind="hr" app-value="hr"></option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="colspan-9">
+
+                        <label>Service</label>
+                        <select app-model="appointment.service">
+                            <option selected disabled value="">Choose Service</option>
+                            <option app-for-sub="service in services" app-value="service.name" app-bind="service.name"></option>
+                        </select>
+
+                    </div>
+
+                    <div class="colspan-3">
+
+                        <label>Duration</label>
+                        <div class="">
+                            <select app-model="appointment.duration">
+                                <option app-for-sub="hrs in getDurationHrs()" app-bind="hrs"></option>
+                            </select>
+                        </div>
+
+                    </div>
+
+                    <div class="colspan-9">
+
+                        <label>Staff</label>
+                        <select app-model="appointment.staff_id">
+                            <option selected disabled value="">Choose Staff</option>
+                            <option app-for-sub="member in staff" app-value="member._key" app-bind="member.name.first"></option>
+                        </select>
+
+                    </div>
+
                 </div>
 
             </div>
 
-            <div class="colspan-9">
+            <a class="btn bg-33-green mt-3" app-click="newAppointment()">
+                Add
+            </a>
+            <a class="btn bg-33-red mt-3" app-click="removeAppointment()">
+                Remove
+            </a>
 
-                <label>Service</label>
-                <select app-model="appointment.service">
-                    <option selected disabled value="">Choose Service</option>
-                    <option app-for-sub="service in services" app-value="service.name" app-bind="service.name"></option>
-                </select>
-
-            </div>
-
-            <div class="colspan-3">
-
-                <label>Duration</label>
-                <div class="">
-                    <select app-model="appointment.duration">
-                        <option app-for-sub="hrs in getDurationHrs()" app-bind="hrs"></option>
-                    </select>
-                </div>
-
-            </div>
-
-            <div class="colspan-9">
-
-                <label>Staff</label>
-                <select app-model="appointment.staff_id">
-                    <option selected disabled value="">Choose Staff</option>
-                    <option app-for-sub="member in staff" app-value="member._key" app-bind="member.name.first"></option>
-                </select>
-
-            </div>
         </div>
-    </div>
-        <a class="btn mt-3" app-click="newAppointment()">
-            Add
-        </a>
-        <a class="btn mt-3" app-click="removeAppointment()">
-            Remove
-        </a>
-
-        <a class="btn mt-3" app-click="addServices()">
-            Add Services
-        </a>
-
-
-    </div>
 
 
     </section>

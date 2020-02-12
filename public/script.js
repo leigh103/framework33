@@ -92,20 +92,10 @@ controller = () => {
         scope.table_items = JSON.parse(localStorage.getItem('table_items'))
     } else {
         scope.table_items = [
-            {id:0,name:{first:'Lee',last:'Roberts'},description:'An exemplary employee',gender:'male',age:35},
-            {id:1,name:{first:'Dilbert',last:'Andrews'},description:'An good employee',gender:'male',age:34},
-            {id:3,name:{first:'Katie',last:'Roberts'},description:'An exemplary employee',gender:'female',age:33},
-            {id:4,name:{first:'Scott',last:'Peterson'},description:'An exemplary employee',gender:'male',age:34},
-            {id:6,name:{first:'Bredan',last:'McCaffery'},description:'A medium employee',gender:'male',age:32},
-            {id:7,name:{first:'Jo',last:'Anderson'},description:'An good employee',gender:'female',age:31},
-            {id:8,name:{first:'Sam',last:'Gamgee'},description:'An ok employee',gender:'male',age:30},
-            {id:9,name:{first:'David',last:'Rozmand'},description:'An exemplary employee',gender:'male',age:45},
-            {id:10,name:{first:'Sean',last:'Holtby'},description:'An exemplary employee',gender:'male',age:44},
-            {id:11,name:{first:'Andy',last:'Burnham'},description:'An ok employee',gender:'female',age:43},
-            {id:12,name:{first:'Dan',last:'Bold'},description:'An exemplary employee',gender:'male',age:42},
-            {id:13,name:{first:'Sarah',last:'Frederik'},description:'An exemplary employee',gender:'female',age:41},
-            {id:14,name:{first:'Mike',last:'Haggis'},description:'An ok employee',gender:'male',age:40},
-            {id:15,name:{first:'Robert',last:'Bartrum'},description:'An terrible employee',gender:'male',age:39}
+            {id:0,name:{first:'Dave',last:'Roberts'},description:'Gamer, works hard, non-smoker',gender:'male',age:35},
+            {id:1,name:{first:'Dilbert',last:'Andrews'},description:'Reader, bit lazy, likes art and coffee',gender:'male',age:41},
+            {id:3,name:{first:'Katie',last:'Roberts'},description:'Non-smoker, gamer, purple hair',gender:'female',age:26},
+            {id:4,name:{first:'Scott',last:'Peterson'},description:'Smoker, loyal, works hard',gender:'male',age:34}
         ]
     }
 
@@ -235,11 +225,20 @@ controller = () => {
 
     }
 
-    scope.staff = [{"_key":"54856400","_id":"staff/54856400","_rev":"_Z9uuWfO--_","name":{"first":"Charlotte","last":"Webb"},"avatar":"","salon_id":"54855602","level":"Junior"},{"_key":"54856317","_id":"staff/54856317","_rev":"_Z9uudDO--_","name":{"first":"Paulo","last":"Gio"},"avatar":"","salon_id":"54855602","level":"Mid"},{"_key":"60698299","_id":"staff/60698299","_rev":"_a-qjplm--_","name":{"first":"Lee","last":"Anderson"},"level":"Senior","salon_id":"54855602"},{"_key":"54856289","_id":"staff/54856289","_rev":"_Z9uunQa--_","name":{"first":"Micheal","last":"Butler"},"avatar":"","salon_id":"54855602","level":"Junior"},{"_key":"54856425","_id":"staff/54856425","_rev":"_Z9uuuIq--_","name":{"first":"Lucy","last":"Elliot"},"avatar":"","salon_id":"54855602","level":"Senior"}]
+    scope.staff = [
+        {"_key":"54856400","_id":"staff/54856400","_rev":"_Z9uuWfO--_","name":{"first":"Charlotte","last":"Webb"},"avatar":"","salon_id":"54855602","level":"Junior"},
+        {"_key":"54856317","_id":"staff/54856317","_rev":"_Z9uudDO--_","name":{"first":"Paulo","last":"Gio"},"avatar":"","salon_id":"54855602","level":"Mid"},
+        {"_key":"60698299","_id":"staff/60698299","_rev":"_a-qjplm--_","name":{"first":"Lee","last":"Anderson"},"level":"Senior","salon_id":"54855602"},
+        {"_key":"54856289","_id":"staff/54856289","_rev":"_Z9uunQa--_","name":{"first":"Micheal","last":"Butler"},"avatar":"","salon_id":"54855602","level":"Junior"},
+        {"_key":"54856425","_id":"staff/54856425","_rev":"_Z9uuuIq--_","name":{"first":"Lucy","last":"Elliot"},"avatar":"","salon_id":"54855602","level":"Senior"}
+    ]
 
-    scope.addServices = function() {
-        scope.services = [{"_key":"60697672","_id":"services/60697672","_rev":"_a_sgkZK--_","name":"Cut and Blow Dry","description":"Simple cut and blow dry","category":"hair, cuts","duration":"45","price":"50","min_price":"40","max_price":"60","jnr_price":"40","snr_price":"60","linked_service":"","weekly_discount":"1","required_skills":["stylist"],"salon_id":"54855602"},{"_key":"60697764","_id":"services/60697764","_rev":"_a_sh_ZG--_","name":"we","description":"wef","category":"wef","duration":"wef","price":"wef","min_price":"wef","max_price":"wef","jnr_price":"wef","snr_price":"wef","linked_service":"wef","required_skills":["stylist","colourist"],"weekly_discount":"1","salon_id":"54855602"},{"_key":"60386750","_id":"services/60386750","_rev":"_a_sgrcy--_","name":"Hair Color","description":"Hair colour application","category":"hair, colour","price":"0","min_price":"0","max_price":"0","jnr_price":"0","snr_price":"0","linked_service":"","salon_id":"54855602","required_skills":["stylist","colourist"],"weekly_discount":"1","duration":"60"},{"_key":"60253337","_id":"services/60253337","_rev":"_a_sgzfy--_","name":"Hair cut and colour","description":"Hair cut and colour","category":"cuts, colour, hair","price":"70","min_price":"60","max_price":"80","jnr_price":"60","snr_price":"80","linked_service":"60386750","salon_id":"54855602","required_skills":["stylist","colourist"],"weekly_discount":"1","duration":"30"},{"_key":"60252992","_id":"services/60252992","_rev":"_a_sgadC--_","name":"Hair cut","description":"Hair cut","category":"cuts, hair","price":"50","min_price":"40","max_price":"60","jnr_price":"40","snr_price":"60","linked_service":"","salon_id":"54855602","weekly_discount":"1","required_skills":["stylist"],"duration":"30"}]
-    }
+    scope.services = [
+        {"_key":"60697672","_id":"services/60697672","_rev":"_a_sgkZK--_","name":"Cut and Blow Dry","description":"Simple cut and blow dry","category":"hair, cuts","duration":"45","price":"50","min_price":"40","max_price":"60","jnr_price":"40","snr_price":"60","linked_service":"","weekly_discount":"1","required_skills":["stylist"],"salon_id":"54855602"},
+        {"_key":"60386750","_id":"services/60386750","_rev":"_a_sgrcy--_","name":"Hair Color","description":"Hair colour application","category":"hair, colour","price":"0","min_price":"0","max_price":"0","jnr_price":"0","snr_price":"0","linked_service":"","salon_id":"54855602","required_skills":["stylist","colourist"],"weekly_discount":"1","duration":"60"},
+        {"_key":"60253337","_id":"services/60253337","_rev":"_a_sgzfy--_","name":"Hair cut and colour","description":"Hair cut and colour","category":"cuts, colour, hair","price":"70","min_price":"60","max_price":"80","jnr_price":"60","snr_price":"80","linked_service":"60386750","salon_id":"54855602","required_skills":["stylist","colourist"],"weekly_discount":"1","duration":"30"},
+        {"_key":"60252992","_id":"services/60252992","_rev":"_a_sgadC--_","name":"Hair cut","description":"Hair cut","category":"cuts, hair","price":"50","min_price":"40","max_price":"60","jnr_price":"40","snr_price":"60","linked_service":"","salon_id":"54855602","weekly_discount":"1","required_skills":["stylist"],"duration":"30"}
+    ]
 
     scope.getHrs = function() {
 
@@ -316,8 +315,8 @@ controller = () => {
 
     scope.appointments = [
         {
-            list:'9',
-            item:'Lee',
+            list:'1',
+            item:'Appointment',
             service:'',
             staff:'',
             start_time:'09:00',
@@ -327,8 +326,8 @@ controller = () => {
 
     scope.newAppointment = function(){
         scope.appointments.push({
-            list:9+scope.appointments.length,
-            item:'Lee '+scope.appointments.length,
+            list:1+scope.appointments.length,
+            item:'Appointment',
             service:'',
             staff:'',
             start_time:'10:00',
