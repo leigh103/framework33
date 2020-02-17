@@ -245,7 +245,7 @@
             <p>Tabs can be created using Framework33's reactive functionality.</p>
 
             <div class="mt-2 overflow-x">
-                <div class="inline-block clickable p-1" app-for="tab in view.tabs" app-click="view.show.tab = tab.name" app-attr="{id:tab.name}" app-bind="tab.name">One</div>
+                <div class="inline-block clickable p-1" app-for="tab in view.tabs" app-click="view.show.tab = tab.name" app-attr="{id:'context-'+tab.name}" app-bind="tab.name">One</div>
             </div>
 
             <div class="mt-2">

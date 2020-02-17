@@ -718,6 +718,7 @@ app.methods = {
                     value_children = el_clone.el.querySelectorAll('[app-value]'),
                     click_children = el_clone.el.querySelectorAll('[app-click]'),
                     model_children = el_clone.el.querySelectorAll('[app-model]'),
+                    attr_children = el_clone.el.querySelectorAll('[app-attr]'),
                     src_children = el_clone.el.querySelectorAll('[app-src]')
 
                 if (el_clone.el.hasAttribute('app-bind')){
@@ -798,6 +799,10 @@ app.methods = {
 
                     app.methods.forElement(loop_children[i], val, el_clone.index)
 
+                }
+
+                for (let i = 0; i < attr_children.length; ++i){
+                    app.methods.addAttr(attr_children[i], el_clone)
                 }
 
                 for (let i = 0; i < click_children.length; ++i){
@@ -944,10 +949,27 @@ app.methods = {
         }
 
         for (let i in el_prop_arr){
+            
             let attr = el_prop_arr[i].split(':')[0],
-                val = app.methods.getValue(data, el_prop_arr[i].split(':')[1])
+                attr_val = el_prop_arr[i].split(':')[1],
+                prefix = '',
+                postfix = '',
+                val
 
-            el.setAttribute(attr, val)
+            if (attr_val.match(/'(.*?)'\+(.*?)/)){
+               prefix = attr_val.split('+')
+               attr_val = prefix[1]
+               prefix = prefix[0].replace(/'/g,'')
+            } else if (attr_val.match(/(.*?)\+'(.*?)'/)){
+               prefix = attr_val.split('+')
+               attr_val = prefix[0]
+               prefix = prefix[1].replace(/'/g,'')
+            }
+
+            val = app.methods.getValue(data, attr_val)
+
+            el.setAttribute(attr, prefix+val+postfix)
+
         }
 
         app.methods.addIndex(el, el_prop, 'attr')
