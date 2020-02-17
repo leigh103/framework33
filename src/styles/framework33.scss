@@ -87,7 +87,6 @@ div {
 img:not(.inline) {
     position:relative;
     max-width:100%;
-    z-index:2;
 }
 
 img.inline {
@@ -357,26 +356,8 @@ a.card.hover:hover,a.image-card.hover:hover {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    background-color:rgba(255,255,255,0.5)
 }
 
-.modal > div {
-    width: 50vw
-}
-
-.modal .body {
-    background-color:#fff;
-    -webkit-box-shadow:0px 100px 150px -20px rgba(0,0,0,0.6);
-    -moz-box-shadow:0px 100px 150px -20px rgba(0,0,0,0.6);
-    box-shadow:0px 100px 150px -20px rgba(0,0,0,0.6);
-}
-
-.modal .footer {
-    background-color:#fff;
-    -webkit-box-shadow:0px 21px 15px -20px rgba(0,0,0,0.6);
-    -moz-box-shadow:0px 21px 15px -20px rgba(0,0,0,0.6);
-    box-shadow:0px 21px 15px -20px rgba(0,0,0,0.6);
-}
 
 .code {
     white-space: pre;

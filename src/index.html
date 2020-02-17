@@ -245,15 +245,14 @@
             <p>Tabs can be created using Framework33's reactive functionality.</p>
 
             <div class="mt-2 overflow-x">
-                <div class="inline-block clickable p-1" app-click="view.show.tab = 'one'">One</div>
-                <div class="inline-block clickable p-1" app-click="view.show.tab = 'two'">Two</div>
-                <div class="inline-block clickable p-1" app-click="view.show.tab = 'three'">Three</div>
+                <div class="inline-block clickable p-1" app-for="tab in view.tabs" app-click="view.show.tab = tab.name" app-attr="{id:tab.name}" app-bind="tab.name">One</div>
             </div>
 
             <div class="mt-2">
-                <div app-show="view.show.tab == 'one'">This is tab one</div>
-                <div app-show="view.show.tab == 'two'">This is tab two</div>
-                <div app-show="view.show.tab == 'three'">This is tab three</div>
+                <div app-for="tab_content in view.tabs" app-show="view.show.tab == tab_content.name" anim="{'enter':'move-up','exit':'move-down'}">This is tab <span app-bind="tab_content.name"></span></div>
+                <!-- <div app-show="view.show.tab == 'one'" anim="{'enter':'fade-in','exit':'move-down'}">This is tab one <div class="bg-33-light-grey p-1 rounded" anim="{'enter':'move-up'}">This is an animated child</div></div>
+                <div app-show="view.show.tab == 'two'" anim="{'enter':'move-up','exit':'move-down'}">This is tab two</div>
+                <div app-show="view.show.tab == 'three'" anim="{'enter':'move-up','exit':'move-down'}">This is tab three</div> -->
             </div>
 
         </div>

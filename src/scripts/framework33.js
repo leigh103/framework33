@@ -28,6 +28,7 @@ app.elements = {}
     app.elements.init = {}
     app.elements.src = {}
     app.elements.data = {}
+    app.elements.attr = {}
 
     app.elements.bound.index = {}
     app.elements.value.index = {}
@@ -42,6 +43,7 @@ app.elements = {}
     app.elements.foreach.root = {}
     app.elements.init.index = {}
     app.elements.src.index = {}
+    app.elements.attr.index = {}
     app.elements.data.index = {}
 
 app.methods = {
@@ -85,6 +87,8 @@ app.methods = {
 
         if (!obj){
             obj = scope
+        } else if (typeof obj == 'string'){
+            obj = app.elements.foreach.loops[obj]
         }
 
         if (path.match(/'|"/)){
@@ -322,11 +326,82 @@ app.methods = {
         if (type == 'show'){
 
             let el_prop = el.getAttribute('app-show'),
-                val = app.methods.getValue(scope, el_prop)
-
+                val = app.methods.getValue(scope, el_prop),
+                anim_children = el.querySelector('[anim]')
+// console.log(el, el_prop)
             app.methods.addIndex(el, el_prop, 'show')
 
             if (val){
+
+                if (el.classList.contains('grid')){
+                    el.style.display = 'grid'
+                } else if (el.classList.contains('btn')){
+                    el.style.display = 'inline-flex'
+                } else if (el.classList.contains('flex') || el.classList.contains('modal')){
+                    el.style.display = 'flex'
+                } else {
+                    el.style.display = 'block'
+                }
+
+                el.classList.add('in-view')
+
+                if (anim_children && anim_children.length > 0){
+
+                    for (let i=0; i<anim_children.length;i++){
+                        anim_children[i].classList.remove('exit-view')
+                        anim_children[i].classList.add('in-view')
+                    }
+
+                } else if (anim_children) {
+                    anim_children.classList.remove('exit-view')
+                    anim_children.classList.add('in-view')
+                }
+
+            } else {
+
+                el.style.display = 'none'
+                el.classList.remove('in-view')
+
+                if (anim_children && anim_children.length > 0){
+
+                    for (let i=0; i<anim_children.length;i++){
+                        anim_children[i].classList.remove('in-view')
+                        anim_children[i].classList.add('exit-view')
+                    }
+
+                } else if (anim_children) {
+                    anim_children.classList.remove('in-view')
+                    anim_children.classList.add('exit-view')
+                }
+
+            }
+
+        } else if (type == 'hide'){
+
+            var el_prop = el.getAttribute('app-hide'),
+                val = app.methods.getValue(scope, el_prop),
+                anim_children = el.querySelector('[anim]')
+
+            app.methods.addIndex(el, el_prop, 'hide')
+
+            if (val){
+
+                el.style.display = 'none'
+                el.classList.remove('in-view')
+
+                if (anim_children && anim_children.length > 0){
+
+                    for (let i=0; i<anim_children.length;i++){
+                        anim_children[i].classList.remove('in-view')
+                        anim_children[i].classList.add('exit-view')
+                    }
+
+                } else if (anim_children) {
+                    anim_children.classList.remove('in-view')
+                    anim_children.classList.add('exit-view')
+                }
+
+            } else {
 
                 if (el.classList.contains('grid')){
                     el.style.display = 'grid'
@@ -338,34 +413,18 @@ app.methods = {
                     el.style.display = 'block'
                 }
 
+                el.classList.add('in-view')
 
-            } else {
+                if (anim_children && anim_children.length > 0){
 
-                el.style.display = 'none'
+                    for (let i=0; i<anim_children.length;i++){
+                        anim_children[i].classList.remove('exit-view')
+                        anim_children[i].classList.add('in-view')
+                    }
 
-            }
-
-        } else if (type == 'hide'){
-
-            var el_prop = el.getAttribute('app-hide'),
-                val = app.methods.getValue(scope, el_prop)
-
-            app.methods.addIndex(el, el_prop, 'hide')
-
-            if (val){
-
-                el.style.display = 'none'
-
-            } else {
-
-                if (el.classList.contains('grid')){
-                    el.style.display = 'grid'
-                } else if (el.classList.contains('btn')){
-                    el.style.display = 'inline-flex'
-                } else if (el.classList.contains('flex')){
-                    el.style.display = 'flex'
-                } else {
-                    el.style.display = 'block'
+                } else if (anim_children) {
+                    anim_children.classList.remove('exit-view')
+                    anim_children.classList.add('in-view')
                 }
 
             }
@@ -566,7 +625,7 @@ app.methods = {
         }
 
 
-    },10)
+    },20)
 
 
     },
@@ -638,10 +697,14 @@ app.methods = {
 
                 let el_clone = {
                         el:app.elements.foreach.root[block_key].el.cloneNode(true),
-                        index:idx
+                        index:idx,
+                        scoped_data: loop_arr[idx]
                     }
 
                 el_clone[block] = loop_arr[idx]
+
+
+            //    el_clone.el.setAttribute('app-scope',JSON.stringify(loop_arr[idx]).replace(/\"/g,"'"))
 
                 el_clone.el.removeAttribute('app-for')
                 el_clone.el.removeAttribute('app-for-sub')
@@ -677,6 +740,10 @@ app.methods = {
 
                 if (el_clone.el.hasAttribute('app-value')){
                     el_clone.el.value = app.methods.getValue(el_clone, el_clone.el.getAttribute('app-value'))
+                }
+
+                if (el_clone.el.hasAttribute('app-attr')){
+                    app.methods.addAttr(el_clone.el, el_clone)
                 }
 
                 if (el_clone.el.hasAttribute('app-class')){
@@ -867,6 +934,26 @@ app.methods = {
 
     },
 
+    addAttr(el, data){
+
+        var el_prop = el.getAttribute('app-attr'),
+            el_prop_arr
+
+        if (el_prop){
+            el_prop_arr = el_prop.replace(/{/,'').replace(/}/,'').split(',')
+        }
+
+        for (let i in el_prop_arr){
+            let attr = el_prop_arr[i].split(':')[0],
+                val = app.methods.getValue(data, el_prop_arr[i].split(':')[1])
+
+            el.setAttribute(attr, val)
+        }
+
+        app.methods.addIndex(el, el_prop, 'attr')
+
+    },
+
     addIndex(el, el_prop, key){
 
         if (el_prop.match(/\{(.*?)\}/)){
@@ -979,6 +1066,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.foreach.nodes = document.querySelectorAll('[app-for]')
     app.elements.init.nodes = document.querySelectorAll('[app-init]')
     app.elements.src.nodes = document.querySelectorAll('[app-src]')
+    app.elements.attr.nodes = document.querySelectorAll('[app-attr]')
     app.elements.data.nodes = document.querySelectorAll('[app-data]')
 
     app.elements.animation = document.querySelectorAll("[anim],[anim-enter],[anim-exit]")
@@ -1054,10 +1142,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (app.elements.model.index[currentPath]){
                 app.elements.model.nodes.forEach(function(el) {
                     el.self = el
-                    clearTimeout(global.typing)
-                    global.typing = setTimeout(function(){
+                //    clearTimeout(global.typing)
+                //    global.typing = setTimeout(function(){
                         app.methods.onChangeElement(el, false, false, true)
-                    }, 1000)
+                //    }, 1000)
 
                 })
             }
@@ -1066,6 +1154,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (app.elements.src.index[currentPath]){
                 app.elements.src.index[currentPath].forEach(function(el){
                     app.methods.addSrc(el)
+                })
+            }
+
+            // update any elements with attr
+            if (app.elements.attr.index[currentPath]){
+                app.elements.attr.index[currentPath].forEach(function(el){
+                    app.methods.addAttr(el)
                 })
             }
 
@@ -1143,6 +1238,7 @@ window.addEventListener('load', () => {
         app.methods.onChangeElement(el, false, false, true)
     })
 
+
     app.elements.foreach.nodes.forEach(function(el) {
         app.methods.forElement(el)
     })
@@ -1153,6 +1249,10 @@ window.addEventListener('load', () => {
 
     app.elements.data.nodes.forEach(function(el) {
         app.methods.parseData(el, true)
+    })
+
+    app.elements.attr.nodes.forEach(function(el) {
+        app.methods.addAttr(el, true)
     })
 
 })

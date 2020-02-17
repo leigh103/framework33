@@ -1,6 +1,6 @@
 
 $move-amount: 40px;
-$move-speed: 2000ms;
+$move-speed: 500ms;
 
 [anim-enter="move-up"]{
     transform: translateY($move-amount);

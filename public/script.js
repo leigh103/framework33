@@ -6,6 +6,11 @@ controller = () => {
     scope.view = {}
     scope.view.text = {}
     scope.view.show = {search:false, tab:'one'}
+    scope.view.tabs = [
+        {name:'one'},
+        {name:'two'},
+        {name:'three'}
+    ]
     scope.view.text.class = "text-bold"
     scope.view.asc = true
     scope.view.search_field = ''
