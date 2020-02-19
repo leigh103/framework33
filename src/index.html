@@ -37,7 +37,7 @@
 
             <div class="colspan-1 text-right text-s-left hidden-s">
                 <div class="py-1-children">
-                    <div class="clickable" app-for="menu_item in menu_items" app-click="panel = menu_item" app-class="{active:panel == menu_item}">
+                    <div class="clickable" app-for="menu_item in menu_items" app-click="chgPanel('menu_item')" app-class="{active:panel == menu_item}">
                         <span app-bind="menu_item.name" app-class="menu_item.class"></span>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
                     <input type="text" class="pl-0" placeholder="Search table data" app-model="view.search">
                 </div>
                 <div class="flex-1">
-                    <select app-model="view.search_field" class="rounded-right">
+                    <select app-model="view.search_field" class="rounded-right" app-change="alert(view.search_field)">
                         <option selected disabled value="">Select search field...</option>
                         <option value="name">Name</option>
                         <option value="description">Description</option>
@@ -94,9 +94,15 @@
                 <div class="row" app-for="item in filteredTable">
                     <div class="cell middle text-bold" app-bind="parseName(item.name)"></div>
                     <div class="cell middle" app-bind="item.description"></div>
-                    <div class="cell middle" app-bind="item.gender"></div>
+                    <div class="cell middle">
+                        <select class="rounded" app-model="item.gender" app-change="alert(item.gender,{{index}})">
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                        </select>
+                    </div>
                     <div class="cell middle" app-bind="item.age"></div>
                     <div class="cell middle text-right">
+
                         <button app-click="edit('table_items',item)" class="bg-33-blue">Edit</button>
                         <button app-click="delete('table_items',item)" class="bg-33-blue">Delete</button>
                     </div>
@@ -249,10 +255,10 @@
             </div>
 
             <div class="mt-2">
-                <div app-for="tab_content in view.tabs" app-show="view.show.tab == tab_content.name" anim="{'enter':'move-up','exit':'move-down'}">This is tab <span app-bind="tab_content.name"></span></div>
-                <!-- <div app-show="view.show.tab == 'one'" anim="{'enter':'fade-in','exit':'move-down'}">This is tab one <div class="bg-33-light-grey p-1 rounded" anim="{'enter':'move-up'}">This is an animated child</div></div>
+                <!-- <div app-for="tab_content in view.tabs" app-show="view.show.tab == tab_content.name" anim="{'enter':'move-up','exit':'move-down'}">This is tab <span app-bind="tab_content.name"></span></div> -->
+                <div app-show="view.show.tab == 'one'" anim="{'enter':'fade-in','exit':'move-down'}">This is tab one <div class="bg-33-light-grey p-1 rounded" anim="{'enter':'move-up'}">This is an animated child</div></div>
                 <div app-show="view.show.tab == 'two'" anim="{'enter':'move-up','exit':'move-down'}">This is tab two</div>
-                <div app-show="view.show.tab == 'three'" anim="{'enter':'move-up','exit':'move-down'}">This is tab three</div> -->
+                <div app-show="view.show.tab == 'three'" anim="{'enter':'move-up','exit':'move-down'}">This is tab three</div>
             </div>
 
         </div>

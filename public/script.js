@@ -85,6 +85,10 @@ controller = () => {
         console.log(scope.view.fields)
     }
 
+    scope.alert = function(data, index){
+    //    console.log(data, index)
+    }
+
     scope.view.selected_option = ''
 
     scope.panel = scope.menu_items[0]
@@ -93,14 +97,19 @@ controller = () => {
         scope.menu_items.push({name: 'New Page', panel:'Hi there', class:"text-green"})
     }
 
+    scope.chgPanel = function(menu_item){
+
+        scope.panel = menu_item
+    }
+
     if (localStorage.getItem('table_items')){
         scope.table_items = JSON.parse(localStorage.getItem('table_items'))
     } else {
         scope.table_items = [
-            {id:0,name:{first:'Dave',last:'Roberts'},description:'Gamer, works hard, non-smoker',gender:'male',age:35},
-            {id:1,name:{first:'Dilbert',last:'Andrews'},description:'Reader, bit lazy, likes art and coffee',gender:'male',age:41},
-            {id:3,name:{first:'Katie',last:'Roberts'},description:'Non-smoker, gamer, purple hair',gender:'female',age:26},
-            {id:4,name:{first:'Scott',last:'Peterson'},description:'Smoker, loyal, works hard',gender:'male',age:34}
+            {id:0,name:{first:'Dave',last:'Roberts'},description:'Gamer, works hard, non-smoker',gender:'male',age:35, truth:false},
+            {id:1,name:{first:'Dilbert',last:'Andrews'},description:'Reader, bit lazy, likes art and coffee',gender:'male',age:41, truth:false},
+            {id:3,name:{first:'Katie',last:'Roberts'},description:'Non-smoker, gamer, purple hair',gender:'female',age:26, truth:false},
+            {id:4,name:{first:'Scott',last:'Peterson'},description:'Smoker, loyal, works hard',gender:'male',age:34, truth:true}
         ]
     }
 
@@ -141,8 +150,8 @@ controller = () => {
     scope.edit = function(collection, obj){
 
         scope.view.save_id = scope[collection].indexOf(obj)
-        scope.new = obj
         scope.view.save = true
+        scope.new = obj
 
     }
 
@@ -213,10 +222,13 @@ controller = () => {
 
     scope.resetNew = function(){
         scope.view.save = false
-        let new_obj = []
-        for (var i in scope.new){
-            scope.new[i] = ''
+        let new_obj = {}
+        new_obj = Object.assign(new_obj, scope.new)
+        for (var i in new_obj){
+            new_obj[i] = ''
         }
+        scope.new = new_obj
+        console.log(scope.new)
     }
 
     scope.getName = function(text){

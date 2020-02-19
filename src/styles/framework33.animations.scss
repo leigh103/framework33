@@ -166,6 +166,26 @@ $move-speed: 500ms;
     }
 }
 
+[anim-enter="open-down"]{
+    max-height:0
+}
+
+.in-view[anim-enter="open-down"] {
+    animation-name:OpenDown;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+}
+
+@keyframes OpenDown  {
+    0%  {
+        max-height:0
+    }
+    100%  {
+        max-height:999px
+    }
+}
+
 [anim-enter="fade-in"] {
     opacity: 0;
 }

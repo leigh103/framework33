@@ -14,37 +14,48 @@ global.typing = ''
 var test = {},
     app = {}
 
-app.elements = {}
-
-    app.elements.bound = {}
-    app.elements.value = {}
-    app.elements.logic = {}
-    app.elements.show = {}
-    app.elements.hide = {}
-    app.elements.event = {}
-    app.elements.class = {}
-    app.elements.model = {}
-    app.elements.foreach = {}
-    app.elements.init = {}
-    app.elements.src = {}
-    app.elements.data = {}
-    app.elements.attr = {}
-
-    app.elements.bound.index = {}
-    app.elements.value.index = {}
-    app.elements.logic.index = {}
-    app.elements.show.index = {}
-    app.elements.hide.index = {}
-    app.elements.event.index = {}
-    app.elements.class.index = {}
-    app.elements.model.index = {}
-    app.elements.foreach.index = {}
-    app.elements.foreach.loops = {}
-    app.elements.foreach.root = {}
-    app.elements.init.index = {}
-    app.elements.src.index = {}
-    app.elements.attr.index = {}
-    app.elements.data.index = {}
+app.elements = {
+    bound: {
+        index:{}
+    },
+    value: {
+        index:{}
+    },
+    logic: {
+        index:{}
+    },
+    show: {
+        index:{}
+    },
+    hide: {
+        index:{}
+    },
+    event: {
+        index:{}
+    },
+    class: {
+        index:{}
+    },
+    model: {
+        index:{}
+    },
+    foreach: {
+        index:{},
+        root:{}
+    },
+    init: {
+        index:{}
+    },
+    src: {
+        index:{}
+    },
+    data: {
+        index:{}
+    },
+    attr: {
+        index:{}
+    }
+}
 
 app.methods = {
 
@@ -77,9 +88,9 @@ app.methods = {
 
     },
 
-    getValue(obj, path) {
+    getValue(obj, path, string) {
 
-        let result, string
+        let result
 
         if (!path || typeof path != 'string'){
             return ''
@@ -87,24 +98,33 @@ app.methods = {
 
         if (!obj){
             obj = scope
-        } else if (typeof obj == 'string'){
-            obj = app.elements.foreach.loops[obj]
         }
 
         if (path.match(/'|"/)){
             string = true
-        } else {
+        } else if (typeof string == 'undefined'){
             string = false
         }
 
-        path = path.replace(/'|"/g,'')
+    //    path = path.replace(/'|"/g,'')
 
-        if (path && path.match(/\((.*?)\)$/)){ // if function
+        if (path == '{{index}}' && obj.index >= 0){
+
+            return obj.index+''
+
+        } else if (path && path.match(/\((.*?)\)$/)){ // if function
 
             let params = path.match(/\((.*?)\)$/)[1].split(',')
 
             params = params.map((e)=>{
-                let obj_check = app.methods.getValue(obj, e)
+
+                if (e.match(/'|"/)){
+                    string = true
+                } else {
+                    string = false
+                }
+                let obj_check = app.methods.getValue(obj, e, string)
+
                 if (obj_check){
                     return obj_check
                 } else {
@@ -183,7 +203,7 @@ app.methods = {
                 }
 
 
-        } else if (path.match(/\{(.*?)\}/)) { // if logic eg, {active: obj.path == 1} - if true, returns the first string
+        } else if (path.match(/\^{(.*?)\}/)) { // if logic eg, {active: obj.path == 1} - if true, returns the first string
 
             let matches = path.match(/\{([a-z0-9._]+)\:([a-z0-9._]+)\s([!=<>]+)\s([a-z0-9._]+)\}/),
                 result = matches[1],
@@ -309,7 +329,7 @@ app.methods = {
                 }
             } else {
                 return path.replace(/'|"/g,'')
-            }
+           }
 
         }
 
@@ -328,7 +348,7 @@ app.methods = {
             let el_prop = el.getAttribute('app-show'),
                 val = app.methods.getValue(scope, el_prop),
                 anim_children = el.querySelector('[anim]')
-// console.log(el, el_prop)
+
             app.methods.addIndex(el, el_prop, 'show')
 
             if (val){
@@ -492,39 +512,7 @@ app.methods = {
 
         if (attr.match(/(\w+)\((.*?)\)/)){ // if function
 
-            let matches = attr.match(/(\w+)\((.*?)\)/),
-                method = matches[1],
-                param = matches[2]
-
-            if (param.match(/\,/)){
-
-                params = param.split(',');
-                for (var i in params){
-
-                    params[i] = app.methods.getValue(data,params[i].replace(/^\s|\s$/,''))
-
-                    if (i == params.length-1){
-                        params = params.map((e)=>{
-                            if (typeof e == 'string'){
-                                return e.replace(/^['"]|['"]$/g,'')
-                            } else {
-                                return e
-                            }
-
-                        })
-                        scope[method].apply(null,params)
-                    }
-                }
-
-            } else if (scope[method]){
-
-                if (data && data[param]){
-                    scope[method](data[param])
-                } else {
-                    scope[method](param.replace(/^['"]|['"]$/g,''))
-                }
-
-            }
+            app.methods.getValue(data, attr)
 
         } else if (attr.match(/([a-za-zA-Z._]+)\s*(=)\s*'?((.*))'?/)){ // if operator
 
@@ -569,9 +557,27 @@ app.methods = {
 
     },
 
-    onChangeElement(el, index, data, init){
+    onChangeTrigger(el, index, data, init){
 
-        setTimeout(()=>{
+        let attr, attr_val, set_val
+
+        if (el.srcElement){
+            el = el.srcElement
+        }
+
+        if (el.hasAttribute('app-change')){
+
+            attr = el.getAttribute('app-change')
+
+            app.methods.addIndex(el, attr, 'model')
+
+            app.methods.getValue(data, attr)
+
+        }
+
+    },
+
+    onChangeElement(el, index, data, init){
 
         let attr, attr_val, set_val
 
@@ -581,36 +587,25 @@ app.methods = {
 
         attr = el.getAttribute('app-model')
 
-        app.methods.addIndex(el, attr, 'model')
-
         if (data){
 
             set_val = app.methods.getValue(data, attr)
 
             if (init && typeof set_val != 'undefined'){
 
-                el.value = set_val
 
-                if (set_val){
 
-                    for (var i=0; i<el.children.length; i++){
+                setTimeout(function(){
 
-                        if (el.children[i].hasAttribute('value') && el.children[i].getAttribute('value') == set_val){
-                            // console.log('using value',el.children[i].getAttribute('value'),set_val)
-                            el.children[i].setAttribute('selected',true)
-                        } else if (el.children[i].innerHTML && el.children[i].innerHTML.toString() == set_val.toString()){
-                            // console.log('using html',el.children[i].innerHTML.toString(), set_val.toString())
-                            el.children[i].setAttribute('selected',true)
-                        } else {
-                            // console.log('removing')
-                            el.children[i].removeAttribute('selected')
-                        }
+                    el.value = set_val
+                    app.methods.onChangeTrigger(el, index, data, init)
 
-                    }
-                }
+                },100)
+
 
             } else {
                 app.methods.setValue(data, attr, el.value)
+                app.methods.onChangeTrigger(el, index, data, init)
             }
 
         } else {
@@ -622,11 +617,8 @@ app.methods = {
             } else {
                 app.methods.setValue(scope, attr, el.value)
             }
+            app.methods.onChangeTrigger(el, index, data, init)
         }
-
-
-    },20)
-
 
     },
 
@@ -768,20 +760,50 @@ app.methods = {
 
                 for (let i = 0; i < model_children.length; ++i){
 
-                    model_children[i].removeEventListener('change',app.methods.onChangeElement)
+                    let bind = model_children[i].getAttribute('app-model'),
+                        index_key = scope_key+'__'+el_clone.index+'__'+bind.replace(/^\w+\(/,'').replace(/^\w+\./,'').replace(/\)$/,'')
+
+                    app.methods.addIndex(model_children[i], index_key, 'model')
 
                     app.methods.onChangeElement(model_children[i], el_clone.index, el_clone, true)
-                    model_children[i].addEventListener('change', function(){
-                        app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
-                    })
+
+                    if (model_children[i].tagName == "INPUT") {
+                        if (model_children[i].type == "text" || model_children[i].type == "number" || model_children[i].type == "password") {
+                        //    model_children[i].removeEventListener('keyup',app.methods.onChangeElement)
+                            model_children[i].addEventListener('keyup', function(){
+                                app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
+                            })
+                        }
+                        if (model_children[i].type == "checkbox") {
+
+                        //    model_children[i].removeEventListener('click',app.methods.onChangeElement)
+                            model_children[i].addEventListener('click', function(){
+                                app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
+                            })
+                        }
+                        if (model_children[i].type == "radio") {
+                        //    model_children[i].removeEventListener('click',app.methods.onChangeElement)
+                            model_children[i].addEventListener('click', function(){
+                                app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
+                            })
+                        }
+                    }
+                    if (model_children[i].tagName == "SELECT") {
+                    //    model_children[i].removeEventListener('input',app.methods.onChangeElement)
+                        model_children[i].addEventListener('input', function(){
+                            app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
+                        })
+                    }
 
                 }
 
                 for (let i = 0; i < bind_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
 
-
                     let bind = bind_children[i].getAttribute('app-bind'),
-                        val = app.methods.getValue(el_clone, bind)
+                        val = app.methods.getValue(el_clone, bind),
+                        index_key = scope_key+'__'+el_clone.index+'__'+bind.replace(/^\w+\(/,'').replace(/^\w+\./,'').replace(/\)$/,'')
+
+                    app.methods.addIndex(bind_children[i], index_key, 'bound')
 
                     if (val && val != 'undefined' && val != 'undefined undefined'){
                         bind_children[i].innerHTML = val
@@ -949,7 +971,7 @@ app.methods = {
         }
 
         for (let i in el_prop_arr){
-            
+
             let attr = el_prop_arr[i].split(':')[0],
                 attr_val = el_prop_arr[i].split(':')[1],
                 prefix = '',
@@ -976,7 +998,7 @@ app.methods = {
 
     },
 
-    addIndex(el, el_prop, key){
+    addIndex(el, el_prop, key, index){
 
         if (el_prop.match(/\{(.*?)\}/)){
             return false
@@ -1006,16 +1028,23 @@ app.methods = {
 
             el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'').replace(/\(|\)/g,'').replace(/\./g,'__')
 
-            let el_prop_index = ''
+            // let el_prop_index = ''
+            //
+            // if (!app.elements[key].index[el_prop]){
+            //     app.elements[key].index[el_prop] = []
+            //     el_prop_index = el_prop
+            // } else if (index) {
+            //     el_prop_index = el_prop+'_'+index
+            // } else {
+            //     el_prop_index = el_prop+'_'+app.elements[key].index[el_prop].length // add a different index if 2 or more elements share the same one
+            // }
+            //
+
+            el.setAttribute('app-index',el_prop)
 
             if (!app.elements[key].index[el_prop]){
                 app.elements[key].index[el_prop] = []
-                el_prop_index = el_prop
-            } else {
-                el_prop_index = el_prop+'_'+app.elements[key].index[el_prop].length // add a different index if 2 or more elements share the same one
             }
-
-            el.setAttribute('app-index',el_prop_index)
 
             if (app.elements[key].index[el_prop].indexOf(el) === -1){
                 app.elements[key].index[el_prop].push(el)
@@ -1097,7 +1126,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         for (var i in changes){
 
-            let currentPath
+            let currentPath,forEachPath
 
             if (isNaN(changes[i].property)){ // logic to use the index in the currentPath value
                 currentPath = changes[i].currentPath.replace(/\./g,'__')
@@ -1105,7 +1134,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             }
 
-            // console.log(currentPath)
+            forEachPath = currentPath.split('__')[0]
+
+
+            //    console.log(currentPath, app.elements.model.index[currentPath])
 
             if (watch[changes[i].currentPath]){ // fire any watch functions
                 watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue, currentPath)
@@ -1147,8 +1179,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // update any elements with foreach
-            if (app.elements.foreach.index[currentPath]){
-                app.elements.foreach.index[currentPath].forEach(function(el){
+            if (app.elements.foreach.index[forEachPath]){
+                app.elements.foreach.index[forEachPath].forEach(function(el){
                     app.methods.forElement(el)
                 })
             }
@@ -1162,12 +1194,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // update any elements with model
             if (app.elements.model.index[currentPath]){
-                app.elements.model.nodes.forEach(function(el) {
+                app.elements.model.index[currentPath].forEach(function(el) {
+
+                    if (el.tagName == "INPUT") {
+                        if (el.type == "text" || el.type == "number" || el.type == "password") {
+                            el.removeEventListener('keyup', app.methods.onChangeElement)
+                            el.addEventListener('keyup', app.methods.onChangeElement)
+                        }
+                        if (el.type == "checkbox") {
+                            el.removeEventListener('click', app.methods.onChangeElement)
+                            el.addEventListener('click', app.methods.onChangeElement)
+                        }
+                        if (el.type == "radio") {
+                            el.removeEventListener('click', app.methods.onChangeElement)
+                            el.addEventListener('click', app.methods.onChangeElement)
+                        }
+                    }
+                    if (el.tagName == "SELECT") {
+                        el.removeEventListener('input', app.methods.onChangeElement)
+                        el.addEventListener('input', app.methods.onChangeElement)
+                    }
+
                     el.self = el
-                //    clearTimeout(global.typing)
-                //    global.typing = setTimeout(function(){
-                        app.methods.onChangeElement(el, false, false, true)
-                //    }, 1000)
+
+                    app.methods.onChangeElement(el, false, false, true)
 
                 })
             }
@@ -1257,9 +1307,10 @@ window.addEventListener('load', () => {
 
         el.self = el
 
+        let attr = el.getAttribute('app-model')
+        app.methods.addIndex(el,attr,'model')
         app.methods.onChangeElement(el, false, false, true)
     })
-
 
     app.elements.foreach.nodes.forEach(function(el) {
         app.methods.forElement(el)
