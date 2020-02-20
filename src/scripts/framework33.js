@@ -349,8 +349,6 @@ app.methods = {
                 val = app.methods.getValue(scope, el_prop),
                 anim_children = el.querySelector('[anim]')
 
-            app.methods.addIndex(el, el_prop, 'show')
-
             if (val){
 
                 if (el.classList.contains('grid')){
@@ -402,8 +400,6 @@ app.methods = {
                 val = app.methods.getValue(scope, el_prop),
                 anim_children = el.querySelector('[anim]')
 
-            app.methods.addIndex(el, el_prop, 'hide')
-
             if (val){
 
                 el.style.display = 'none'
@@ -452,8 +448,6 @@ app.methods = {
         } else {
 
             var el_prop = el.getAttribute('app-if')
-
-            app.methods.addIndex(el, el_prop, 'logic')
 
             if (scope[el_prop]){
 
@@ -710,6 +704,8 @@ app.methods = {
                     value_children = el_clone.el.querySelectorAll('[app-value]'),
                     click_children = el_clone.el.querySelectorAll('[app-click]'),
                     model_children = el_clone.el.querySelectorAll('[app-model]'),
+                    show_children = el_clone.el.querySelectorAll('[app-show]'),
+                    hide_children = el_clone.el.querySelectorAll('[app-hide]'),
                     attr_children = el_clone.el.querySelectorAll('[app-attr]'),
                     src_children = el_clone.el.querySelectorAll('[app-src]')
 
@@ -755,6 +751,26 @@ app.methods = {
                     if (typeof val != 'undefined'){
                         app.methods.addClass(el_clone.el, val)
                     }
+
+                }
+
+                for (let i = 0; i < show_children.length; ++i){
+
+                    let bind = show_children[i].getAttribute('app-show'),
+                        index_key = scope_key+'__'+el_clone.index+'__'+bind.replace(/^\w+\(/,'').replace(/^\w+\./,'').replace(/\)$/,'')
+
+                    app.methods.addIndex(show_children[i], index_key, 'show')
+                    app.methods.toggleElement(show_children[i], 'show')
+
+                }
+
+                for (let i = 0; i < hide_children.length; ++i){
+
+                    let bind = hide_children[i].getAttribute('app-hide'),
+                        index_key = scope_key+'__'+el_clone.index+'__'+bind.replace(/^\w+\(/,'').replace(/^\w+\./,'').replace(/\)$/,'')
+
+                    app.methods.addIndex(hide_children[i], index_key, 'hide')
+                    app.methods.toggleElement(hide_children[i], 'hide')
 
                 }
 
@@ -1028,18 +1044,6 @@ app.methods = {
 
             el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'').replace(/\(|\)/g,'').replace(/\./g,'__')
 
-            // let el_prop_index = ''
-            //
-            // if (!app.elements[key].index[el_prop]){
-            //     app.elements[key].index[el_prop] = []
-            //     el_prop_index = el_prop
-            // } else if (index) {
-            //     el_prop_index = el_prop+'_'+index
-            // } else {
-            //     el_prop_index = el_prop+'_'+app.elements[key].index[el_prop].length // add a different index if 2 or more elements share the same one
-            // }
-            //
-
             el.setAttribute('app-index',el_prop)
 
             if (!app.elements[key].index[el_prop]){
@@ -1133,11 +1137,11 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             }
-
-            forEachPath = currentPath.split('__')[0]
-
-
-            //    console.log(currentPath, app.elements.model.index[currentPath])
+            //
+            // forEachPath = currentPath.split('__')[0]
+            // if (forEachPath == 'cart'){
+            //     console.log(changes[i], app.elements.foreach.index)
+            // }
 
             if (watch[changes[i].currentPath]){ // fire any watch functions
                 watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue, currentPath)
@@ -1179,8 +1183,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // update any elements with foreach
-            if (app.elements.foreach.index[forEachPath]){
-                app.elements.foreach.index[forEachPath].forEach(function(el){
+            if (app.elements.foreach.index[currentPath]){
+                app.elements.foreach.index[currentPath].forEach(function(el){
                     app.methods.forElement(el)
                 })
             }
@@ -1264,14 +1268,20 @@ window.addEventListener('load', () => {
     })
 
     app.elements.logic.nodes.forEach(function(el) {
+        let attr = el.getAttribute('app-if')
+        app.methods.addIndex(el, attr, 'logic')
         app.methods.toggleElement(el)
     })
 
     app.elements.show.nodes.forEach(function(el) {
+        let attr = el.getAttribute('app-show')
+        app.methods.addIndex(el, attr, 'show')
         app.methods.toggleElement(el,'show')
     })
 
     app.elements.hide.nodes.forEach(function(el) {
+        let attr = el.getAttribute('app-hide')
+        app.methods.addIndex(el, attr, 'hide')
         app.methods.toggleElement(el,'hide')
     })
 
