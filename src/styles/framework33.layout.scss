@@ -91,11 +91,11 @@ div.background {
     $value: $i * 5;
 
     .h-#{$value} {
-        height: #{$value}rem;
+        height: #{0% + $value};
     }
 
     .w-#{$value} {
-        width: #{$value}rem;
+        width: #{0% + $value};
     }
 
     .vh-#{$value} {
@@ -103,7 +103,7 @@ div.background {
     }
 
     .vw-#{$value} {
-        width: #{0vh + $value};
+        width: #{0vw + $value};
     }
 
 }
@@ -127,7 +127,7 @@ div.background {
         }
 
         .vw-m-#{$value} {
-            width: #{0vh + $value};
+            width: #{0vw + $value};
         }
 
     }
@@ -153,7 +153,7 @@ div.background {
         }
 
         .vw-s-#{$value} {
-            width: #{0vh + $value};
+            width: #{0vw + $value};
         }
 
     }

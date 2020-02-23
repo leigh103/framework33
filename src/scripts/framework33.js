@@ -835,6 +835,8 @@ app.methods = {
                         cl_props = bind.match(/([a-zA-Z._]+)\s*in\s*([a-zA-Z._()]+)/i),
                         val = app.methods.getValue(el_clone, cl_props[2])
 
+                    app.methods.addIndex(loop_children[i], cl_props[2], 'foreach')
+
                     app.methods.forElement(loop_children[i], val, el_clone.index)
 
                 }
