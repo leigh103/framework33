@@ -115,11 +115,11 @@ div.background {
         $value: $i * 5;
 
         .h-m-#{$value} {
-            height: #{$value}rem;
+            height: #{0% + $value};
         }
 
         .w-m-#{$value} {
-            width: #{$value}rem;
+            width: #{0% + $value};
         }
 
         .vh-m-#{$value} {
@@ -141,11 +141,11 @@ div.background {
         $value: $i * 5;
 
         .h-s-#{$value} {
-            height: #{$value}rem;
+            height: #{0% + $value};
         }
 
         .w-s-#{$value} {
-            width: #{$value}rem;
+            width: #{0% + $value};
         }
 
         .vh-s-#{$value} {

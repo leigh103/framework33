@@ -16,7 +16,7 @@
 </head>
 <body>
 
-    <section class="h-30 h-s-20 bg-33-sunrise flex flex-middle text-33-white" app-data="{&quot;data&quot;:&quot;this is some parsed data&quot;}|parsed">
+    <section class="hero bg-33-sunrise flex flex-middle text-33-white">
 
         <div class="contain flex transparent-2">
             <div class="text-left text-center-m flex-2">
@@ -25,7 +25,7 @@
                 <h4 class="text-light" anim="{'enter':'move-down','exit':'fade-out','duration':'1s','easing':'ease','delay':'1.5s'}"><span app-bind="getName('With a sprinkle of reactivity')"></span></a>
             </div>
 
-            <div class="text-right flex-1 hidden-m hidden-s" app-bind="parsed.data">
+            <div class="text-right flex-1 hidden-m hidden-s">
             </div>
         </div>
 
@@ -296,10 +296,7 @@
                     <div class="colspan-9">
 
                         <label>Service</label>
-                        <select app-model="appointment.service">
-                            <option selected disabled value="">Choose Service</option>
-                            <option app-for-sub="service in services" app-value="service.name" app-bind="service.name"></option>
-                        </select>
+                        <input type="text" app-model="appointment.name">
 
                     </div>
 

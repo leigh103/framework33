@@ -163,11 +163,10 @@ controller = () => {
             scope.table_items.map(function (table_item) {
                 scope.filteredTable.push(table_item)
             })
-            scope.resetNew()
-            setTimeout(function(){
-                scope.view.save_id = ''
-                scope.saveTable(scope.table_items)
-            },500)
+
+            scope.new = {}
+            scope.view.save_id = ''
+            scope.saveTable(scope.table_items)
 
         }
 
@@ -221,14 +220,13 @@ controller = () => {
     scope.sortTable('name.last')
 
     scope.resetNew = function(){
-        scope.view.save = false
-        let new_obj = {}
-        new_obj = Object.assign(new_obj, scope.new)
-        for (var i in new_obj){
-            new_obj[i] = ''
-        }
-        scope.new = new_obj
-        console.log(scope.new)
+
+        // setTimeout(function(){
+        // scope.view.save = false
+        //
+        // scope.new = {}
+        // console.log('resetnew',scope.new)
+        // },1000)
     }
 
     scope.getName = function(text){
@@ -334,6 +332,7 @@ controller = () => {
         {
             list:'1',
             item:'Appointment',
+            name:'',
             service:'',
             staff:'',
             start_time:'09:00',
@@ -346,6 +345,7 @@ controller = () => {
             list:1+scope.appointments.length,
             item:'Appointment',
             service:'',
+            name:'',
             staff:'',
             start_time:'10:00',
             duration:'0hr 15'

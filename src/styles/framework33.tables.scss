@@ -99,13 +99,12 @@ table.no-style td {
 
 @include small {
     .table {
-        display:block;
         width: 100%;
         overflow-x: auto;
 
         .row {
             .cell {
-                min-width: 33vw;
+
             }
         }
     }

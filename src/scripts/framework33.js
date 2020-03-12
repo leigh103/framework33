@@ -289,6 +289,7 @@ app.methods = {
 
             result = _.get(obj, path)
 
+
             if (typeof result != 'undefined'){
                 if (typeof result == 'function'){
                     return result()
@@ -357,6 +358,8 @@ app.methods = {
                     el.style.display = 'inline-flex'
                 } else if (el.classList.contains('flex') || el.classList.contains('modal')){
                     el.style.display = 'flex'
+                } else if (el.tagName == 'SPAN'){
+                    el.style.display = 'inline'
                 } else {
                     el.style.display = 'block'
                 }
@@ -423,8 +426,10 @@ app.methods = {
                     el.style.display = 'grid'
                 } else if (el.classList.contains('btn')){
                     el.style.display = 'inline-flex'
-                } else if (el.classList.contains('flex')){
+                } else if (el.classList.contains('flex') || el.classList.contains('modal')){
                     el.style.display = 'flex'
+                } else if (el.tagName == 'SPAN'){
+                    el.style.display = 'inline'
                 } else {
                     el.style.display = 'block'
                 }
@@ -587,14 +592,12 @@ app.methods = {
 
             if (init && typeof set_val != 'undefined'){
 
-
-
-                setTimeout(function(){
+            //    setTimeout(function(){
 
                     el.value = set_val
                     app.methods.onChangeTrigger(el, index, data, init)
 
-                },100)
+            //    },100)
 
 
             } else {
@@ -606,9 +609,14 @@ app.methods = {
 
             set_val = app.methods.getValue(scope, attr)
 
-            if (init && set_val){
+            if (init){
+                if (set_val == false){
+                    set_val = ''
+                }
                 el.value = set_val
+            //    console.log('initoce',set_val)
             } else {
+            //    console.log('oce',set_val)
                 app.methods.setValue(scope, attr, el.value)
             }
             app.methods.onChangeTrigger(el, index, data, init)
@@ -649,6 +657,10 @@ app.methods = {
             block_key = block+key
         } else {
             loop_arr = app.methods.getValue(scope, scope_key)
+        }
+
+        if (typeof loop_arr != 'object'){
+            return
         }
 
         if (el_parent){
@@ -1139,15 +1151,45 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             }
-            //
-            // forEachPath = currentPath.split('__')[0]
-            // if (forEachPath == 'cart'){
-            //     console.log(changes[i], app.elements.foreach.index)
-            // }
+
+            //     console.log(changes[i], currentPath)
 
             if (watch[changes[i].currentPath]){ // fire any watch functions
                 watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue, currentPath)
             }
+
+            // update any objects from the model input
+            if (app.elements.model.index[currentPath]){
+
+                _.set(scope, changes[i].currentPath, changes[i].newValue)
+                // app.elements.model.index[currentPath].forEach(function(el) {
+                //
+                //     if (el.tagName == "INPUT") {
+                //         if (el.type == "text" || el.type == "number" || el.type == "password") {
+                //             el.removeEventListener('keyup', app.methods.onChangeElement)
+                //             el.addEventListener('keyup', app.methods.onChangeElement)
+                //         }
+                //         if (el.type == "checkbox") {
+                //             el.removeEventListener('click', app.methods.onChangeElement)
+                //             el.addEventListener('click', app.methods.onChangeElement)
+                //         }
+                //         if (el.type == "radio") {
+                //             el.removeEventListener('click', app.methods.onChangeElement)
+                //             el.addEventListener('click', app.methods.onChangeElement)
+                //         }
+                //     }
+                //     if (el.tagName == "SELECT") {
+                //         el.removeEventListener('input', app.methods.onChangeElement)
+                //         el.addEventListener('input', app.methods.onChangeElement)
+                //     }
+                //
+                //     el.self = el
+                //
+                //     app.methods.onChangeElement(el, false, false, true)
+                //
+                // })
+            }
+
 
             // update any elements with object binding
             if (app.elements.bound.index[currentPath]){
@@ -1198,35 +1240,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             }
 
-            // update any elements with model
-            if (app.elements.model.index[currentPath]){
-                app.elements.model.index[currentPath].forEach(function(el) {
-
-                    if (el.tagName == "INPUT") {
-                        if (el.type == "text" || el.type == "number" || el.type == "password") {
-                            el.removeEventListener('keyup', app.methods.onChangeElement)
-                            el.addEventListener('keyup', app.methods.onChangeElement)
-                        }
-                        if (el.type == "checkbox") {
-                            el.removeEventListener('click', app.methods.onChangeElement)
-                            el.addEventListener('click', app.methods.onChangeElement)
-                        }
-                        if (el.type == "radio") {
-                            el.removeEventListener('click', app.methods.onChangeElement)
-                            el.addEventListener('click', app.methods.onChangeElement)
-                        }
-                    }
-                    if (el.tagName == "SELECT") {
-                        el.removeEventListener('input', app.methods.onChangeElement)
-                        el.addEventListener('input', app.methods.onChangeElement)
-                    }
-
-                    el.self = el
-
-                    app.methods.onChangeElement(el, false, false, true)
-
-                })
-            }
 
             // update any elements with hide
             if (app.elements.src.index[currentPath]){
@@ -1585,13 +1598,12 @@ http = function(method,url,payload){
             let request = new XMLHttpRequest();
 
             request.onreadystatechange=function(){
+
                 if (request.readyState==4){
                     if (request.status==200){
-
                         resolve(request.response)
-
                     } else {
-                        reject(request.status)
+                        reject(request.response)
                     }
                 }
             }

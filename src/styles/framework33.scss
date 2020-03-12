@@ -44,8 +44,8 @@ html {
     position:relative;
     font-size: 16px;
     line-height: 1.5em;
-    -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: subpixel-antialiased;
     overflow-x: hidden;
 }
 
@@ -193,15 +193,6 @@ background {
 
 .dot:before {
     content:"\00b7";
-}
-
-div[class^=w],a[class^=w],.card,.image-card {
-    font-size: 1rem;
-    margin:auto;
-}
-
-div[class^=w].small,a[class^=w].small,.card.small,.image-card.small {
-    font-size: 0.8rem;
 }
 
 .menu {
@@ -405,6 +396,10 @@ a.card.hover:hover,a.image-card.hover:hover {
 
 .overflow-hidden {
     overflow:hidden;
+}
+
+.overflow-visible {
+    overflow:visible;
 }
 
 .scroll-hide {
@@ -826,7 +821,7 @@ a.mobile-hide,span.mobile-hide {
     }
 
     .hidden-m {
-        display:none;
+        display:none !important;
     }
 }
 
@@ -871,7 +866,7 @@ a.mobile-hide,span.mobile-hide {
     }
 
     .hidden-s {
-        display:none;
+        display:none !important;
     }
 
     *[class^='w'].mobile-show,button.mobile-show {

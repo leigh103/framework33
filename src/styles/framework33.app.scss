@@ -3,4 +3,9 @@
     &-hidden {
         display: none !important;
     }
+
+}
+
+*[app-show], *[app-hide] {
+    display: none;
 }
