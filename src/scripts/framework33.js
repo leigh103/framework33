@@ -9,7 +9,7 @@ global.scope.data = []
 global.watch = {}
 global.http = ''
 global.server = ''
-global.typing = ''
+global.typing = false
 
 var test = {},
     app = {}
@@ -624,6 +624,25 @@ app.methods = {
 
     },
 
+    updateModelElement(el, data){
+
+        if (typeof data == 'object'){
+
+            let attr = el.getAttribute('app-index').replace(/__/g,'.').replace(/\.([0-9]+)/,'[$1]').replace(/^(.*?)\./,''),
+                val = _.get(data, attr)
+
+            if (typeof val != 'undefined'){
+                el.value = val
+            } else {
+                el.value = ''
+            }
+
+        } else {
+            el.value = data
+        }
+
+    },
+
     forElement(el, data, key){
 
         let el_prop = el.getAttribute('app-for'),
@@ -659,10 +678,6 @@ app.methods = {
             loop_arr = app.methods.getValue(scope, scope_key)
         }
 
-        if (typeof loop_arr != 'object'){
-            return
-        }
-
         if (el_parent){
 
             el_parent.classList.add('app-parent-'+block_key)
@@ -677,7 +692,7 @@ app.methods = {
         }
 
 
-        // delete the child nodes from the parent
+    // delete the child nodes from the parent
 
 
         let app_for_children = app.elements.foreach.root[block_key].parent.querySelectorAll('.app-for-'+block_key)
@@ -687,7 +702,16 @@ app.methods = {
         }
 
 
-        // loop through the data array and add in the children. no need to be async
+    // stop the loop if the data isn't an object
+
+
+        if (typeof loop_arr != 'object'){
+        //    return
+        }
+
+
+    // loop through the data array and add in the children. no need to be async
+
 
         for (let idx=0; idx < loop_arr.length; idx++){
 
@@ -700,9 +724,6 @@ app.methods = {
                     }
 
                 el_clone[block] = loop_arr[idx]
-
-
-            //    el_clone.el.setAttribute('app-scope',JSON.stringify(loop_arr[idx]).replace(/\"/g,"'"))
 
                 el_clone.el.removeAttribute('app-for')
                 el_clone.el.removeAttribute('app-for-sub')
@@ -1152,51 +1173,62 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             }
 
-            //     console.log(changes[i], currentPath)
+            if (currentPath.match(/service\_items/)){
+            //    console.log(changes[i], currentPath)
+            }
 
             if (watch[changes[i].currentPath]){ // fire any watch functions
                 watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue, currentPath)
             }
 
-            // update any objects from the model input
+        // update any objects from the model input
             if (app.elements.model.index[currentPath]){
 
                 _.set(scope, changes[i].currentPath, changes[i].newValue)
-                // app.elements.model.index[currentPath].forEach(function(el) {
-                //
-                //     if (el.tagName == "INPUT") {
-                //         if (el.type == "text" || el.type == "number" || el.type == "password") {
-                //             el.removeEventListener('keyup', app.methods.onChangeElement)
-                //             el.addEventListener('keyup', app.methods.onChangeElement)
-                //         }
-                //         if (el.type == "checkbox") {
-                //             el.removeEventListener('click', app.methods.onChangeElement)
-                //             el.addEventListener('click', app.methods.onChangeElement)
-                //         }
-                //         if (el.type == "radio") {
-                //             el.removeEventListener('click', app.methods.onChangeElement)
-                //             el.addEventListener('click', app.methods.onChangeElement)
-                //         }
-                //     }
-                //     if (el.tagName == "SELECT") {
-                //         el.removeEventListener('input', app.methods.onChangeElement)
-                //         el.addEventListener('input', app.methods.onChangeElement)
-                //     }
-                //
-                //     el.self = el
-                //
-                //     app.methods.onChangeElement(el, false, false, true)
-                //
-                // })
+                app.elements.model.index[currentPath].forEach(function(el) {
+
+                    if (global.typing === false){
+                        app.methods.updateModelElement(el, changes[i].newValue)
+                    } else {
+                    //    console.log(global.typing, el, changes[i])
+                    }
+
+                    // if (el.tagName == "INPUT") {
+                    //     if (el.type == "text" || el.type == "number" || el.type == "password") {
+                    //         el.removeEventListener('keyup', app.methods.onChangeElement)
+                    //         el.addEventListener('keyup', app.methods.onChangeElement)
+                    //     }
+                    //     if (el.type == "checkbox") {
+                    //         el.removeEventListener('click', app.methods.onChangeElement)
+                    //         el.addEventListener('click', app.methods.onChangeElement)
+                    //     }
+                    //     if (el.type == "radio") {
+                    //         el.removeEventListener('click', app.methods.onChangeElement)
+                    //         el.addEventListener('click', app.methods.onChangeElement)
+                    //     }
+                    // }
+                    // if (el.tagName == "SELECT") {
+                    //     el.removeEventListener('input', app.methods.onChangeElement)
+                    //     el.addEventListener('input', app.methods.onChangeElement)
+                    // }
+                    //
+                    // el.self = el
+                    //
+                    // app.methods.onChangeElement(el, false, false, true)
+
+                })
             }
 
 
-            // update any elements with object binding
+        // update any elements with object binding
+
             if (app.elements.bound.index[currentPath]){
                 app.elements.bound.index[currentPath].forEach(function(el){
                     app.methods.updateBoundElement(el)
                 })
             }
+
+        // update any elements with value attr
 
             if (app.elements.value.index[currentPath]){
                 app.elements.value.index[currentPath].forEach(function(el){
@@ -1204,7 +1236,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             }
 
-            // update any elements with logic
+        // update any elements with logic
+
             if (app.elements.logic.index[currentPath]){
                 app.elements.logic.index[currentPath].forEach(function(el){
                 //    console.log(app.elements.logic.index)
@@ -1212,43 +1245,48 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             }
 
-            // update any elements with show
+        // update any elements with show
+
             if (app.elements.show.index[currentPath]){
                 app.elements.show.index[currentPath].forEach(function(el){
                     app.methods.toggleElement(el,'show')
                 })
             }
 
-            // update any elements with hide
+        // update any elements with hide
+
             if (app.elements.hide.index[currentPath]){
                 app.elements.hide.index[currentPath].forEach(function(el){
                     app.methods.toggleElement(el,'hide')
                 })
             }
 
-            // update any elements with foreach
+        // update any elements with foreach
+
             if (app.elements.foreach.index[currentPath]){
                 app.elements.foreach.index[currentPath].forEach(function(el){
                     app.methods.forElement(el)
                 })
             }
 
-            // update any elements with class
+        // update any elements with class
+
             if (app.elements.class.index[currentPath]){
                 app.elements.class.index[currentPath].forEach(function(el){
                     app.methods.addClass(el)
                 })
             }
 
+        // update any elements with hide
 
-            // update any elements with hide
             if (app.elements.src.index[currentPath]){
                 app.elements.src.index[currentPath].forEach(function(el){
                     app.methods.addSrc(el)
                 })
             }
 
-            // update any elements with attr
+        // update any elements with attr
+
             if (app.elements.attr.index[currentPath]){
                 app.elements.attr.index[currentPath].forEach(function(el){
                     app.methods.addAttr(el)
@@ -1360,6 +1398,14 @@ document.addEventListener('scroll', () => {
         inViewChk()
     }
 })
+
+document.onkeydown = function (event) {
+    global.typing = true
+
+    setTimeout(()=>{
+        global.typing = false
+    },500)
+};
 
 const socketConnect = (host) => {
 
