@@ -63,6 +63,14 @@
 
         <div class="contain text-left">
 
+            <ul class="sortable">
+                <li>One</li>
+                <li>Two</li>
+                <li>Three</li>
+                <li>Four</li>
+                <li>Five</li>
+            </ul>
+
             <h2>Reactive Tables</h2>
 
             <p>Using object arrays, Framework33 can add, update, delete and sort tables with ease. Try searching the data, adding a new row and also sorting the data by clicking on the column headings. <span app-show="view.search_field">Currently searching on: <span app-bind="view.search_field"></span></span></p>
@@ -83,14 +91,15 @@
                     </select>
                 </div>
             </div>
-            <div class="table text-left">
-                <div class="row text-bold border-bottom">
+            <div class="table text-left sortable">
+                <div class="row text-bold border-bottom sortable-disabled">
                     <div class="cell middle clickable" app-click="sortTable('name.first')">Name</div>
                     <div class="cell middle clickable" app-click="sortTable('description')">Description</div>
                     <div class="cell middle clickable" app-click="sortTable('gender')">Gender</div>
                     <div class="cell middle clickable" app-click="sortTable('age')">Age</div>
                     <div class="cell middle text-right">Action</div>
                 </div>
+
                 <div class="row" app-for="item in filteredTable">
                     <div class="cell middle text-bold" app-bind="parseName(item.name)"></div>
                     <div class="cell middle" app-bind="item.description"></div>
@@ -107,6 +116,7 @@
                         <button app-click="delete('table_items',item)" class="bg-33-blue">Delete</button>
                     </div>
                 </div>
+
             </div>
 
             <div class="table">
@@ -250,7 +260,7 @@
 
             <p>Tabs can be created using Framework33's reactive functionality.</p>
 
-            <div class="mt-2 overflow-x">
+            <div class="mt-2 overflow-x sortable">
                 <div class="inline-block clickable p-1" app-for="tab in view.tabs" app-click="view.show.tab = tab.name" app-attr="{id:'context-'+tab.name}" app-bind="tab.name">One</div>
             </div>
 

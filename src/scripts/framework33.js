@@ -1,7 +1,8 @@
 
-import '../styles/framework33.scss';
-import '../styles/style.scss';
+import '../styles/framework33.scss'
+import '../styles/style.scss'
 import Observable from 'observable-slim'
+import Sortable from 'sortablejs'
 import _ from 'lodash'
 
 global.scope = {}
@@ -142,9 +143,9 @@ app.methods = {
         } else if (path.match(/([a-zA-Z._!]+)\s*(!=|==|>|>=|<|<=)\s*'?([a-zA-Z._]+)'?/)){
 
             let matches = path.match(/([a-zA-Z._!]+)\s*(!=|==|===|>|>=|<|<=)\s*'?([a-zA-Z._]+)'?/),
-                val1 = app.methods.getValue(scope,matches[1]),
+                val1 = app.methods.getValue(obj,matches[1]),
                 op = matches[2],
-                val2 = app.methods.getValue(scope,matches[3])
+                val2 = app.methods.getValue(obj,matches[3])
 
                 if (op == '=='){
 
@@ -342,12 +343,16 @@ app.methods = {
 
     },
 
-    toggleElement(el, type){
+    toggleElement(el, type, obj){
+
+        if (!obj){
+            obj = scope
+        }
 
         if (type == 'show'){
 
             let el_prop = el.getAttribute('app-show'),
-                val = app.methods.getValue(scope, el_prop),
+                val = app.methods.getValue(obj, el_prop),
                 anim_children = el.querySelector('[anim]')
 
             if (val){
@@ -400,7 +405,7 @@ app.methods = {
         } else if (type == 'hide'){
 
             var el_prop = el.getAttribute('app-hide'),
-                val = app.methods.getValue(scope, el_prop),
+                val = app.methods.getValue(obj, el_prop),
                 anim_children = el.querySelector('[anim]')
 
             if (val){
@@ -628,8 +633,8 @@ app.methods = {
 
         if (typeof data == 'object'){
 
-            let attr = el.getAttribute('app-index').replace(/__/g,'.').replace(/\.([0-9]+)/,'[$1]').replace(/^(.*?)\./,''),
-                val = _.get(data, attr)
+            let attr = el.getAttribute('app-index').replace(/__/g,'.').replace(/\.([0-9]+)/,'[$1]'),//.replace(/^(.*?)\./,''),
+                val = _.get(scope, attr)
 
             if (typeof val != 'undefined'){
                 el.value = val
@@ -706,7 +711,7 @@ app.methods = {
 
 
         if (typeof loop_arr != 'object'){
-        //    return
+            return
         }
 
 
@@ -728,6 +733,7 @@ app.methods = {
                 el_clone.el.removeAttribute('app-for')
                 el_clone.el.removeAttribute('app-for-sub')
                 el_clone.el.classList.add('app-for-'+block_key)
+                el_clone.el.setAttribute('app-item',block_key)
 
                 app.elements.foreach.root[block_key].parent.appendChild(el_clone.el)
 
@@ -789,11 +795,11 @@ app.methods = {
 
                 for (let i = 0; i < show_children.length; ++i){
 
-                    let bind = show_children[i].getAttribute('app-show'),
-                        index_key = scope_key+'__'+el_clone.index+'__'+bind.replace(/^\w+\(/,'').replace(/^\w+\./,'').replace(/\)$/,'')
+                    let el_prop = show_children[i].getAttribute('app-show'),
+                        index_key = scope_key+'__'+el_clone.index+'__'+el_prop.replace(/^\w+\(/,'').replace(/^\w+\./,'').replace(/\)$/,'')
 
                     app.methods.addIndex(show_children[i], index_key, 'show')
-                    app.methods.toggleElement(show_children[i], 'show')
+                    app.methods.toggleElement(show_children[i], 'show', el_clone)
 
                 }
 
@@ -803,7 +809,7 @@ app.methods = {
                         index_key = scope_key+'__'+el_clone.index+'__'+bind.replace(/^\w+\(/,'').replace(/^\w+\./,'').replace(/\)$/,'')
 
                     app.methods.addIndex(hide_children[i], index_key, 'hide')
-                    app.methods.toggleElement(hide_children[i], 'hide')
+                    app.methods.toggleElement(hide_children[i], 'hide', el_clone)
 
                 }
 
@@ -840,6 +846,12 @@ app.methods = {
                     if (model_children[i].tagName == "SELECT") {
                     //    model_children[i].removeEventListener('input',app.methods.onChangeElement)
                         model_children[i].addEventListener('input', function(){
+                            app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
+                        })
+                    }
+
+                    if (model_children[i].tagName == "TEXTAREA") {
+                        model_children[i].addEventListener('keyup', function(){
                             app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
                         })
                     }
@@ -1100,6 +1112,12 @@ app.methods = {
 
         scope[key] = JSON.parse(data)
 
+
+    },
+
+    parseIndex(index){
+
+        return index.replace(/__/g,'.').replace(/\.([0-9]+)/g,'[$1]')
 
     },
 
@@ -1367,6 +1385,9 @@ window.addEventListener('load', () => {
         if (el.tagName == "SELECT") {
             el.addEventListener('input', app.methods.onChangeElement)
         }
+        if (el.tagName == "TEXTAREA") {
+            el.addEventListener('keyup', app.methods.onChangeElement)
+        }
 
         el.self = el
 
@@ -1390,6 +1411,45 @@ window.addEventListener('load', () => {
     app.elements.attr.nodes.forEach(function(el) {
         app.methods.addAttr(el, true)
     })
+
+    let els = document.getElementsByClassName('sortable')
+    for (let i in els){
+
+        if (els[i] instanceof Element){
+
+            let offset = 0
+
+            if (els[i].classList.contains('table')){
+                offset = 1
+            }
+
+            new Sortable(els[i], {
+                animation: 150,
+                filter:'.sortable-disabled',
+                ghostClass: "sortable-ghost",
+            	chosenClass: "sortable-chosen",
+            	dragClass: "sortable-drag",
+                onEnd: function (evt) {
+
+            		let raw_prop = evt.item.getAttribute('app-index'),
+                        prop = app.methods.parseIndex(raw_prop),
+                        obj = _.get(scope, prop),
+                        new_index = evt.newIndex-offset,
+                        old_index = evt.oldIndex-offset,
+                        to = Object.assign({},obj[new_index]),
+                        from = Object.assign({},obj[old_index])
+
+                     obj[new_index] = from
+                     obj[old_index] = to
+
+            	},
+                onMove: function (evt) {
+                    return evt.related.className.indexOf('sortable-disabled') === -1;
+                }
+            });
+        }
+
+    }
 
 })
 
