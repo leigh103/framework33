@@ -274,8 +274,9 @@
 
             <div>
 
-                <div class="form-wrap grid col-12 mt-2" app-for="level in nested[0].settings.levels">
-
+                <div app-for="level in salon.settings.levels" class="mb-1 grid col-4">
+                    <div app-bind="level.name" class="colspan-3"></div>
+                    <div class=""><button class="btn">&times;</button></div>
                 </div>
 
             </div>

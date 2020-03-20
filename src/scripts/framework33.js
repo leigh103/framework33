@@ -727,7 +727,7 @@ app.methods = {
         }
 
         if (block_key == 'level'){
-        //    console.log(loop_arr, scope_key)
+            console.log(loop_arr, scope_key)
         }
 
 
@@ -750,7 +750,6 @@ app.methods = {
 
 
     // loop through the data array and add in the children. no need to be async
-
 
 
         for (let idx=0; idx < loop_arr.length; idx++){
@@ -1100,7 +1099,11 @@ app.methods = {
                 app.methods.addIndex(el, route_el_prop.join('.'), key)
             }
 
-            el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'').replace(/\(|\)/g,'').replace(/\./g,'__')
+            el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'').replace(/\[/,'__').replace(/\]/,'').replace(/\(|\)/g,'').replace(/\./g,'__')
+
+            if (key == 'foreach'){
+                el_prop = el_prop.split('__')[0]
+            }
 
             el.setAttribute('app-index',el_prop)
 
@@ -1164,9 +1167,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             }
 
-            // if (currentPath.match(/filteredTable/)){
-            //     console.log(changes[i], currentPath)
-            // }
+            if (currentPath.match(/salon/)){
+                console.log(changes[i], currentPath)
+            }
 
             if (watch[changes[i].currentPath]){ // fire any watch functions
                 watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue, currentPath)
@@ -1186,7 +1189,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 })
             }
-
 
         // update any elements with object binding
 
