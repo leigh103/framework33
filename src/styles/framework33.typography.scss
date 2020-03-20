@@ -61,6 +61,10 @@ highlight {
     direction:rtl;
 }
 
+.text-pre-line {
+    white-space: pre-line;
+}
+
 .text-feature {
     font-size:1.3rem
 }
@@ -78,6 +82,13 @@ highlight {
 
 
 .text {
+
+    &-truncate {
+        width: 100%;
+        height: 1.5em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
 
     &-left {
         text-align:left;

@@ -44,8 +44,6 @@ controller = () => {
                         scope.filteredTable.push(table_item)
                     }
 
-
-
                 })
 
             }
@@ -94,7 +92,7 @@ controller = () => {
     scope.panel = scope.menu_items[0]
 
     scope.menuItems = function(){
-        scope.menu_items.push({name: 'New Page', panel:'Hi there', class:"text-green"})
+    //    scope.menu_items.push({name: 'New Page', panel:'Hi there', class:"text-green"})
     }
 
     scope.chgPanel = function(menu_item){
@@ -254,6 +252,76 @@ controller = () => {
         {"_key":"60253337","_id":"services/60253337","_rev":"_a_sgzfy--_","name":"Hair cut and colour","description":"Hair cut and colour","category":"cuts, colour, hair","price":"70","min_price":"60","max_price":"80","jnr_price":"60","snr_price":"80","linked_service":"60386750","salon_id":"54855602","required_skills":["stylist","colourist"],"weekly_discount":"1","duration":"30"},
         {"_key":"60252992","_id":"services/60252992","_rev":"_a_sgadC--_","name":"Hair cut","description":"Hair cut","category":"cuts, hair","price":"50","min_price":"40","max_price":"60","jnr_price":"40","snr_price":"60","linked_service":"","salon_id":"54855602","weekly_discount":"1","required_skills":["stylist"],"duration":"30"}
     ]
+
+setTimeout(function(){
+    scope.nested = [
+  {
+    "details": {
+      "_key": "54855602",
+      "_id": "salon/54855602",
+      "_rev": "_aFISmdO--_",
+      "address": {},
+      "headoffice": true,
+      "name": "David Rozman Hair",
+      "parent": false,
+      "opening_times": [
+        {
+          "open": "closed",
+          "close": "closed"
+        },
+        {
+          "open": "9:30",
+          "close": "17:53"
+        },
+        {
+          "open": "9:00",
+          "close": "17:00"
+        },
+        {
+          "open": "9:00",
+          "close": "12:30"
+        },
+        {
+          "open": "9:00",
+          "close": "17:00"
+        },
+        {
+          "open": "9:00",
+          "close": "17:00"
+        },
+        {
+          "open": "9:00",
+          "close": "17:00"
+        }
+      ],
+      "salon_id": "54855602",
+      "email": "david@davidrozman.co.uk",
+      "tel": "0161 832 0179"
+    },
+    "settings": {
+      "_key": "salonstream",
+      "_id": "settings/salonstream",
+      "_rev": "_aNgopQm--_",
+      "levels": [
+        {
+          "name": "level 1"
+        },
+        {
+          "name": "level 2"
+        }
+      ],
+      "categories": [
+        {
+          "name": "Cuts"
+        },
+        {
+          "name": "Treatments"
+        }
+      ]
+    }
+  }
+]
+},1000)
 
     scope.getHrs = function() {
 

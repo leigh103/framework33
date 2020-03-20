@@ -714,7 +714,7 @@ app.methods = {
         if (el_parent && !el_parent.className.match(/app\-parent/)){
 
             el_parent.classList.add('app-parent-'+block_key)
-            app.methods.addIndex(el, el_prop, 'foreach')
+            app.methods.addIndex(el_parent, el_prop, 'foreach')
             app.elements.foreach.root[block_key] = {
                 parent: el_parent,
                 el: el
@@ -759,11 +759,11 @@ app.methods = {
 
                 let el_clone = {
                         el:app.elements.foreach.root[block_key].el.cloneNode(true),
-                        index:idx,
-                        scoped_data: loop_arr[idx]
+                        index:idx
+                    //    scoped_data: loop_arr[idx]
                     }
 
-            //    el_clone.el.scoped_data = loop_arr[idx]
+                el_clone.el.scoped_data = loop_arr[idx]
                 el_clone[block] = loop_arr[idx]
 
                 el_clone.el.removeAttribute('app-for')
@@ -811,7 +811,7 @@ app.methods = {
                 }
 
                 if (el_clone.el.hasAttribute('app-class')){
-                    el_clone.el.scoped_data = el_clone.scoped_data
+                //    el_clone.el.scoped_data = el_clone.scoped_data
                     app.methods.addClass(el_clone.el)
                 }
 
@@ -930,7 +930,6 @@ app.methods = {
                 }
 
                 for (let i = 0; i < class_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
-                    el_clone.el.scoped_data = el_clone.scoped_data
                     app.methods.addClass(class_children[i])
                 }
 
@@ -989,7 +988,7 @@ app.methods = {
                 class_name = app.methods.getValue(scope, el_prop)
             }
         }
-
+// console.log(el.scoped_data, el_prop, class_name)
         if (!el.getAttribute('app-initial')){
             orig_class_list = el.classList.value
             el.setAttribute('app-orig-class',orig_class_list.replace(/app\-hidden/,''))
@@ -1094,15 +1093,20 @@ app.methods = {
 
             let orig_el_prop = el_prop+''
 
-            if (el_prop.match(/\./)){ // if nested object, use the route as the index
-                let route_el_prop = el_prop.split('.')
+            if (el_prop.match(/\__/)){ // if nested object, use the route as the index
+                let route_el_prop = el_prop.split('__')
                 let popped = route_el_prop.pop()
-                app.methods.addIndex(el, route_el_prop.join('.'), key)
+                if (key == 'foreach'){
+                    console.log('popped',el_prop)
+                }
+                app.methods.addIndex(el, popped, key)
             }
 
             el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'').replace(/\(|\)/g,'').replace(/\./g,'__')
 
             el.setAttribute('app-index',el_prop)
+
+
 
             if (!app.elements[key].index[el_prop]){
                 app.elements[key].index[el_prop] = []
@@ -1164,9 +1168,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             }
 
-            // if (currentPath.match(/filteredTable/)){
-            //     console.log(changes[i], currentPath)
-            // }
+            if (currentPath.match(/nested/)){
+                console.log(changes[i], currentPath)
+            }
 
             if (watch[changes[i].currentPath]){ // fire any watch functions
                 watch[changes[i].currentPath].call(null, changes[i].newValue, changes[i].previousValue, currentPath)
@@ -1208,6 +1212,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (app.elements.logic.index[currentPath]){
                 app.elements.logic.index[currentPath].forEach(function(el){
+                //    console.log(app.elements.logic.index)
                     app.methods.toggleElement(el)
                 })
             }
