@@ -11,7 +11,7 @@ controller = () => {
         {name:'two'},
         {name:'three'}
     ]
-    scope.view.text.class = "text-bold"
+    scope.view.text.class = 'true'
     scope.view.asc = true
     scope.view.search_field = ''
 
@@ -83,8 +83,8 @@ controller = () => {
         console.log(scope.view.fields)
     }
 
-    scope.alert = function(data, index){
-    //    console.log(data, index)
+    scope.alert = function(data){
+        console.log(data)
     }
 
     scope.view.selected_option = ''
@@ -111,6 +111,10 @@ controller = () => {
         ]
     }
 
+    scope.genders = [
+        {name:"male"},
+        {name:"female"}
+    ]
 
     scope.filteredTable = scope.table_items
 

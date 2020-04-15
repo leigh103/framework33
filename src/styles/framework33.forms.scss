@@ -23,6 +23,7 @@ input {
     &[type=time],
     &[type=url],
     &[type=week],
+    &[type=datetime-local],
     &[type=range] {
         position:relative;
         width: 100%;

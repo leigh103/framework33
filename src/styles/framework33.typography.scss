@@ -40,17 +40,6 @@ h4,h1.small  {
     line-height: 1.4em
 }
 
-h1.underline:after,h2.underline:after,h3.underline:after,h4.underline:after  {
-    background: none repeat scroll 0 0 rgba(18, 194, 222, 1);
-    bottom: -10px;
-    content: "";
-    display: block;
-    height: 5px;
-    position: relative;
-    width: 50px;
-    margin-bottom:1em;
-}
-
 highlight {
     padding:0.3rem;
     background:#FFF886;

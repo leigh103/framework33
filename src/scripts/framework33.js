@@ -16,10 +16,12 @@ var test = {},
     app = {},
     regex = {
         logic_class: /\{\s*'([a-zA-Z0-9._\[\]\-]+)'\s*\:\s*([a-zA-Z0-9._\[\]]+)\s*([!=<>]+)\s*(\'[a-z0-9._\[\]]+\'|[a-z0-9._\[\]]+)\s*\}/,
-        logic: /([a-zA-Z0-9._!]+)\s*(=|!=|==|===|>|>=|<|<=)\s*(\'[a-zA-Z0-9._]+\'|[a-zA-Z0-9._()]+)/, // /([a-za-zA-Z._]+)\s*(=)\s*'?((.*))'?/
+        logic_function: /\{\s*'([a-zA-Z0-9._\[\]\-]+)'\s*\:\s*([a-zA-Z0-9._\[\]()',\s]+)\s*\}/,
+        logic: /([a-zA-Z0-9._!]+)\s*(=|!=|==|===|>|>=|<|<=)\s*(\'[a-zA-Z0-9._!]+\'|[a-zA-Z0-9._()!]+)/, // /([a-za-zA-Z._]+)\s*(=)\s*'?((.*))'?/
         function: /[a-zA-Z0-9._\[\]]+\((.*?)\)/,
         nested_object: /\.|\[\d+\]/,
-        for_loop: /([a-zA-Z0-9._]+)\s*in\s*([a-zA-Z0-9._()\[\]]+)/
+        for_loop: /([a-zA-Z0-9._]+)\s*in\s*([a-zA-Z0-9._()\[\]]+)/,
+        parent_var: /\{\{parent\.([a-zA-Z0-9._()\[\]]+)\}\}/
     }
 
 app.elements = {
@@ -69,11 +71,17 @@ app.methods = {
 
     updateBoundElement(el, index, data){
 
+        if (!data){
+            data = scope
+        }
+
         if (el.hasAttribute('app-value')){
 
-            let el_prop = el.getAttribute('app-value')
+            let el_prop = el.getAttribute('app-value'),
+                val = app.methods.getValue(data, el_prop,'')
 
-            el.value = app.methods.getValue(scope, el_prop,'')
+            el.value = val
+            //el.text = val
 
             app.methods.addIndex(el, el_prop, 'bound')
 
@@ -84,7 +92,8 @@ app.methods = {
 
             if (!el_parent || !el_parent.getAttribute('app-for')){
 
-                let val = app.methods.getValue(scope, el_prop,'')
+                let val = app.methods.getValue(data, el_prop,'')
+
                 if (val != ''){
                     el.innerHTML = val
                 }
@@ -108,7 +117,7 @@ app.methods = {
             obj = scope
         }
 
-        if (path.match(/'|"/)){
+        if (path.match(/'|"/) || path.match(/^[0-9]+$/)){
             string = true
         } else if (typeof string == 'undefined'){
             string = false
@@ -117,6 +126,10 @@ app.methods = {
     //    path = path.replace(/'|"/g,'')
 
         if (path == '{{index}}' && obj.index >= 0){
+
+            return obj.index+''
+
+        } else if (path == '{{parent}}'){
 
             return obj.index+''
 
@@ -138,7 +151,6 @@ app.methods = {
                     val2_obj = app.methods.getValue(obj,matches[4]),
                     val2_scope = app.methods.getValue(scope,matches[4])
                 }
-
 
             if (op == '=='){
 
@@ -246,83 +258,82 @@ app.methods = {
                 op = matches[2],
                 val2 = matches[3]
 
-                if (!val2.match(/\'(.*?)\'/)){
-                    val2 = app.methods.getValue(obj,matches[3])
+            if (!val2.match(/\'(.*?)\'/)){
+                val2 = app.methods.getValue(obj,matches[3])
+            } else {
+                val2 = val2.replace(/\'/g,'')
+            }
+
+            if (op == '=='){
+
+                if (val1 == val2){
+                    return true
                 } else {
-                    val2 = val2.replace(/\'/g,'')
+                    return false
                 }
 
-                if (op == '=='){
+            } else if (op == '==='){
 
-                    if (val1 == val2){
-                        return true
-                    } else {
-                        return false
-                    }
-
-                } else if (op == '==='){
-
-                    if (val1 === val2){
-                        return true
-                    } else {
-                        return false
-                    }
-
-                } else if (op == '!='){
-
-                    if (val1 != val2){
-                        return true
-                    } else {
-                        return false
-                    }
-
-                } else if (op == '>'){
-
-                    if (val1 > val2){
-                        return result
-                    }
-
-                } else if (op == '<'){
-
-                    if (val1 < val2){
-                        return true
-                    } else {
-                        return false
-                    }
-
-                } else if (op == '>='){
-
-                    if (val1 >= val2){
-                        return true
-                    } else {
-                        return false
-                    }
-
-                } else if (op == '<='){
-
-                    if (val1 <= val2){
-                        return true
-                    } else {
-                        return false
-                    }
-
+                if (val1 === val2){
+                    return true
+                } else {
+                    return false
                 }
+
+            } else if (op == '!='){
+
+                if (val1 != val2){
+                    return true
+                } else {
+                    return false
+                }
+
+            } else if (op == '>'){
+
+                if (val1 > val2){
+                    return result
+                }
+
+            } else if (op == '<'){
+
+                if (val1 < val2){
+                    return true
+                } else {
+                    return false
+                }
+
+            } else if (op == '>='){
+
+                if (val1 >= val2){
+                    return true
+                } else {
+                    return false
+                }
+
+            } else if (op == '<='){
+
+                if (val1 <= val2){
+                    return true
+                } else {
+                    return false
+                }
+
+            }
 
         } else if (path.match(regex.nested_object)){
 
             result = _.get(obj, path)
 
-            if (path == 'nested[0].settings.levels'){
-
-            //    console.log(path, result)
-            }
             if (typeof result != 'undefined'){
+
                 if (typeof result == 'function'){
                     return result()
                 } else {
                     return result
                 }
+
             } else {
+
                 let scope_result = _.get(scope, path)
                 if (typeof scope_result != 'undefined'){
                     if (typeof scope_result == 'function'){
@@ -530,16 +541,26 @@ app.methods = {
 
     clickElement(el, index, data){
 
-        let attr,attr_name = 'app-click', params
+        let attr,attr_name = 'app-click', params, parent_var
 
         if (el.hasAttribute && el.hasAttribute('app-init')){
             attr_name = 'app-init'
+        }
+
+        if (el.hasAttribute && el.hasAttribute('app-sort')){
+            attr_name = 'app-sort'
         }
 
         if (typeof el.getAttribute == 'undefined'){
             attr = el.currentTarget.getAttribute(attr_name)
         } else {
             attr = el.getAttribute(attr_name)
+        }
+
+        if (attr.match(regex.parent_var)){
+            parent_var = app.methods.getValue(data, attr.match(regex.parent_var)[1])
+            attr = attr.replace(regex.parent_var,parent_var)
+        //    console.log(attr, parent_var)
         }
 
         if (attr.match(regex.function)){ // if function
@@ -557,7 +578,6 @@ app.methods = {
 
                 val = val.replace(/^!/,'')
                 let val_scope = app.methods.getValue(scope, val)
-                //console.log(val, !val_scope)
                 app.methods.setValue(scope, val, !val_scope)
 
             } else if (matches && matches.length > 2){
@@ -676,7 +696,7 @@ app.methods = {
 
     },
 
-    forElement(el, data, key){
+    forElement(el, data, key, parent_data){
 
         let el_prop = el.getAttribute('app-for'),
             sub = false
@@ -726,10 +746,6 @@ app.methods = {
 
         }
 
-        if (block_key == 'level'){
-            console.log(loop_arr, scope_key)
-        }
-
 
     // delete the child nodes from the parent
 
@@ -758,11 +774,11 @@ app.methods = {
 
                 let el_clone = {
                         el:app.elements.foreach.root[block_key].el.cloneNode(true),
-                        index:idx,
-                        scoped_data: loop_arr[idx]
+                        index:idx
+                    //    scoped_data: loop_arr[idx]
                     }
 
-            //    el_clone.el.scoped_data = loop_arr[idx]
+                el_clone.el.scoped_data = loop_arr[idx]
                 el_clone[block] = loop_arr[idx]
 
                 el_clone.el.removeAttribute('app-for')
@@ -771,6 +787,10 @@ app.methods = {
                 el_clone.el.setAttribute('app-item',block_key)
 
                 app.elements.foreach.root[block_key].parent.appendChild(el_clone.el)
+
+                if (parent_data){
+                    app.elements.foreach.root[block_key].parent_data = parent_data
+                }
 
                 let bind_children = el_clone.el.querySelectorAll('[app-bind]'),
                     loop_children = el_clone.el.querySelectorAll('[app-for-sub]'),
@@ -785,7 +805,14 @@ app.methods = {
 
                 if (el_clone.el.hasAttribute('app-bind')){
 
-                    let val = app.methods.getValue(el_clone, el_clone.el.getAttribute('app-bind'))
+                    let val, bind = el_clone.el.getAttribute('app-bind')
+
+                    if (bind.match(regex.parent_var) && parent_data){
+                        bind = bind.match(regex.parent_var)[1]
+                        val = app.methods.getValue(parent_data, bind)
+                    } else {
+                        val = app.methods.getValue(el_clone, bind)
+                    }
 
                     if (val){
                         el_clone.el.innerHTML = val
@@ -810,8 +837,21 @@ app.methods = {
                 }
 
                 if (el_clone.el.hasAttribute('app-class')){
-                    el_clone.el.scoped_data = el_clone.scoped_data
+                //    el_clone.el.scoped_data = el_clone.scoped_data
                     app.methods.addClass(el_clone.el)
+                }
+
+                for (let i = 0; i < loop_children.length; ++i) { // for each child that has a repeater, call the forElement method
+
+                    let bind = loop_children[i].getAttribute('app-for-sub'),
+                        cl_props = bind.match(regex.for_loop),
+                        val = app.methods.getValue(el_clone, cl_props[2])
+
+                    app.methods.addIndex(loop_children[i], cl_props[2], 'foreach')
+
+                //    console.log(block, block_key, scope_key)
+                    app.methods.forElement(loop_children[i], val, el_clone.index, loop_arr[idx])
+
                 }
 
                 for (let i = 0; i < show_children.length; ++i){
@@ -882,12 +922,21 @@ app.methods = {
                 for (let i = 0; i < bind_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
 
                     let bind = bind_children[i].getAttribute('app-bind'),
-                        val = app.methods.getValue(el_clone, bind),
-                        index_key = scope_key+'__'+el_clone.index+'__'+bind.replace(/^\w+\(/,'').replace(/^\w+\./,'').replace(/\)$/,'')
+                        val,
+                        index_key
+
+                    if (bind.match(regex.parent_var) && parent_data){
+                        bind = bind.match(regex.parent_var)[1]
+                        val = app.methods.getValue(parent_data, bind)
+                    } else {
+                        val = app.methods.getValue(el_clone, bind)
+                    }
+
+                    index_key = scope_key+'__'+el_clone.index+'__'+bind.replace(/^\w+\(/,'').replace(/^\w+\./,'').replace(/\)$/,'')
 
                     app.methods.addIndex(bind_children[i], index_key, 'bound')
 
-                    if (val && val != 'undefined' && val != 'undefined undefined'){
+                    if (val && val != 'undefined' && val != 'undefined undefined' && typeof val != 'object'){
                         bind_children[i].innerHTML = val
                     } else {
                         bind_children[i].innerHTML = ''
@@ -895,17 +944,7 @@ app.methods = {
 
                 }
 
-                for (let i = 0; i < loop_children.length; ++i) { // for each child that has a repeater, call the forElement method
 
-                    let bind = loop_children[i].getAttribute('app-for-sub'),
-                        cl_props = bind.match(regex.for_loop),
-                        val = app.methods.getValue(el_clone, cl_props[2])
-
-                    app.methods.addIndex(loop_children[i], cl_props[2], 'foreach')
-
-                    app.methods.forElement(loop_children[i], val, el_clone.index)
-
-                }
 
                 for (let i = 0; i < attr_children.length; ++i){
                     app.methods.addAttr(attr_children[i], el_clone)
@@ -913,11 +952,20 @@ app.methods = {
 
                 for (let i = 0; i < click_children.length; ++i){
 
+                    let bind = click_children[i].getAttribute('app-click')
+
                     click_children[i].removeEventListener('click',app.methods.clickElement)
 
-                    click_children[i].addEventListener('click', function(){
-                        app.methods.clickElement(click_children[i], el_clone.index, el_clone)
-                    })
+                    // if (bind.match(regex.parent_var)){
+                    //     click_children[i].addEventListener('click', function(){
+                    //         click_children[i].parent_data = el_clone.el.scoped_data
+                    //         app.methods.clickElement(click_children[i], el_clone.index, el_clone)
+                    //     })
+                    // } else {
+                        click_children[i].addEventListener('click', function(){
+                            app.methods.clickElement(click_children[i], el_clone.index, el_clone)
+                        })
+                    // }
 
                 }
 
@@ -929,8 +977,9 @@ app.methods = {
                 }
 
                 for (let i = 0; i < class_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
-                    el_clone.el.scoped_data = el_clone.scoped_data
-                    app.methods.addClass(class_children[i])
+                    let bind = class_children[i].getAttribute('app-class'),
+                        val = app.methods.getValue(el_clone,bind)
+                    app.methods.addClass(class_children[i],val)
                 }
 
             }
@@ -1015,9 +1064,9 @@ app.methods = {
         var el_prop = el.getAttribute('app-src'),
             src_url = app.methods.getValue(scope, el_prop)
 
-        if (typeof data == 'string' && data.match(/png|jpg|jpeg|svg$/)){
+        if (typeof data == 'string' && data.match(/png|jpg|jpeg|svg|mp4|m4v$/)){
             el.setAttribute('src',data)
-        } else if (typeof src_url == 'string' && src_url.match(/png|jpg|jpeg|svg$/)) {
+        } else if (typeof src_url == 'string' && src_url.match(/png|jpg|jpeg|svg|mp4|m4v$/)) {
             el.setAttribute('src',src_url)
         }
 
@@ -1027,36 +1076,69 @@ app.methods = {
 
     addAttr(el, data){
 
-        var el_prop = el.getAttribute('app-attr'),
-            el_prop_arr
-
-        if (el_prop){
-            el_prop_arr = el_prop.replace(/{/,'').replace(/}/,'').split(',')
+        if (!data){
+            data = scope
         }
 
-        for (let i in el_prop_arr){
+        var el_prop = el.getAttribute('app-attr'),
+            el_prop_arr,
+            val,
+            attr_name
 
-            let attr = el_prop_arr[i].split(':')[0],
-                attr_val = el_prop_arr[i].split(':')[1],
-                prefix = '',
-                postfix = '',
-                val
+        if (el_prop.match(regex.logic_class)){
 
-            if (attr_val.match(/'(.*?)'\+(.*?)/)){
-               prefix = attr_val.split('+')
-               attr_val = prefix[1]
-               prefix = prefix[0].replace(/'/g,'')
-            } else if (attr_val.match(/(.*?)\+'(.*?)'/)){
-               prefix = attr_val.split('+')
-               attr_val = prefix[0]
-               prefix = prefix[1].replace(/'/g,'')
+            val = app.methods.getValue(data, el_prop)
+            attr_name = el_prop.match(regex.logic_class)[1]
+
+            if (typeof val != 'undefined'){
+                el.setAttribute(attr_name, 'true')
+            } else {
+                el.removeAttribute(attr_name)
+            }
+        } else if (el_prop.match(regex.logic_function)){
+
+            val = app.methods.getValue(data, el_prop.match(regex.logic_function)[2])
+            attr_name = el_prop.match(regex.logic_function)[1]
+
+            if (typeof val == 'undefined' || val == false || val == 'false'){
+                el.removeAttribute(attr_name)
+            } else {
+                el.setAttribute(attr_name, 'true')
             }
 
-            val = app.methods.getValue(data, attr_val)
+        } else {
 
-            el.setAttribute(attr, prefix+val+postfix)
+            if (el_prop){
+                el_prop_arr = el_prop.replace(/{/,'').replace(/}/,'').split(',')
+            }
+
+            for (let i in el_prop_arr){
+
+                let attr = el_prop_arr[i].split(':')[0],
+                    attr_val = el_prop_arr[i].split(':')[1],
+                    prefix = '',
+                    postfix = '',
+                    val
+
+                if (attr_val && attr_val.match(/'(.*?)'\+(.*?)/)){
+                   prefix = attr_val.split('+')
+                   attr_val = prefix[1]
+                   prefix = prefix[0].replace(/'/g,'')
+               } else if (attr_val && attr_val.match(/(.*?)\+'(.*?)'/)){
+                   prefix = attr_val.split('+')
+                   attr_val = prefix[0]
+                   prefix = prefix[1].replace(/'/g,'')
+                }
+
+                val = app.methods.getValue(data, attr_val)
+
+                el.setAttribute(attr.replace(/'/g,''), prefix+val+postfix)
+
+            }
 
         }
+
+
 
         app.methods.addIndex(el, el_prop, 'attr')
 
@@ -1102,7 +1184,14 @@ app.methods = {
             el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'').replace(/\[/,'__').replace(/\]/,'').replace(/\(|\)/g,'').replace(/\./g,'__')
 
             if (key == 'foreach'){
-                el_prop = el_prop.split('__')[0]
+                let root_el_prop = el_prop.split('__')[0]
+                if (!app.elements[key].index[root_el_prop]){
+                    app.elements[key].index[root_el_prop] = []
+                }
+
+                if (app.elements[key].index[root_el_prop].indexOf(el) === -1){
+                    app.elements[key].index[root_el_prop].push(el)
+                }
             }
 
             el.setAttribute('app-index',el_prop)
@@ -1168,7 +1257,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (currentPath.match(/salon/)){
-                console.log(changes[i], currentPath)
+            //    console.log(changes[i], currentPath)
             }
 
             if (watch[changes[i].currentPath]){ // fire any watch functions
@@ -1308,8 +1397,9 @@ window.addEventListener('load', () => {
     })
 
     app.elements.event.nodes.forEach(function(el) {
-        el.addEventListener('click', app.methods.clickElement)
         el.self = el
+        el.addEventListener('click', app.methods.clickElement)
+
     })
 
     app.elements.class.nodes.forEach(function(el) {
@@ -1393,6 +1483,8 @@ window.addEventListener('load', () => {
                      obj[new_index] = from
                      obj[old_index] = to
 
+                     app.methods.clickElement(evt.from)
+
             	},
                 onMove: function (evt) {
                     return evt.related.className.indexOf('sortable-disabled') === -1;
@@ -1418,7 +1510,7 @@ document.onkeydown = function (event) {
     },500)
 };
 
-const socketConnect = (host) => {
+global.socketConnect = (host) => {
 
     server = new WebSocket(host)
 
@@ -1432,15 +1524,17 @@ const socketConnect = (host) => {
             data = msg.data
         }
 
-        scope.data = data
+        scope.ws_data = data
 
     }
 
     server.onerror = function(err){
+        console.log(err)
         if (server.readyState !== 1){
-            // setTimeout(()=>{
-            //     window.location.href="/"
-            // },3000)
+            console.log('Attempting reconnect...')
+            setTimeout(()=>{
+                socketConnect(host)
+            },3000)
         }
     }
 
@@ -1520,6 +1614,9 @@ const inViewChk = () => {
         if (inView(self)) {
             if (self.classList && !self.classList.contains('in-view')) {
                 applyInViewClass(self);
+                if (self.hasAttribute('app-lazy')){
+                    lazyLoad(self)
+                }
             }
         } else {
             if (self.classList && self.classList.contains('in-view')) {
@@ -1579,6 +1676,9 @@ const applyExitViewClass = (el) => {
 
 }
 
+const lazyLoad = (el) => {
+    el.setAttribute('src',el.getAttribute('app-lazy'))
+}
 
 
 window.onresize = function(event) {
