@@ -10,6 +10,10 @@ global.scope.data = []
 global.watch = {}
 global.http = ''
 global.server = ''
+global.ws_host = ''
+global.ws_timer = false
+global.ws_server = ''
+global.ws_ping = false
 global.typing = false
 
 var test = {},
@@ -1502,6 +1506,16 @@ document.addEventListener('scroll', () => {
     }
 })
 
+window.addEventListener('focus', (e) => {
+    if (global.ws_host){
+        socketConnect()
+    }
+}, false)
+
+window.addEventListener('blur', (e) => {
+
+}, false)
+
 document.onkeydown = function (event) {
     global.typing = true
 
@@ -1510,11 +1524,23 @@ document.onkeydown = function (event) {
     },500)
 };
 
+
 global.socketConnect = (host) => {
 
-    server = new WebSocket(host)
+    if (!host && global.ws_host){ // if a check is made and it's down, reconnect
+        host = global.ws_host
+        if (global.ws_server && global.ws_server.readyState == 1){ // if it's up, don't do anything
+            return
+        }
+    } else if (host){ // start connection to ws
+        global.ws_host = host
+    } else {
+        return
+    }
 
-    server.onmessage = function(msg){
+    global.ws_server = new WebSocket(host)
+
+    global.ws_server.onmessage = function(msg){
 
         let data
 
@@ -1528,18 +1554,28 @@ global.socketConnect = (host) => {
 
     }
 
-    server.onerror = function(err){
-        console.log(err)
-        if (server.readyState !== 1){
-            console.log('Attempting reconnect...')
-            setTimeout(()=>{
-                socketConnect(host)
-            },3000)
+    global.ws_server.onerror = function(err){
+        if (global.ws_server.readyState !== 1){
+            console.log(err, 'Attempting reconnect...')
+            if (!global.ws_timer){
+                global.ws_timer = setTimeout(()=>{
+                    socketConnect(host)
+                },3000)
+            }
+
         }
     }
 
-}
+    if (!global.ws_ping){
+        global.ws_ping = setInterval(function(){
+            if (global.ws_server.readyState !== 1){
+                console.log('Socket down, attempting reconnect...')
+                socketConnect(host)
+            }
+        },10000)
+    }
 
+}
 
 
 
