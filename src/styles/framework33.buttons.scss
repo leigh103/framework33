@@ -1,15 +1,15 @@
 button,.btn {
     display:inline-flex;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     height: 2.188rem;
-    padding: 0 1em;
+    padding: 0 1.4rem;
     position:relative;
     cursor:pointer;
     background-color:#aaa;
     color:white;
     font-size:0.9em;
-    line-height:1.2rem;
+    line-height:1rem;
     border:none;
     margin:0;
 
@@ -30,7 +30,7 @@ button,.btn {
 
     &.thick {
         height: 3rem;
-        padding: 0 1.6em;
+        padding: 0 1.4rem;
 
         &.rounded {
             border-radius: 1.5rem;
@@ -51,6 +51,21 @@ button,.btn {
 
     &.border {
         border: 1px solid #f2f2f2;
+    }
+
+    &.text-right {
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    &.text-center {
+        align-items: center;
+        justify-content: center;
+    }
+
+    &.text-left{
+        align-items: center;
+        justify-content: flex-start;
     }
 }
 
