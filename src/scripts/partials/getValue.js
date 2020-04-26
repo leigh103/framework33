@@ -128,7 +128,7 @@ export default function getValue(obj, path, string) {
             } else {
                 string = false
             }
-            let obj_check = _.get(obj, e)
+            let obj_check = app.methods.getValue(obj, e)
 
             if (obj_check){
                 return obj_check

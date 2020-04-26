@@ -317,14 +317,14 @@ window.addEventListener('load', () => {
             if (el.type == "text" || el.type == "number" || el.type == "password" || el.type == "email") {
                 el.addEventListener('keyup', app.methods.onChangeElement)
             }
-            if (el.type == "number") {
+            if (el.type == "number" || el.type == "file") {
                 el.addEventListener('change', app.methods.onChangeElement)
             }
             if (el.type == "checkbox" || el.type == "radio") {
                 el.addEventListener('click', app.methods.onChangeElement)
             }
         }
-        if (el.tagName == "SELECT") {
+        if (el.tagName == "SELECT" ) {
             el.addEventListener('change', app.methods.onChangeElement)
         }
         if (el.tagName == "TEXTAREA") {

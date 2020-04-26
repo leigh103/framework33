@@ -316,7 +316,7 @@
                         <label>Staff</label>
                         <select app-model="appointment.staff_id">
                             <option selected disabled value="">Choose Staff</option>
-                            <option app-for-sub="member in staff" app-value="member._key" app-bind="member.name.first"></option>
+                            <option app-for-sub="member in staff" app-value="member._key" app-bind="parseName(member.name)"></option>
                         </select>
 
                     </div>
@@ -336,7 +336,29 @@
 
 
     </section>
+    <section class="py-4 bg-33-light-grey text-left">
 
+        <div class="contain">
+
+            <h2>Image uploads</h2>
+
+            
+
+            <div class="grid col-2 gap-2">
+
+                <div>
+                    <input type="file" app-model="view.uploaded_image">
+                </div>
+
+                <div>
+                    <img app-src="view.uploaded_image" src="">
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
 
     <section class="py-4 bg-33-dark-grey text-33-white text-left">
         <div class="grid col-3 contain">

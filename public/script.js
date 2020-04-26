@@ -236,7 +236,7 @@ controller = () => {
     }
 
     scope.parseName = function(obj){
-        if (obj){
+        if (typeof obj == 'object'){
             return obj.first+' '+obj.last
         }
 

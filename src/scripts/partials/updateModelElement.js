@@ -1,5 +1,9 @@
 export default function updateModelElement(el, data){
 
+    if (el.type == 'file'){
+        return
+    }
+
     if (typeof data == 'object'){
 
         let attr = el.getAttribute('app-index').replace(/__/g,'.').replace(/\.([0-9]+)/,'[$1]'),//.replace(/^(.*?)\./,''),
