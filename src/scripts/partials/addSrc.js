@@ -4,10 +4,13 @@
         var el_prop = el.getAttribute('app-src'),
             src_url = app.methods.getValue(scope, el_prop)
 
-        if (typeof data == 'string' && data.match(/png|jpg|jpeg|svg|mp4|m4v$/)){
+        if (data && typeof data == 'string'){
             el.setAttribute('src',data)
-        } else if (typeof src_url == 'string' && src_url.match(/png|jpg|jpeg|svg|mp4|m4v$/)) {
+        } else if (src_url && typeof src_url == 'string') {
             el.setAttribute('src',src_url)
+        } else if (el.hasAttribute('app-placeholder')){
+            let placeholder = el.getAttribute('app-placeholder')
+            el.setAttribute('src',placeholder)
         }
 
         app.methods.addIndex(el, el_prop, 'src')

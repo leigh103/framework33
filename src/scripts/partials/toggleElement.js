@@ -8,24 +8,12 @@ export default function toggleElement(el, type, obj){
 
         let el_prop = el.getAttribute('app-show'),
             val = app.methods.getValue(obj, el_prop),
-            anim_children = el.querySelector('[anim]')
+            anim_children = el.querySelector('[anim]'),
+            has_anim = el.hasAttribute('anim')
         //    console.log(obj, el_prop, val)
 
-        if (val){
+        if (val){ // show
 
-            if (el.classList.contains('grid')){
-                el.style.display = 'grid'
-            } else if (el.classList.contains('btn')){
-                el.style.display = 'inline-flex'
-            } else if (el.classList.contains('flex') || el.classList.contains('modal')){
-                el.style.display = 'flex'
-            } else if (el.tagName == 'SPAN'){
-                el.style.display = 'inline'
-            } else {
-                el.style.display = 'block'
-            }
-
-            el.classList.add('in-view')
 
             if (anim_children && anim_children.length > 0){
 
@@ -39,10 +27,25 @@ export default function toggleElement(el, type, obj){
                 anim_children.classList.add('in-view')
             }
 
-        } else {
+            if (has_anim){
+                console.log(el)
+                el.classList.remove('exit-view')
+                el.classList.add('in-view')
+            }
 
-            el.style.display = 'none'
-            el.classList.remove('in-view')
+            if (el.classList.contains('grid')){
+                el.style.display = 'grid'
+            } else if (el.classList.contains('btn')){
+                el.style.display = 'inline-flex'
+            } else if (el.className.match(/flex|modal|notification/)){
+                el.style.display = 'flex'
+            } else if (el.tagName == 'SPAN'){
+                el.style.display = 'inline'
+            } else {
+                el.style.display = 'block'
+            }
+
+        } else { // hide
 
             if (anim_children && anim_children.length > 0){
 
@@ -54,6 +57,25 @@ export default function toggleElement(el, type, obj){
             } else if (anim_children) {
                 anim_children.classList.remove('in-view')
                 anim_children.classList.add('exit-view')
+            }
+
+            if (has_anim){
+
+                let duration = 500
+
+                if (el.hasAttribute('anim-duration')){
+                    duration = el.getAttribute('anim-duration')
+                }
+
+                el.classList.remove('in-view')
+                el.classList.add('exit-view')
+
+                setTimeout(function(){
+                    el.style.display = 'none'
+                },duration)
+
+            } else {
+                el.style.display = 'none'
             }
 
         }
@@ -62,11 +84,12 @@ export default function toggleElement(el, type, obj){
 
         var el_prop = el.getAttribute('app-hide'),
             val = app.methods.getValue(obj, el_prop),
-            anim_children = el.querySelector('[anim]')
+            anim_children = el.querySelector('[anim]'),
+            has_anim = el.hasAttribute('anim')
 
-        if (val){
+        if (val){ // hide
 
-            el.style.display = 'none'
+            // el.style.display = 'none'
             el.classList.remove('in-view')
 
             if (anim_children && anim_children.length > 0){
@@ -81,19 +104,24 @@ export default function toggleElement(el, type, obj){
                 anim_children.classList.add('exit-view')
             }
 
-        } else {
+            if (has_anim){
+                let duration = 500
 
-            if (el.classList.contains('grid')){
-                el.style.display = 'grid'
-            } else if (el.classList.contains('btn')){
-                el.style.display = 'inline-flex'
-            } else if (el.classList.contains('flex') || el.classList.contains('modal')){
-                el.style.display = 'flex'
-            } else if (el.tagName == 'SPAN'){
-                el.style.display = 'inline'
+                if (el.hasAttribute('anim-duration')){
+                    duration = el.getAttribute('anim-duration')
+                }
+
+                el.classList.remove('in-view')
+                el.classList.add('exit-view')
+
+                setTimeout(function(){
+                    el.style.display = 'none'
+                },duration)
             } else {
-                el.style.display = 'block'
+                el.style.display = 'none'
             }
+
+        } else { // show
 
             el.classList.add('in-view')
 
@@ -107,6 +135,23 @@ export default function toggleElement(el, type, obj){
             } else if (anim_children) {
                 anim_children.classList.remove('exit-view')
                 anim_children.classList.add('in-view')
+            }
+
+            if (has_anim){
+                el.classList.remove('exit-view')
+                el.classList.add('in-view')
+            }
+
+            if (el.classList.contains('grid')){
+                el.style.display = 'grid'
+            } else if (el.classList.contains('btn')){
+                el.style.display = 'inline-flex'
+            } else if (el.classList.contains('flex') || el.classList.contains('modal')){
+                el.style.display = 'flex'
+            } else if (el.tagName == 'SPAN'){
+                el.style.display = 'inline'
+            } else {
+                el.style.display = 'block'
             }
 
         }

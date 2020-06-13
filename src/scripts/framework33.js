@@ -30,7 +30,7 @@ global.ws_server = ''
 global.ws_ping = false
 global.typing = false
 global.regex = {
-    logic_class: /\{\s*'([a-zA-Z0-9._\[\]\-]+)'\s*\:\s*([a-zA-Z0-9._\[\]]+)\s*([!=<>]+)\s*(\'[a-z0-9._\[\]]+\'|[a-z0-9._\[\]]+)\s*\}/,
+    logic_class: /\{\s*'([a-zA-Z0-9._\[\]\-]+)'\s*\:\s*([a-zA-Z0-9._\[\]]+)\s*([!=<>]+)*\s*(\'[a-zA-Z0-9._\-\[\]\:]+\'|[a-zA-Z0-9._\[\]]+)\s*\}/,
     logic_function: /\{\s*'([a-zA-Z0-9._\[\]\-]+)'\s*\:\s*([a-zA-Z0-9._\[\]()',\s]+)\s*\}/,
     logic: /([a-zA-Z0-9._!]+)\s*(=|!=|==|===|>|>=|<|<=)\s*(\'[a-zA-Z0-9._!]+\'|[a-zA-Z0-9._()!]+)/, // /([a-za-zA-Z._]+)\s*(=)\s*'?((.*))'?/
     function: /[a-zA-Z0-9._\[\]]+\((.*?)\)/,
@@ -162,6 +162,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 watch[changes[i].currentPath].call(null, copy_newValue, copy_previousValue, currentPath)
             }
 
+
+            //    console.log(currentPath,changes[i],app.elements.bound.index[currentPath])
+
+
         // update any objects from the model input
             if (app.elements.model.index[currentPath]){
 
@@ -193,6 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (app.elements.value.index[currentPath]){
                 app.elements.value.index[currentPath].forEach(function(el){
                     app.methods.updateBoundElement(el)
+                })
+            }
+
+        // update any elements with class
+
+            if (app.elements.class.index[currentPath]){
+                app.elements.class.index[currentPath].forEach(function(el){
+                    app.methods.addClass(el)
                 })
             }
 
@@ -228,15 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             }
 
-        // update any elements with class
-
-            if (app.elements.class.index[currentPath]){
-                app.elements.class.index[currentPath].forEach(function(el){
-                    app.methods.addClass(el)
-                })
-            }
-
-        // update any elements with hide
+        // update any elements with src
 
             if (app.elements.src.index[currentPath]){
                 app.elements.src.index[currentPath].forEach(function(el){
@@ -299,8 +303,8 @@ window.addEventListener('load', () => {
 
     app.elements.event.nodes.forEach(function(el) {
         el.self = el
+        el.removeEventListener('click',app.methods.clickElement)
         el.addEventListener('click', app.methods.clickElement)
-
     })
 
     app.elements.class.nodes.forEach(function(el) {
@@ -506,6 +510,9 @@ const parseAnimAttr = () => {
 
                 } else {
                     self.setAttribute('anim-'+i,anim_data[i])
+                    if (i == 'duration'){
+                        self.style.animationDuraton = anim_data[i]
+                    }
                 }
 
             }
@@ -541,21 +548,25 @@ const inView = (el) => {
 
 const inViewChk = () => {
 
-    for (let i = 0; i < app.elements.animation.length; i++) {
+    if (app.elements && app.elements.animation){
 
-        let self = app.elements.animation[i]
+        for (let i = 0; i < app.elements.animation.length; i++) {
 
-        if (inView(self)) {
-            if (self.classList && !self.classList.contains('in-view')) {
-                applyInViewClass(self);
-                if (self.hasAttribute('app-lazy')){
-                    lazyLoad(self)
+            let self = app.elements.animation[i]
+
+            if (inView(self)) {
+                if (self.classList && !self.classList.contains('in-view')) {
+                    applyInViewClass(self);
+                    if (self.hasAttribute('app-lazy')){
+                        lazyLoad(self)
+                    }
+                }
+            } else {
+                if (self.classList && self.classList.contains('in-view')) {
+                    applyExitViewClass(self, i);
                 }
             }
-        } else {
-            if (self.classList && self.classList.contains('in-view')) {
-                applyExitViewClass(self, i);
-            }
+
         }
 
     }
@@ -572,10 +583,10 @@ const applyInViewClass = (el) => {
 
     if (!el.classList.contains("in-view")){
 
-        el.classList.add("in-view")
+
 
         if (el.getAttribute("anim-duration")){
-            el.style.animationDuration = el.getAttribute("anim-duration")
+            el.style.webkitAnimationDuration = el.getAttribute("anim-duration")
         }
         if (el.getAttribute("anim-easing")){
             el.style.animationTimingFunction = el.getAttribute("anim-easing")
@@ -583,6 +594,8 @@ const applyInViewClass = (el) => {
         if (el.getAttribute("anim-delay")){
             el.style.animationDelay = el.getAttribute("anim-delay")
         }
+
+        el.classList.add("in-view")
 
     }
 
@@ -592,19 +605,19 @@ const applyExitViewClass = (el) => {
 
     if (el.getAttribute('anim-exit')){
 
-        if (el.classList.contains("in-view")){
-            el.classList.remove('in-view')
-        }
-
-        el.classList.add("exit-view")
-        el.style.animationDelay = 0
-
         if (el.getAttribute("anim-exit-duration")){
             el.style.animationDuration = el.getAttribute("anim-exit-duration")
         }
         if (el.getAttribute("anim-exit-easing")){
             el.style.animationTimingFunction = el.getAttribute("anim-exit-easing")
         }
+
+        if (el.classList.contains("in-view")){
+            el.classList.remove('in-view')
+        }
+
+        el.classList.add("exit-view")
+        el.style.animationDelay = 0
 
     }
 

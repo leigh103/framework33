@@ -9,6 +9,7 @@ export default function onChangeElement(el, index, data, init){
     attr = el.getAttribute('app-model')
 
     if (el.type == 'file') {
+
         var file = el.files[0],
             imageType = /image.*/
 
@@ -62,6 +63,10 @@ export default function onChangeElement(el, index, data, init){
 
             set_val = _.get(data, attr)
 
+            if (typeof set_val == 'boolean'){
+                set_val = set_val.toString()
+            }
+
             if (init && typeof set_val != 'undefined'){
 
                 if (set_val != el.value){
@@ -77,6 +82,10 @@ export default function onChangeElement(el, index, data, init){
         } else {
 
             set_val = _.get(scope, attr)
+
+            if (typeof set_val == 'boolean'){
+                set_val = set_val.toString()
+            } 
 
             if (init){
 

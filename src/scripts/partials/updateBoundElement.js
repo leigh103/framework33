@@ -7,13 +7,19 @@
 
         if (el.hasAttribute('app-value')){
 
-            let el_prop = el.getAttribute('app-value'),
+            let el_prop = el.getAttribute('app-value')
+                val
+
+            if (el_prop.match(regex.function)){
+                val = app.methods.getValue(data, el_prop)
+            } else {
                 val = _.get(data, el_prop)
+            }
 
             if (val != el.value){
                 el.value = val
             } else {
-                return
+
             }
 
             //el.text = val
@@ -27,12 +33,17 @@
 
             if (!el_parent || !el_parent.getAttribute('app-for')){
 
-                let val = _.get(data, el_prop)
+                let val
+                if (el_prop.match(regex.function)){
+                    val = app.methods.getValue(data, el_prop)
+                } else {
+                    val = _.get(data, el_prop)
+                }
 
-                if (val != '' && el.innerHTML != val){
+                if (val != '' && el.innerHTML != val && typeof val != 'undefined'){
                     el.innerHTML = val
                 } else {
-                    return
+
                 }
                 app.methods.addIndex(el, el_prop, 'bound')
 

@@ -37,6 +37,7 @@ export default function forElement(el, data, key, parent_data) {
 
         el_parent.classList.add('app-parent-'+block_key)
         app.methods.addIndex(el, el_prop, 'foreach')
+
         app.elements.foreach.root[block_key] = {
             parent: el_parent,
             el: el
@@ -139,8 +140,7 @@ export default function forElement(el, data, key, parent_data) {
             }
 
             if (el_clone.el.hasAttribute('app-class')){
-            //    el_clone.el.scoped_data = el_clone.scoped_data
-                app.methods.addClass(el_clone.el)
+                app.methods.addClass(el_clone.el, false, loop_arr[idx])
             }
 
             for (let i = 0; i < loop_children.length; ++i) { // for each child that has a repeater, call the forElement method

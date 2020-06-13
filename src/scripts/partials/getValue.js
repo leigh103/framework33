@@ -29,91 +29,86 @@ export default function getValue(obj, path, string) {
     } else if (path.match(regex.logic_class)) { // if logic eg, {'active': obj.path == 'something'} - if true, returns the first string
 
         let matches = path.match(regex.logic_class),
+            result,
+            val1,
+            val2,
+            op
+
+        if (matches.length > 1){
             result = matches[1],
-            val1_obj = _.get(obj,matches[2]),
-            val1_scope = _.get(scope,matches[2]),
+            val1 = _.get(scope,matches[2]),
             op = matches[3],
-            val2 = matches[4],
-            val2_obj = {},
-            val2_scope = {}
+            val2 = _.get(scope,matches[4])
+        } else {
+            result = matches[1],
+            val1 = _.get(scope,matches[2]),
+            op = null,
+            val2 = null
+        }
 
-            if (val2.match(/\'(.*?)\'/)){
-                val2_obj = val2.replace(/\'/g,'')
+        if (!val1){// check obj
+            matches[2] = matches[2].replace(/^[a-zA-Z0-9_\[\]]+./,'')
+            val1 = _.get(obj,matches[2])
+        }
 
-            } else {
-                val2_obj = _.get(obj,matches[4]),
-                val2_scope = _.get(scope,matches[4])
-            }
+        if (!val1){ // if scope and obj is undefined, fall back to string
+            val1 = matches[2]
+            val1 = val1.replace(/'/g,'')
+        }
 
-        if (op == '=='){
+        if (!val2){ // check obj
+            matches[4] = matches[4].replace(/^[a-zA-Z0-9_\[\]]+./,'')
+            val2 = _.get(obj,matches[4])
+        }
 
-            if (val1_obj == val2_obj ||
-                val1_obj == val2_scope ||
-                val1_scope == val2_obj ||
-                val1_scope == val2_scope
-            ){
-                return result
-            }
+        if (!val2){ // if scope obj is undefined, fall back to string
+            val2 = matches[4]
+            val2 = val2.replace(/'/g,'')
+        }
 
-        } else if (op == '==='){
+        if (typeof val1 == 'string' && val1.match(/true|false/i)){
+            val1 = (val1 == 'true')
+        }
 
-            if (val1_obj === val2_obj ||
-                val1_obj === val2_scope ||
-                val1_scope === val2_obj ||
-                val1_scope === val2_scope
-            ){
-                return result
-            }
+        if (typeof val2 == 'string' && val2.match(/true|false/i)){
+            val2 = (val2 == 'true')
+        }
 
-        } else if (op == '!='){
+        if (!op && val1){
 
-            if (val1_obj != val2_obj ||
-                val1_obj != val2_scope ||
-                val1_scope != val2_obj ||
-                val1_scope != val2_scope
-            ){
-                return result
-            }
+            return result
 
-        } else if (op == '>'){
+        } else if (op == '==' && val1 == val2){
 
-            if (val1_obj > val2_obj ||
-                val1_obj > val2_scope ||
-                val1_scope > val2_obj ||
-                val1_scope > val2_scope
-            ){
-                return result
-            }
+            return result
 
-        } else if (op == '<'){
+        } else if (op == '===' && val1 === val2){
 
-            if (val1_obj < val2_obj ||
-                val1_obj < val2_scope ||
-                val1_scope < val2_obj ||
-                val1_scope < val2_scope
-            ){
-                return result
-            }
+            return result
 
-        } else if (op == '>='){
+        } else if (op == '!=' && val1 != val2){
 
-            if (val1_obj >= val2_obj ||
-                val1_obj >= val2_scope ||
-                val1_scope >= val2_obj ||
-                val1_scope >= val2_scope
-            ){
-                return result
-            }
+            return result
 
-        } else if (op == '<='){
+        } else if (op == '>' && val1 > val2){
 
-            if (val1_obj <= val2_obj ||
-                val1_obj <= val2_scope ||
-                val1_scope <= val2_obj ||
-                val1_scope <= val2_scope
-            ){
-                return result
-            }
+            return result
+
+        } else if (op == '<' && val1 < val2){
+
+            return result
+
+        } else if (op == '>=' && val1 >= val2){
+
+            return result
+
+        } else if (op == '<=' && val1 <= val2){
+
+            return result
+
+        } else {
+
+            return false
 
         }
 

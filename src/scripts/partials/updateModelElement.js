@@ -10,7 +10,7 @@ export default function updateModelElement(el, data){
             val = _.get(scope, attr)
 
         if (typeof val != 'undefined'){
-            el.value = val
+            el.value = val.toString()
         } else {
             el.value = ''
         }

@@ -25,6 +25,11 @@ export default function addIndex(el, el_prop, key, index){
 
             el_prop = el_prop.split(/\s|==|!=|=|<=|>=|<|>/)[0]
 
+        } else if (el_prop.match(regex.function)){ // if the property is function, get the object key we need to index
+
+            let matches = el_prop.match(/\((.*)\)/)[1]
+            el_prop = matches.split(',')[0]
+
         }
 
         let orig_el_prop = el_prop+''
@@ -33,6 +38,7 @@ export default function addIndex(el, el_prop, key, index){
             let route_el_prop = el_prop.split('.')
             let popped = route_el_prop.pop()
             app.methods.addIndex(el, route_el_prop.join('.'), key)
+
         }
 
         el_prop = el_prop.replace(/^[ \t]+|[ \t]+$/,'').replace(/\[/,'__').replace(/\]/,'').replace(/\(|\)/g,'').replace(/\./g,'__')
@@ -47,6 +53,7 @@ export default function addIndex(el, el_prop, key, index){
                 app.elements[key].index[root_el_prop].push(el)
             }
         }
+
 
         el.setAttribute('app-index',el_prop)
 

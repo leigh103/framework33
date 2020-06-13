@@ -202,7 +202,122 @@ $move-speed: 500ms;
     animation-duration:$move-speed;
     animation-iteration-count:1;
     animation-fill-mode: forwards;
-    animation-timing-function: cubic-bezier(0.19, 0.56, 0.67, 0.98)
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes SlideLeftEnter  {
+    0%  {
+        transform:translateX(100vw);
+        opacity: 1;
+    }
+    100%  {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+[anim-enter="slide-left"] {
+    transform: translateX(0);
+    opacity: 0;
+}
+
+.in-view[anim-enter="slide-left"] {
+    animation-name:SlideLeftEnter;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out
+}
+
+@keyframes SlideRightExit  {
+    0%  {
+        transform:translateX(0);
+        opacity: 1;
+    }
+    100%  {
+        transform: translateX(100vw);
+        opacity: 1;
+    }
+}
+
+.exit-view[anim-exit="slide-right"] {
+    animation-name:SlideRightExit;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out
+}
+
+
+
+
+@keyframes SlideRightEnter  {
+    0%  {
+        transform:translateX(-100vw);
+        opacity: 1;
+    }
+    100%  {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+[anim-enter="slide-right"] {
+    transform: translateX(-100vw);
+    opacity: 0;
+}
+
+.in-view[anim-enter="slide-right"] {
+    animation-name:SlideRightEnter;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out
+}
+
+@keyframes SlideLeftExit  {
+    0%  {
+        transform:translateX(0);
+        opacity: 1;
+    }
+    100%  {
+        transform: translateX(-100vw);
+        opacity: 1;
+    }
+}
+
+.exit-view[anim-exit="slide-Left"] {
+    animation-name:SlideLeftExit;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out
+}
+
+
+
+@keyframes SlideDownExit  {
+    0%  {
+        transform:translateY(0);
+        opacity: 1;
+    }
+    100%  {
+        transform: translateY(100vh);
+        opacity: 1;
+    }
+}
+
+[anim-exit="slide-down"] {
+    transform: translateY(0);
+    opacity: 0;
+}
+
+.exit-view[anim-exit="slide-down"] {
+    animation-name:SlideDownExit;
+    animation-duration:$move-speed;
+    animation-iteration-count:1;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-in-out;
 }
 
 @keyframes OpenDown  {
@@ -219,7 +334,6 @@ $move-speed: 500ms;
 }
 
 .in-view[anim-enter="fade-in"] {
-    transform: translateY(0);
     animation-name:FadeIn;
     animation-duration:$move-speed;
     animation-iteration-count:1;
@@ -236,7 +350,6 @@ $move-speed: 500ms;
 }
 
 .exit-view[anim-exit="fade-out"] {
-    transform: translateY(0);
     animation-name:FadeOut;
     animation-duration:$move-speed;
     animation-iteration-count:1;

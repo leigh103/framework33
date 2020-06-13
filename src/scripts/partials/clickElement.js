@@ -1,5 +1,15 @@
 export default function clickElement(el, index, data){
 
+    if (el instanceof Element || el instanceof HTMLDocument){
+        scope._clicked_element = el.getBoundingClientRect()
+    } else {
+        scope._clicked_element = false
+    }
+
+    if (typeof el.stopPropagation != 'undefined'){
+        el.stopPropagation()
+    }
+
     let attr,attr_name = 'app-click', params, parent_var
 
     if (el.hasAttribute && el.hasAttribute('app-init')){

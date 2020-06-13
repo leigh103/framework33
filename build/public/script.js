@@ -4,18 +4,34 @@ controller = () => {
 
     scope.new = {}
     scope.view = {}
-    scope.view.text = {}
+    scope.view.sub_text = 'With a sprinkle of reactivity'
+    scope.view.text = {
+        class:true
+    }
+    scope.view.modal = false
+    scope.view.notification = {}
     scope.view.show = {search:false, tab:'one'}
     scope.view.tabs = [
         {name:'one'},
         {name:'two'},
         {name:'three'}
     ]
-    scope.view.text.class = 'true'
     scope.view.asc = true
     scope.view.search_field = ''
-
+    scope.view.uploaded_image = 'https://s3.amazonaws.com/37assets/svn/765-default-avatar.png'
     scope.view.image = 'http://davidrozman.reformedreality.com/images/avatars/Test-Account2-1580413246402.png'
+
+    scope.editModal = function(){
+        scope.view.modal = 'show_delete'
+        scope.new = {
+            name:{
+                first:'Jaime',
+                last:'Anderson'
+            },
+            tel:'0794656222'
+        }
+    }
+
 
     scope.view.search = ''
 
@@ -40,7 +56,7 @@ controller = () => {
                     if (scope.view.search_field == 'name' && table_item.name_full.match(re) ||
                         !scope.view.search_field && table_item.name_full.match(re)) {
                         scope.filteredTable.push(table_item)
-                    } else if (scope.view.search_field && table_item[scope.view.search_field].match(re)) {
+                    } else if (scope.view.search_field && typeof table_item[scope.view.search_field] == 'string' && table_item[scope.view.search_field].match(re)) {
                         scope.filteredTable.push(table_item)
                     }
 
@@ -104,10 +120,10 @@ controller = () => {
         scope.table_items = JSON.parse(localStorage.getItem('table_items'))
     } else {
         scope.table_items = [
-            {id:0,name:{first:'Dave',last:'Roberts'},description:'Gamer, works hard, non-smoker',gender:'male',age:35, truth:false},
-            {id:1,name:{first:'Dilbert',last:'Andrews'},description:'Reader, bit lazy, likes art and coffee',gender:'male',age:41, truth:false},
-            {id:3,name:{first:'Katie',last:'Roberts'},description:'Non-smoker, gamer, purple hair',gender:'female',age:26, truth:false},
-            {id:4,name:{first:'Scott',last:'Peterson'},description:'Smoker, loyal, works hard',gender:'male',age:34, truth:true}
+            {id:0,name:'Dave Robers',description:'Gamer, works hard, non-smoker',gender:'male',age:35, truth:false},
+            {id:1,name:'Dilbert Andrews',description:'Reader, bit lazy, likes art and coffee',gender:'male',age:41, truth:false},
+            {id:3,name:'Katie Roberts',description:'Non-smoker, gamer, purple hair',gender:'female',age:26, truth:false},
+            {id:4,name:'Scott Peterson',description:'Smoker, loyal, works hard',gender:'male',age:34, truth:true}
         ]
     }
 
@@ -118,6 +134,13 @@ controller = () => {
 
     scope.filteredTable = scope.table_items
 
+    scope.notify = function(msg){
+        scope.view.notification.msg = msg
+        scope.view.notification.icon = 'fa-exclamation-circle'
+        setTimeout(function(){
+            scope.view.notification = {}
+        },5000)
+    }
 
     scope.addNew = function(collection, obj){
 
