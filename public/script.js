@@ -28,7 +28,8 @@ controller = () => {
                 first:'Jaime',
                 last:'Anderson'
             },
-            tel:'0794656222'
+            tel:'0794656222',
+            id: 'admin/0'
         }
     }
 
@@ -49,14 +50,8 @@ controller = () => {
                     let re = RegExp(newData,'i')
 
                     table_item.name_full = ''
-                    if (table_item.name.first && table_item.name.last){
-                        table_item.name_full = table_item.name.first+' '+table_item.name.last
-                    }
 
-                    if (scope.view.search_field == 'name' && table_item.name_full.match(re) ||
-                        !scope.view.search_field && table_item.name_full.match(re)) {
-                        scope.filteredTable.push(table_item)
-                    } else if (scope.view.search_field && typeof table_item[scope.view.search_field] == 'string' && table_item[scope.view.search_field].match(re)) {
+                    if (scope.view.search_field && typeof table_item[scope.view.search_field] == 'string' && table_item[scope.view.search_field].match(re)) {
                         scope.filteredTable.push(table_item)
                     }
 

@@ -13,6 +13,7 @@ import clickElement from './partials/clickElement'
 import onChangeTrigger from './partials/onChangeTrigger'
 import onChangeElement from './partials/onChangeElement'
 import updateModelElement from './partials/updateModelElement'
+import updateCheckedElement from './partials/updateCheckedElement'
 import removeElements from './partials/removeElements'
 import addClass from './partials/addClass'
 import addSrc from './partials/addSrc'
@@ -21,6 +22,7 @@ import addIndex from './partials/addIndex'
 
 global.scope = {}
 global.scope.data = []
+global.extend = {}
 global.watch = {}
 global.http = ''
 global.server = ''
@@ -66,6 +68,9 @@ app.elements = {
     model: {
         index:{}
     },
+    checked: {
+        index:{}
+    },
     foreach: {
         index:{},
         root:{}
@@ -94,6 +99,7 @@ app.methods = {
     onChangeTrigger: onChangeTrigger,
     onChangeElement: onChangeElement,
     updateModelElement: updateModelElement,
+    updateCheckedElement: updateCheckedElement,
     forElement: forElement,
     removeElements:removeElements,
     addClass: addClass,
@@ -129,6 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     app.elements.event.nodes = document.querySelectorAll('[app-click]')
     app.elements.class.nodes = document.querySelectorAll('[app-class]')
     app.elements.model.nodes = document.querySelectorAll('[app-model]')
+    app.elements.checked.nodes = document.querySelectorAll('[app-checked]')
     app.elements.foreach.nodes = document.querySelectorAll('[app-for]')
     app.elements.init.nodes = document.querySelectorAll('[app-init]')
     app.elements.src.nodes = document.querySelectorAll('[app-src]')
@@ -149,9 +156,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentPath = changes[i].currentPath.replace(/\.[0-9]+/g,'').replace(/\./g,'__')
             }
 
-            if (currentPath.match(/salon/)){
-            //    console.log(changes[i], currentPath)
-            }
+            //if (currentPath.match(/view/)){
+                // console.log(changes[i], currentPath)
+            //}
 
             if (watch[changes[i].currentPath] && changes[i].newValue != changes[i].previousValue){ // fire any watch functions
                 let copy_newValue = JSON.parse(JSON.stringify(changes[i].newValue))
@@ -167,6 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         // update any objects from the model input
+
             if (app.elements.model.index[currentPath]){
 
                 if (typeof changes[i].previousValue != 'undefined' && changes[i].newValue != changes[i].previousValue){
@@ -189,6 +197,14 @@ document.addEventListener('DOMContentLoaded', () => {
             if (app.elements.bound.index[currentPath]){
                 app.elements.bound.index[currentPath].forEach(function(el){
                     app.methods.updateBoundElement(el)
+                })
+            }
+
+        // update any elements with checked attr
+
+            if (app.elements.checked.index[currentPath]){
+                app.elements.checked.index[currentPath].forEach(function(el){
+                    app.methods.updateCheckedElement(el)
                 })
             }
 
@@ -269,7 +285,11 @@ window.addEventListener('load', () => {
 
     controller()
 
-    // socketConnect("ws://davidrozman.reformedreality.com:6410")
+    for (var i in extend){
+        if (extend[i] && typeof extend[i] == 'function'){
+            extend[i]()
+        }
+    }
 
     parseAnimAttr()
 
@@ -328,11 +348,12 @@ window.addEventListener('load', () => {
                 el.addEventListener('click', app.methods.onChangeElement)
             }
         }
-        if (el.tagName == "SELECT" ) {
+        if (el.tagName == "SELECT" || el.tagName == "TEXTAREA") {
             el.addEventListener('change', app.methods.onChangeElement)
         }
-        if (el.tagName == "TEXTAREA") {
-            el.addEventListener('keyup', app.methods.onChangeElement)
+
+        if ( el.tagName == "DIV") {
+            el.addEventListener('input', app.methods.onChangeElement)
         }
 
         el.self = el
@@ -341,6 +362,12 @@ window.addEventListener('load', () => {
         app.methods.addIndex(el,attr,'model')
         // app.methods.onChangeElement(el, false, false, true)
 
+    })
+
+    app.elements.checked.nodes.forEach(function(el) {
+        app.methods.updateCheckedElement(el)
+        let attr = el.getAttribute('app-checked')
+        app.methods.addIndex(el, attr, 'checked')
     })
 
     app.elements.foreach.nodes.forEach(function(el) {

@@ -69,13 +69,23 @@ export default function onChangeElement(el, index, data, init){
 
             if (init && typeof set_val != 'undefined'){
 
-                if (set_val != el.value){
+                if (!el.value && set_val != el.value){
                     el.value = set_val
                     app.methods.onChangeTrigger(el, index, data, init)
+                } else if (el.value){
+                    app.methods.setValue(scope, attr, el.value)
+                } else {
+                    let idx = el.getAttribute('app-index')
+                    app.methods.setValue(scope, idx, el.innerHTML)
                 }
 
             } else {
-                app.methods.setValue(data, attr, el.value)
+                if (el.tagName == 'DIV'){
+                    let idx = el.getAttribute('app-index')
+                    app.methods.setValue(scope, idx, el.innerHTML)
+                } else {
+                    app.methods.setValue(data, attr, el.value)
+                }
                 app.methods.onChangeTrigger(el, index, data, init)
             }
 
@@ -85,20 +95,27 @@ export default function onChangeElement(el, index, data, init){
 
             if (typeof set_val == 'boolean'){
                 set_val = set_val.toString()
-            } 
+            }
 
             if (init){
 
                 if (set_val == false){
                     set_val = ''
                 }
-                if (set_val != el.value){
+                if (!el.value && set_val != el.value){
                     el.value = set_val
+                } else if (el.value){
+                    app.methods.setValue(scope, attr, el.value)
                 }
-            //    console.log('initoce',set_val)
+
             } else {
-            //    console.log('oce',set_val)
-                app.methods.setValue(scope, attr, el.value)
+
+                if (el.value){
+                    app.methods.setValue(scope, attr, el.value)
+                } else {
+                    app.methods.setValue(scope, attr, el.innerHTML)
+                }
+
             }
             app.methods.onChangeTrigger(el, index, data, init)
         }

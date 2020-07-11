@@ -34,10 +34,26 @@ h3  {
     line-height: 1.4em
 }
 
-h4,h1.small  {
+h4  {
     font-size: 1.5rem;
     font-weight: 700;
     line-height: 1.4em
+}
+
+.h1  {
+    font-size: 3rem !important;
+}
+
+.h2  {
+    font-size: 2.5rem !important;
+}
+
+.h3  {
+    font-size: 2rem !important;
+}
+
+.h4  {
+    font-size: 1.5rem !important;
 }
 
 highlight {

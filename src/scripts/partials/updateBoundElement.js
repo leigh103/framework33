@@ -7,7 +7,7 @@
 
         if (el.hasAttribute('app-value')){
 
-            let el_prop = el.getAttribute('app-value')
+            let el_prop = el.getAttribute('app-value'),
                 val
 
             if (el_prop.match(regex.function)){

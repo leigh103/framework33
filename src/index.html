@@ -22,10 +22,10 @@
         <div class="text-right"><i class="fas" app-class="view.notification.icon"></i></div>
     </div>
 
-    <section class="hero bg-33-sunrise flex flex-middle text-33-white">
+    <section class="hero bg-33-dream flex flex-middle text-33-white">
 
-        <div class="contain flex transparent-2">
-            <div class="text-left text-center-m flex-2">
+        <div class="contain">
+            <div class="text-center">
                 <h1 class="text-size-5 text-size-s-3 overflow-hidden"><span class="inline-block" anim="{'enter':'move-down','exit':'move-down','duration':'0.2s','easing':'ease-in','delay':'0.3s'}">Frame</span><span class="inline-block" anim="{'enter':'move-up','exit':'move-up','duration':'0.2s','easing':'ease-in','delay':'0.5s'}">work33</h1>
                 <h4 class="text-light" anim="{'enter':'fade-in','exit':'fade-out','duration':'1s','easing':'ease'}">A Simple CSS and ECMA Script Framework</h4>
                 <h4 class="text-light" anim="{'enter':'move-down','exit':'move-down','duration':'1s','easing':'ease','delay':'1.5s'}" app-bind=""></a>
@@ -92,7 +92,7 @@
             <div class="table text-left sortable">
                 <div class="row text-bold border-bottom sortable-disabled">
                     <div class="cell middle clickable" style="width:2em"></div>
-                    <div class="cell middle clickable" app-click="sortTable('name.first')">Name</div>
+                    <div class="cell middle clickable" app-click="sortTable('name')">Name</div>
                     <div class="cell middle clickable" app-click="sortTable('description')">Description</div>
                     <div class="cell middle clickable" app-click="sortTable('gender')">Gender</div>
                     <div class="cell middle clickable" app-click="sortTable('age')">Age</div>
@@ -104,7 +104,8 @@
                     <div class="cell middle text-bold" app-bind="item.name"></div>
                     <div class="cell middle" app-bind="item.description"></div>
                     <div class="cell middle">
-                        <label app-for-sub="mf in genders" app-click="alert({{parent.name}})"><input type="checkbox"><span app-bind="mf.name"></span></label>
+                        <label><input type="checkbox" app-checked="item.gender == 'male'"> Male</label>
+                        <label><input type="checkbox" app-checked="item.gender == 'female'"> Female</label>
                     </div>
                     <div class="cell middle" app-bind="item.age"></div>
                     <div class="cell middle text-right">
@@ -163,7 +164,7 @@
                 <div class="grid col-3 col-s-1 gap-2 mt-2">
                     <div>
                         <label class="indent">Field One</label>
-                        <input type="text" class="thick rounded" placeholder="Field">
+                        <input type="text" class="thick rounded" app-model="view.user_id" placeholder="Field">
                     </div>
                     <div>
                         <label class="indent">Field Two</label>
@@ -171,11 +172,16 @@
                     </div>
                     <div>
                         <label class="indent" app-bind="field.selected_option">Field Three</label>
-                        <select class="rounded">
+                        <select class="rounded thick">
                             <option disabled selected>Please select...</option>
                             <option app-for="option in view.options" app-bind="option.name" app-value="option.value"></option>
                         </select>
                     </div>
+                </div>
+
+                <div class="colspan-3 mt-1">
+                    <label class="indent">This input field sets a value, using the value attribute. See? '<span app-bind="view.user_id"></span>'</label>
+                    <input type="text" class="thick rounded" app-model="view.user_id" value="admin/0" placeholder="Field">
                 </div>
 
             </div>
@@ -190,7 +196,8 @@
             </div>
 
             <div class="mt-2">
-                <textarea placeholder="This is a thick rounded textarea" class="thick rounded resize"></textarea>
+                <div app-model="view.sub_text" placeholder="This is a thick rounded textarea" class="thick rounded resize"></div>
+                <div app-bind="view.sub_text"></div>
             </div>
 
             <div class="mt-2 grid col-3 gap-2">
@@ -267,7 +274,7 @@
 
         <div class="contain">
 
-            <h2>Repeating Elements</h2>
+            <h2>Repeating Elements <span app-bind="appointments[0].name"></span></h2>
 
             <p>What's a framework without a repeater? Framework33 supports repeating and nested repeating elements.</p>
 
@@ -293,7 +300,7 @@
                     <div class="colspan-9">
 
                         <label>Service</label>
-                        <input type="text" app-model="appointment.name">
+                        <div app-model="appointment.name"></div>
 
                     </div>
 

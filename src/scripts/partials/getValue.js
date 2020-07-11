@@ -146,6 +146,11 @@ export default function getValue(obj, path, string) {
             op = matches[2],
             val2 = matches[3]
 
+        if (!val1){// check obj
+            matches[1] = matches[1].replace(/^[a-zA-Z0-9_\[\]]+./,'')
+            val1 = _.get(obj,matches[1])
+        }
+
         if (!val2.match(/\'(.*?)\'/)){
             val2 = _.get(obj,matches[3])
         } else {

@@ -28,7 +28,6 @@ export default function toggleElement(el, type, obj){
             }
 
             if (has_anim){
-                console.log(el)
                 el.classList.remove('exit-view')
                 el.classList.add('in-view')
             }

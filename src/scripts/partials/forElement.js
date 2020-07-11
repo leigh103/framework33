@@ -63,7 +63,7 @@ export default function forElement(el, data, key, parent_data) {
 // stop the loop if the data isn't an object
 
 
-    if (typeof loop_arr != 'object'){
+    if (!loop_arr || typeof loop_arr != 'object'){
         return
     }
 
@@ -101,6 +101,7 @@ export default function forElement(el, data, key, parent_data) {
                 value_children = el_clone.el.querySelectorAll('[app-value]'),
                 click_children = el_clone.el.querySelectorAll('[app-click]'),
                 model_children = el_clone.el.querySelectorAll('[app-model]'),
+                checked_children = el_clone.el.querySelectorAll('[app-checked]'),
                 show_children = el_clone.el.querySelectorAll('[app-show]'),
                 hide_children = el_clone.el.querySelectorAll('[app-hide]'),
                 attr_children = el_clone.el.querySelectorAll('[app-attr]'),
@@ -187,37 +188,49 @@ export default function forElement(el, data, key, parent_data) {
 
                 if (model_children[i].tagName == "INPUT") {
                     if (model_children[i].type == "text" || model_children[i].type == "number" || model_children[i].type == "password") {
-                    //    model_children[i].removeEventListener('keyup',app.methods.onChangeElement)
                         model_children[i].addEventListener('keyup', function(){
                             app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
                         })
                     }
-                    if (model_children[i].type == "checkbox") {
-
-                    //    model_children[i].removeEventListener('click',app.methods.onChangeElement)
-                        model_children[i].addEventListener('click', function(){
+                    if (model_children[i].type == "number" || model_children[i].type == "file") {
+                        model_children[i].addEventListener('change', function(){
                             app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
                         })
                     }
-                    if (model_children[i].type == "radio") {
-                    //    model_children[i].removeEventListener('click',app.methods.onChangeElement)
+                    if (model_children[i].type == "checkbox" || model_children[i].type == "radio") {
                         model_children[i].addEventListener('click', function(){
                             app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
                         })
                     }
                 }
-                if (model_children[i].tagName == "SELECT") {
-                //    model_children[i].removeEventListener('input',app.methods.onChangeElement)
+                if (model_children[i].tagName == "SELECT" || model_children[i].tagName == "TEXTAREA") {
+                    model_children[i].addEventListener('change', function(){
+                        app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
+                    })
+                }
+
+                if (model_children[i].tagName == "DIV") {
+                    model_children[i].contentEditable = true
+                    let val = app.methods.getValue(el_clone, bind)
+                    if (val && val != 'undefined' && val != 'undefined undefined' && typeof val != 'object'){
+                        model_children[i].innerHTML = val
+                    } else {
+                        model_children[i].innerHTML = ''
+                    }
                     model_children[i].addEventListener('input', function(){
                         app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
                     })
                 }
 
-                if (model_children[i].tagName == "TEXTAREA") {
-                    model_children[i].addEventListener('keyup', function(){
-                        app.methods.onChangeElement(model_children[i], el_clone.index, el_clone)
-                    })
-                }
+            }
+
+            for (let i = 0; i < checked_children.length; ++i){
+
+                let el_prop = checked_children[i].getAttribute('app-checked'),
+                    index_key = scope_key+'__'+el_clone.index+'__'+el_prop.replace(/^\w+\(/,'').replace(/^\w+\./,'').replace(/\)$/,'')
+
+                app.methods.addIndex(checked_children[i], index_key, 'checked')
+                app.methods.updateCheckedElement(checked_children[i], loop_arr[idx])
 
             }
 

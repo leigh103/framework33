@@ -10,28 +10,28 @@
             val,
             attr_name
 
-        if (el_prop.match(regex.logic_class)){
-
-            val = app.methods.getValue(data, el_prop)
-            attr_name = el_prop.match(regex.logic_class)[1]
-
-            if (typeof val != 'undefined'){
-                el.setAttribute(attr_name, 'true')
-            } else {
-                el.removeAttribute(attr_name)
-            }
-        } else if (el_prop.match(regex.logic_function)){
-
-            val = app.methods.getValue(data, el_prop.match(regex.logic_function)[2])
-            attr_name = el_prop.match(regex.logic_function)[1]
-
-            if (typeof val == 'undefined' || val == false || val == 'false'){
-                el.removeAttribute(attr_name)
-            } else {
-                el.setAttribute(attr_name, 'true')
-            }
-
-        } else {
+        // if (el_prop.match(regex.logic_class)){
+        //
+        //     val = app.methods.getValue(data, el_prop)
+        //     attr_name = el_prop.match(regex.logic_class)[1]
+        //
+        //     if (typeof val != 'undefined'){
+        //         el.setAttribute(attr_name, 'true')
+        //     } else {
+        //         el.removeAttribute(attr_name)
+        //     }
+        // } else if (el_prop.match(regex.logic_function)){
+        //
+        //     val = app.methods.getValue(data, el_prop.match(regex.logic_function)[2])
+        //     attr_name = el_prop.match(regex.logic_function)[1]
+        //
+        //     if (typeof val == 'undefined' || val == false || val == 'false'){
+        //         el.removeAttribute(attr_name)
+        //     } else {
+        //         el.setAttribute(attr_name, 'true')
+        //     }
+        //
+        // } else {
 
             if (el_prop){
                 el_prop_arr = el_prop.replace(/{/,'').replace(/}/,'').split(',')
@@ -61,7 +61,7 @@
 
             }
 
-        }
+        // }
 
 
 
