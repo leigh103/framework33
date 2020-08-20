@@ -209,10 +209,17 @@ export default function forElement(el, data, key, parent_data) {
                     })
                 }
 
-                if (model_children[i].tagName == "DIV") {
+                if (model_children[i].tagName == "DIV" || model_children[i].tagName == "PRE" || model_children[i].tagName == "CODE") {
                     model_children[i].contentEditable = true
                     let val = app.methods.getValue(el_clone, bind)
                     if (val && val != 'undefined' && val != 'undefined undefined' && typeof val != 'object'){
+
+                        if (model_children[i].tagName == "PRE" || model_children[i].tagName == "CODE"){
+                            val = val.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+                               return '&#'+i.charCodeAt(0)+';';
+                            });
+                        }
+
                         model_children[i].innerHTML = val
                     } else {
                         model_children[i].innerHTML = ''

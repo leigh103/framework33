@@ -352,7 +352,7 @@ window.addEventListener('load', () => {
             el.addEventListener('change', app.methods.onChangeElement)
         }
 
-        if ( el.tagName == "DIV") {
+        if ( el.tagName == "DIV" || el.tagName == "PRE" || el.tagName == "CODE") {
             el.addEventListener('input', app.methods.onChangeElement)
         }
 

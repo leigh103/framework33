@@ -16,6 +16,7 @@ controller = () => {
         {name:'two'},
         {name:'three'}
     ]
+    scope.view.code = '<div class="mt-2 grid col-3 gap-2">\r\n<div class="colspan-1 colspan-s-3 flex flex-middle-right text-right flex-middle-left-s">No margin between the fields and buttons looks cool</div><div class="colspan-2 colspan-s-3 flex"><input type="text" class="thick" placeholder="Field"><button class="btn bg-33-blue thick">Submit</button></div></div>'
     scope.view.asc = true
     scope.view.search_field = ''
     scope.view.uploaded_image = 'https://s3.amazonaws.com/37assets/svn/765-default-avatar.png'

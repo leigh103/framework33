@@ -26,17 +26,17 @@ export default function clickElement(el, index, data){
         attr = el.getAttribute(attr_name)
     }
 
-    if (attr.match(regex.parent_var)){
+    if (typeof attr == 'string' && attr.match(regex.parent_var)){
         parent_var = app.methods.getValue(data, attr.match(regex.parent_var)[1])
         attr = attr.replace(regex.parent_var,parent_var)
     //    console.log(attr, parent_var)
     }
 
-    if (attr.match(regex.function)){ // if function
+    if (typeof attr == 'string' && attr.match(regex.function)){ // if function
 
         app.methods.getValue(data, attr)
 
-    } else if (attr.match(regex.logic)){ // if operator
+    } else if (typeof attr == 'string' && attr.match(regex.logic)){ // if operator
 
         let matches = attr.match(regex.logic),
             key = matches[1],

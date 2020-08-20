@@ -240,6 +240,16 @@ table.small {
 img.icon {
     position:relative;
     display:inline;
+    height: 1em;
+    width: auto;
+
+    &.right {
+        margin-left: 0.75em
+    }
+
+    &.left {
+        margin-right: 0.75em
+    }
 }
 
 .no-border {

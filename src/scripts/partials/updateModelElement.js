@@ -33,7 +33,33 @@ export default function updateModelElement(el, data){
         }
 
         if (val != '' && el.innerHTML != val && typeof val != 'undefined'){
+
             el.innerHTML = val
+
+        } else {
+
+        }
+
+    } else if (el.tagName == 'PRE' || el.tagName == "CODE"){ // contentEditable
+
+        el.contentEditable = true
+
+        let val
+        if (typeof data == 'string'){
+            val = data
+        } else {
+            let attr = el.getAttribute('app-model'),
+                val = _.get(data, attr)
+        }
+
+        if (val != '' && el.innerHTML != val && typeof val != 'undefined'){
+
+            val = val.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+               return '&#'+i.charCodeAt(0)+';';
+            });
+
+            el.innerHTML = val
+
         } else {
 
         }
