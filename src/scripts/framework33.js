@@ -31,6 +31,8 @@ global.ws_timer = false
 global.ws_server = ''
 global.ws_ping = false
 global.typing = false
+global.typing_count = 0
+global.typing_timer = false
 global.regex = {
     logic_class: /\{\s*'([a-zA-Z0-9._\[\]\-]+)'\s*\:\s*([a-zA-Z0-9._\[\]]+)\s*([!=<>]+)*\s*(\'[a-zA-Z0-9._\-\[\]\:]+\'|[a-zA-Z0-9._\[\]]+)\s*\}/,
     logic_function: /\{\s*'([a-zA-Z0-9._\[\]\-]+)'\s*\:\s*([a-zA-Z0-9._\[\]()',\s]+)\s*\}/,
@@ -446,11 +448,18 @@ window.addEventListener('blur', (e) => {
 }, false)
 
 document.onkeydown = function (event) {
-    global.typing = true
 
-    setTimeout(()=>{
+    global.typing = true
+    global.typing_count++
+
+    if (global.typing_timer){
+        clearTimeout(global.typing_timer)
+    }
+
+    global.typing_timer = setTimeout(()=>{
         global.typing = false
-    },500)
+    },1000)
+
 };
 
 

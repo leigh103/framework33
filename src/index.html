@@ -274,10 +274,10 @@
             </div>
 
             <div class="mt-2">
-                <!-- <div app-for="tab_content in view.tabs" app-show="view.show.tab == tab_content.name" anim="{'enter':'move-up','exit':'move-down'}">This is tab <span app-bind="tab_content.name"></span></div> -->
-                <div app-show="view.show.tab == 'one'" app-class="{'bg-33-red':view.show.tab == 'one'}" anim="{'enter':'fade-in','exit':'move-down'}">This is tab one <div class="bg-33-light-grey p-1 rounded" anim="{'enter':'move-up'}">This is an animated child</div></div>
-                <div app-show="view.show.tab == 'two'" anim="{'enter':'move-up','exit':'move-down'}">This is tab two</div>
-                <div app-show="view.show.tab == 'three'" anim="{'enter':'move-up','exit':'move-down'}">This is tab three</div>
+                
+                <div app-if="view.show.tab == 'one'" app-class="{'bg-33-red':view.show.tab == 'one'}" anim="{'enter':'fade-in','exit':'move-down'}">This is tab one <div class="bg-33-light-grey p-1 rounded" anim="{'enter':'move-up'}">This is an animated child</div></div>
+                <div app-if="view.show.tab == 'two'" anim="{'enter':'move-up','exit':'move-down'}">This is tab two</div>
+                <div app-if="view.show.tab == 'three'" anim="{'enter':'move-up','exit':'move-down'}">This is tab three</div>
             </div>
 
         </div>

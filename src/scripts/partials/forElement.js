@@ -104,6 +104,8 @@ export default function forElement(el, data, key, parent_data) {
                 checked_children = el_clone.el.querySelectorAll('[app-checked]'),
                 show_children = el_clone.el.querySelectorAll('[app-show]'),
                 hide_children = el_clone.el.querySelectorAll('[app-hide]'),
+                logic_children = el_clone.el.querySelectorAll('[app-if]'),
+                replace_children = el_clone.el.querySelectorAll('[app-replace]'),
                 attr_children = el_clone.el.querySelectorAll('[app-attr]'),
                 src_children = el_clone.el.querySelectorAll('[app-src]')
 
@@ -174,6 +176,16 @@ export default function forElement(el, data, key, parent_data) {
 
                 app.methods.addIndex(hide_children[i], index_key, 'hide')
                 app.methods.toggleElement(hide_children[i], 'hide', el_clone)
+
+            }
+
+            if (logic_children.length > 0 || replace_children.length > 0){
+
+                app.elements.logic.nodes.forEach(function(el) {
+                    let attr = el.getAttribute('app-if')
+                    app.methods.addIndex(el, attr, 'logic')
+                    app.methods.toggleElement(el,'if',el_clone)
+                })
 
             }
 

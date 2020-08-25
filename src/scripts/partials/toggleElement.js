@@ -157,44 +157,37 @@ export default function toggleElement(el, type, obj){
 
     } else {
 
-        var el_prop = el.getAttribute('app-if')
+        var el_prop = el.getAttribute('app-if'),
+            val = app.methods.getValue(obj, el_prop),
+            anim_children = el.querySelector('[anim]'),
+            has_anim = el.hasAttribute('anim'),
+            index = [...app.elements.logic.nodes].indexOf(el)
 
-        // if (scope[el_prop]){
-        //
-        //     let index = [...app.elements.logic.nodes].indexOf(el)
-        //     let div = document.querySelectorAll('[app-replace="'+index+'"]')[0]
-        //     div.parentNode.replaceChild(el,div)
-        //
-        // } else if (el_prop.match(/==|\!=|^!/)){
-        //
-        //     app.methods.evaluateProp(el_prop, function(test){
-        //
-        //         if (test === false){
-        //             if (el.parentNode){
-        //                 let div = document.createElement("div")
-        //                 div.setAttribute('app-replace',[...app.elements.logic.nodes].indexOf(el))
-        //                 el.parentNode.replaceChild(div,el)
-        //             }
-        //         } else {
-        //             let index = [...app.elements.logic.nodes].indexOf(el)
-        //             let div = document.querySelectorAll('[app-replace="'+index+'"]')[0]
-        //             if (div){
-        //                 div.parentNode.replaceChild(el,div)
-        //             }
-        //
-        //         }
-        //     })
-        //
-        // } else {
-        //
-        //     let index = [...app.elements.logic.nodes].indexOf(el)
-        //     let div = document.querySelectorAll('[app-replace="'+index+'"]')[0]
-        //
-        //     if (div){
-        //         div.parentNode.replaceChild(el,div)
-        //     }
-        //
-        // }
+        if (val){ // if
+
+            let div = document.querySelector('[app-replace="'+index+'"]')
+
+            if (div){
+                div.parentNode.replaceChild(el,div)
+            }
+
+            el.classList.add('in-view')
+
+        } else {
+
+            let div = document.querySelectorAll('[app-replace="'+index+'"]')[0]
+
+            if (div){
+                // div.parentNode.replaceChild(el,div)
+            } else {
+                div = document.createElement("div")
+                div.setAttribute('app-replace',index)
+                el.parentNode.replaceChild(div,el)
+            }
+
+            el.classList.remove('exit-view')
+
+        }
 
     }
 
