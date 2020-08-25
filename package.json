@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "@babel/polyfill": "^7.4.3",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "observable-slim": "^0.1.5",
     "sortablejs": "^1.10.2",
     "xregexp": "^4.2.4"
