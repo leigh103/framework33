@@ -179,8 +179,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (app.elements.model.index[currentPath]){
 
-                if (typeof changes[i].previousValue != 'undefined' && changes[i].newValue != changes[i].previousValue){
-                    _.set(scope, changes[i].currentPath, changes[i].newValue)
+                if (changes[i].type == 'update'){
+                //    _.set(scope, changes[i].currentPath, changes[i].newValue)
                 }
 
                 app.elements.model.index[currentPath].forEach(function(el) {
@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (global.typing === false){
                         app.methods.updateModelElement(el, changes[i].newValue)
                     } else {
-                    //    console.log(global.typing, el, changes[i])
+                        console.log(global.typing, currentPath, changes[i])
                     }
 
                 })
@@ -363,6 +363,8 @@ window.addEventListener('load', () => {
         let attr = el.getAttribute('app-model')
         app.methods.addIndex(el,attr,'model')
         // app.methods.onChangeElement(el, false, false, true)
+
+        //app.methods.updateModelElement(el)
 
     })
 

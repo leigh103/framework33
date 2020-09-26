@@ -11,6 +11,8 @@
         } else if (el.hasAttribute('app-placeholder')){
             let placeholder = el.getAttribute('app-placeholder')
             el.setAttribute('src',placeholder)
+        } else {
+            el.setAttribute('src','')
         }
 
         app.methods.addIndex(el, el_prop, 'src')

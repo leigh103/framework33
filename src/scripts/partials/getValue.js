@@ -127,8 +127,10 @@ export default function getValue(obj, path, string) {
 
             if (obj_check){
                 return obj_check
-            } else {
+            } else if (string == true){
                 return e.replace(/'|"/g,'')
+            } else {
+                return null
             }
 
         })
@@ -235,7 +237,7 @@ export default function getValue(obj, path, string) {
                     return scope_result
                 }
             } else {
-                return false
+                return ''
             }
         }
 

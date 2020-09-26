@@ -84,7 +84,14 @@ export default function onChangeElement(el, index, data, init){
                     let idx = el.getAttribute('app-index')
                     app.methods.setValue(scope, idx, el.innerHTML)
                 } else {
-                    app.methods.setValue(data, attr, el.value)
+
+                    let val = el.value
+
+                    if (el.getAttribute('type') == 'checkbox'){
+                        val = el.checked
+                    }
+                    app.methods.setValue(data, attr, val)
+
                 }
                 app.methods.onChangeTrigger(el, index, data, init)
             }
@@ -110,8 +117,14 @@ export default function onChangeElement(el, index, data, init){
 
             } else {
 
-                if (el.value){
-                    app.methods.setValue(scope, attr, el.value)
+                let val = el.value
+
+                if (el.getAttribute('type') == 'checkbox'){
+                    val = el.checked
+                }
+
+                if (val){
+                    app.methods.setValue(scope, attr, val)
                 } else {
                     app.methods.setValue(scope, attr, el.innerHTML)
                 }

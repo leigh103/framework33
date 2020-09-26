@@ -49,7 +49,6 @@ html {
     line-height: 1.5em;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: subpixel-antialiased;
-    overflow-x: hidden;
 }
 
 body {
@@ -65,11 +64,10 @@ body {
     -ms-overflow-style:none;
     -webkit-backface-visibility: hidden;
     color: #222;
-    overflow-x: hidden;
 }
 
 body::-webkit-scrollbar {
-    width:0px
+
 }
 
 img {
@@ -118,10 +116,6 @@ img.inline {
     overflow-y:hidden;
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
-}
-
-.overflow-x:not(.mobile) > *  {
-    white-space: normal;
 }
 
 .overflow-x:not(.mobile) .card:nth-of-type(4n) {
@@ -230,11 +224,6 @@ img.inline {
 
 table.small {
     font-size:0.8rem;
-}
-
-
-.underline:not(h1):not(h2):not(h3):not(h4) {
-    text-decoration: underline;
 }
 
 img.icon {

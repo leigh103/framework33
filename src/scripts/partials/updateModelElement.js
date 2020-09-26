@@ -4,6 +4,10 @@ export default function updateModelElement(el, data){
         return
     }
 
+    if (!data){
+        data = scope
+    }
+
     if (el.hasAttribute('value')){
         let attr = el.getAttribute('app-model')
 
@@ -24,20 +28,26 @@ export default function updateModelElement(el, data){
 
         el.contentEditable = true
 
-        let val
+        let val, attr
         if (typeof data == 'string'){
             val = data
         } else {
-            let attr = el.getAttribute('app-model'),
-                val = _.get(data, attr)
+            attr = el.getAttribute('app-model')
+            val = _.get(data, attr)
         }
 
-        if (val != '' && el.innerHTML != val && typeof val != 'undefined'){
+        if (!val && attr){
+            val = _.get(scope, attr)
+        }
+
+        if (typeof val != 'undefined'){
 
             el.innerHTML = val
 
+        // } else {
+        //
         } else {
-
+            el.innerHTML = ''
         }
 
     } else if (el.tagName == 'PRE' || el.tagName == "CODE"){ // contentEditable
@@ -71,11 +81,24 @@ export default function updateModelElement(el, data){
             let attr = el.getAttribute('app-index').replace(/__/g,'.').replace(/\.([0-9]+)/,'[$1]'),//.replace(/^(.*?)\./,''),
                 val = _.get(scope, attr)
 
-            if (typeof val != 'undefined' && val){
-                el.value = val.toString()
+            if (el.getAttribute("type") == 'checkbox'){
+
+                if (typeof val != 'undefined' && val){
+                    el.checked = true
+                } else {
+                    el.checked = false
+                }
+
             } else {
-                el.value = ''
+
+                if (typeof val != 'undefined' && val){
+                    el.value = val.toString()
+                } else {
+                    el.value = ''
+                }
+
             }
+
 
         } else {
             el.value = data
