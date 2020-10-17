@@ -13,7 +13,7 @@ export default function onChangeElement(el, index, data, init){
         var file = el.files[0],
             imageType = /image.*/
 
-        if (file.type.match(imageType)) {
+        if (typeof file == 'object' && typeof file.type == 'string' && file.type.match(imageType)) {
 
             let reader = new FileReader();
 

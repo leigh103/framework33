@@ -379,15 +379,6 @@ img.absolute {
         float:right;
     }
 
-    .contain, .container {
-        width: 100%;
-
-        .contain, .container {
-            width: 100%;
-        }
-    }
-
-
 }
 
 @include small {
@@ -401,12 +392,5 @@ img.absolute {
         float:right;
     }
 
-    .contain, .container {
-        width: 100%;
-
-        .contain, .container {
-            width: 100%;
-        }
-    }
 
 }

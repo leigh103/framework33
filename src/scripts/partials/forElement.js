@@ -313,7 +313,7 @@ export default function forElement(el, data, key, parent_data) {
             for (let i = 0; i < class_children.length; ++i) { // for each child of this new parent node, get the scope arr value and update the contents
                 let bind = class_children[i].getAttribute('app-class'),
                     val = app.methods.getValue(el_clone,bind)
-                app.methods.addClass(class_children[i],val)
+                app.methods.addClass(class_children[i],val,loop_arr[idx])
             }
 
         }

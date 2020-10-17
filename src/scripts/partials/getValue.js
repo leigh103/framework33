@@ -41,7 +41,7 @@ export default function getValue(obj, path, string) {
             val2 = _.get(scope,matches[4])
         } else {
             result = matches[1],
-            val1 = _.get(scope,matches[2]),
+            val1 = app.methods.getValue(scope,matches[2]),
             op = null,
             val2 = null
         }
@@ -112,6 +112,21 @@ export default function getValue(obj, path, string) {
 
         }
 
+    } else if (path.match(regex.logic_function)) { // if logic eg, {'active': function(something)} - if true, returns the first string
+
+        let matches = path.match(regex.logic_function),
+            result,
+            val
+
+        result = matches[1],
+        val = app.methods.getValue(obj,matches[2])
+
+        if (val){
+            return result
+        } else {
+            return null
+        }
+
     } else if (path && path.match(regex.function)){ // if function
 
         let params = path.match(regex.function)[1].split(',')
@@ -123,6 +138,7 @@ export default function getValue(obj, path, string) {
             } else {
                 string = false
             }
+
             let obj_check = app.methods.getValue(obj, e)
 
             if (obj_check){
@@ -130,7 +146,15 @@ export default function getValue(obj, path, string) {
             } else if (string == true){
                 return e.replace(/'|"/g,'')
             } else {
-                return null
+
+                obj_check = _.get(obj, e.replace(/^[0-9a-zA-Z]+./,''))
+
+                if (obj_check){
+                    return obj_check
+                } else {
+                    return null
+                }
+
             }
 
         })
