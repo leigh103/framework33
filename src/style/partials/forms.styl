@@ -1,0 +1,116 @@
+*:focus {
+    outline:none;
+    -webkit-box-shadow:none;
+    box-shadow:none;
+}
+
+
+input, div {
+
+    &[type=text],
+    &[type=password],
+    &[type=email],
+    &[type=file],
+    &[type=date],
+    &[type=color],
+    &[type=number],
+    &[type=month],
+    &[type=search],
+    &[type=tel],
+    &[type=time],
+    &[type=url],
+    &[type=week],
+    &[type=datetime-local],
+    &[type=range] {
+        position:relative;
+        width: 100%;
+        font:inherit;
+        border:none;
+    }
+
+}
+
+input[type=file]{
+    display: block;
+    position: relative;
+    cursor: pointer;
+
+    &:after {
+        content:'Upload';
+        display: block;
+        position: absolute;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top:0;
+        left:0;
+        cursor: pointer;
+    }
+}
+
+label {
+
+    &.within, &.same-height {
+        display:flex;
+        align-items: center;
+        justify-content: flex-start;
+        margin-top: -1px !important;
+        margin-bottom: 0px !important;
+    }
+
+}
+
+textarea {
+    width:100%;
+    font:inherit;
+    color:inherit;
+    border: none;
+    resize:none;
+
+    .resize {
+        resize: vertical;
+    }
+
+}
+
+input[type=radio].styled, input[type=checkbox].styled {
+    display:none;
+}
+
+input[type=radio] + label:before {
+    border-radius:1rem;
+}
+
+input[type=radio]:checked + label:before {
+    border-radius:1rem;
+    background:#aaa;
+}
+
+input[type=checkbox]:checked + label:before {
+    background:#aaa;
+}
+
+select.valid,input.valid,textarea.valid {
+    border:1px solid rgb(72, 222, 72)
+}
+
+select.invalid,input.invalid,textarea.invalid {
+    border:1px solid rgb(222, 72, 72)
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    position: relative;
+    font:inherit;
+    border:none;
+    width: 100%;
+
+}
+
+input.disabled {
+    pointer-events:none;
+    color:#ccc;
+}

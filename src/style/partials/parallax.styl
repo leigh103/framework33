@@ -1,0 +1,54 @@
+$perspective = 1
+
+.parallax {
+    perspective: $perspective * 1px;
+    height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    position: relative;
+    background-color: rgba(103, 147, 135, 0.2);
+    perspective-origin-x: 50%;
+
+    &::-webkit-scrollbar {
+        width: 0px;
+    }
+
+
+    .group {
+        position: relative;
+        height: 100vh;
+        transform-style: preserve-3d;
+        background-color: rgba(103, 147, 135, 0.2);
+
+        .bg-fixed {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
+        .layer {
+
+            for $i in (-10..10) {
+
+                $scale = 1 + ($i * -1) / $perspective
+
+                &-{$i} {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                    transform: translateZ(($i*1px)) scale($scale);
+                    background-color: rgba(103, 147, 135, 0.2);
+                    perspective-origin-x: 100%;
+                }
+
+            }
+
+        }
+
+    }
+
+}

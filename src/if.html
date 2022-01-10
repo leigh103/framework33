@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+    <head>
+        <title>If Test</title>
+        <style>
+            .first {
+                color: red;
+            }
+        </style>
+    </head>
+    <body class="">
+
+        <div><div>Start</div><div class="sokething" app-if="view.show_title === true">I'm here!!</div><div>Middle</div><div>End</div></div>
+
+        <table app-init="get('http://melded.dev.marimo.co/api/appointments',false,'products')">
+
+            <tr app-for="item in products" app-class="item.value" app-click="log('context-item','something')">
+                <td>
+                    <div app-bind="item.subject" class="p-1 bg-white mb-05" app-if="$first === true"></div>
+                    <div  class="p-1 bg-white mb-05" app-if="$first === false">FALSE</div>
+                </td>
+                <td app-bind="item.start_date"></td>
+            </tr>
+        </table>
+
+        <div><button app-click="toggleTitle()">Click</button></div>
+
+        <script src="js/framework33.js"></script>
+        <script src="./scripts/script.js"></script>
+        <script src="http://melded.dev.marimo.co/js/moment.js?v=1.0"></script>
+
+    </body>
+
+</html>

@@ -1,0 +1,177 @@
+.overflow {
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &-y {
+
+        overflow-x: hidden;
+        overflow-y: auto;
+
+        &-hidden {
+            overflow-y: hidden;
+
+            @media $desktop {
+                &-d {
+                    overflow-y: hidden;
+                }
+            }
+
+            @media $medium {
+                &-m {
+                    overflow-y: hidden;
+                }
+            }
+
+            @media $small {
+                &-s {
+                    overflow-y: hidden;
+                }
+            }
+
+        }
+
+        &-visible {
+            overflow-y: visible;
+
+            @media $desktop {
+                &-d {
+                    overflow-y: visible;
+                }
+            }
+
+            @media $medium {
+                &-m {
+                    overflow-y: visible;
+                }
+            }
+
+            @media $small {
+                &-s {
+                    overflow-y: visible;
+                }
+            }
+
+        }
+
+        @media $desktop {
+            &-d {
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+        }
+
+        @media $medium {
+            &-m {
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+        }
+
+        @media $small {
+            &-s {
+                overflow-x: hidden;
+                overflow-y: auto;
+            }
+        }
+
+    }
+
+    &-x {
+
+        overflow-y: hidden;
+        overflow-x: auto;
+
+        &-hidden {
+            overflow-x: hidden;
+
+            @media $desktop {
+                &-d {
+                    overflow-x: hidden;
+                }
+            }
+
+            @media $medium {
+                &-m {
+                    overflow-x: hidden;
+                }
+            }
+
+            @media $small {
+                &-s {
+                    overflow-x: hidden;
+                }
+            }
+
+        }
+        
+        &-visible {
+            overflow-x: visible;
+
+            @media $desktop {
+                &-d {
+                    overflow-x: visible;
+                }
+            }
+
+            @media $medium {
+                &-m {
+                    overflow-x: visible;
+                }
+            }
+
+            @media $small {
+                &-s {
+                    overflow-x: visible;
+                }
+            }
+
+        }
+
+        @media $desktop {
+            &-d {
+                overflow-y: hidden;
+                overflow-x: auto;
+            }
+        }
+
+        @media $medium {
+            &-m {
+                overflow-y: hidden;
+                overflow-x: auto;
+            }
+        }
+
+        @media $small {
+            &-s {
+                overflow-y: hidden;
+                overflow-x: auto;
+            }
+        }
+
+    }
+
+    &-hidden {
+        overflow: hidden;
+
+        @media $desktop {
+            &-d {
+                overflow: hidden;
+            }
+        }
+
+        @media $medium {
+            &-m {
+                overflow: hidden;
+            }
+        }
+
+        @media $small {
+            &-s {
+                overflow: hidden;
+            }
+        }
+
+    }
+
+}

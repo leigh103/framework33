@@ -1,0 +1,134 @@
+dropdown {
+
+    &-select {
+
+        display: block;
+        position: relative;
+        z-index:100;
+        width: 100%;
+
+        .value {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            height: $input-height;
+            background-color: white;
+            padding: 0 1.2rem;
+            & > * {
+                flex: 1;
+                display: block;
+            }
+        }
+
+        .dropdown {
+
+            display: none;
+            position: fixed;
+            top:$input-height;
+            left: 0;
+            width: 100%;
+            height: auto;
+            background-color: white;
+            z-index:999
+
+            & > * {
+                display: flex;
+                width: 100%;
+                padding: 0.6rem 1.2rem;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: rgba(0,0,0,0.05)
+                }
+
+                & > * {
+                    flex: 1;
+                    display: block;
+                }
+            }
+        }
+
+    }
+
+    &-search {
+
+        display: block;
+        position: relative;
+        z-index:100;
+        width: 100%;
+
+        .value {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+            height: $input-height;
+            background-color: white;
+            padding: 0 1.2rem;
+        }
+
+        .dropdown {
+
+            display: none;
+            position: absolute;
+            top:$input-height;
+            left: 0;
+            width: 100%;
+            height: auto;
+            background-color: white;
+
+            & > * {
+                display: flex;
+                width: 100%;
+                padding: 0.6rem 1.2rem;
+
+                &:not(.disabled):hover {
+                    background-color: rgba(0,0,0,0.05)
+                    cursor: pointer;
+                }
+
+                & > * {
+                    flex: 1;
+                    display: block;
+                }
+
+                &.selected {
+                    background-color: rgba(0,0,0,0.05)
+                }
+            }
+        }
+
+    }
+
+}
+
+.dropdown-wrap {
+
+    margin-top: $input-height;
+    background-color: white;
+
+    & > div {
+        display: flex;
+        width: 100%;
+        padding: 0.6rem 1.2rem;
+
+
+        &:not(.disabled):hover {
+            background-color: rgba(0,0,0,0.05)
+            cursor: pointer;
+        }
+
+        & > * {
+            flex: 1;
+            display: block;
+        }
+
+        &.selected {
+            background-color: rgba(0,0,0,0.05)
+        }
+    }
+
+}

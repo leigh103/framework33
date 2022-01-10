@@ -1,0 +1,66 @@
+table {
+    width:100%;
+    border-spacing:0;
+    table-layout:fixed;
+}
+
+td {
+    vertical-align:middle;
+    word-wrap:break-word
+}
+
+table.no-style {
+    margin:0;
+    padding:0%;
+    border:none;
+    text-align:left;
+
+    td {
+        border:none;
+        padding:0%;
+        text-align:left;
+    }
+}
+
+.table {
+    display:table;
+    width:100%;
+    table-layout:fixed;
+    word-wrap: break-word;
+
+    .row {
+        display:table-row;
+        width:100%;
+        word-wrap: break-word;
+
+        .cell {
+            position:relative;
+            vertical-align:top;
+            display:table-cell;
+            word-wrap:break-word;
+
+            &.middle {
+                vertical-align:middle;
+            }
+
+            img {
+                display: block;
+                width: 100%;
+            }
+        }
+    }
+
+}
+
+@media $small {
+    .table {
+        width: 100%;
+        overflow-x: auto;
+
+        .row {
+            .cell {
+
+            }
+        }
+    }
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+    <head>
+        <title>For Test</title>
+        <style>
+            .first {
+                color: red;
+            }
+        </style>
+    </head>
+    <body class="">
+
+        <table app-init="get('http://melded.dev.marimo.co/api/products',false,'products')">
+
+            <tr app-for="item in products" app-class="item.value" app-click="log('context-item','something')">
+                <td><div app-bind="item.name" class="p-1 bg-white mb-05" app-class="{'first':$first}"></div></td>
+                <td app-bind="item.description"></td>
+            </tr>
+        </table>
+
+        <div><button app-click="addToList()">Click</button></div>
+
+        <script src="js/framework33.js"></script>
+        <script src="./scripts/script.js"></script>
+        <script src="http://melded.dev.marimo.co/js/moment.js?v=1.0"></script>
+
+    </body>
+
+</html>

@@ -1,0 +1,216 @@
+.background {
+    position:absolute;
+    top:0px;
+    left:0px;
+    width:100%;
+    height:auto;
+    z-index:0;
+    background-size: cover;
+}
+
+.background + * {
+    position: relative;
+    z-index:1
+}
+
+.float-left {
+    float:left;
+}
+
+.float-right {
+    float:right;
+}
+
+.width-auto, .wa {
+    width:auto;
+}
+
+.width-full, .w-100 {
+    width:100%;
+}
+
+.height-full, .h-100, .fh-100 {
+    height:100%;
+}
+
+.width-half,  {
+    width:50%;
+}
+
+.height-auto, .ha {
+    height:auto;
+}
+
+.height-half, .h-50 {
+    height:50%;
+}
+
+for $i in (1..20) {
+
+    $value = $i * 5;
+
+    .h-{$value} {
+        height: 1% * $value;
+    }
+
+    .w-{$value} {
+        width: 1% * $value;
+    }
+
+    .vh-{$value} {
+        height: 1vh * $value;
+    }
+
+    .vw-{$value} {
+        width: 1vw * $value;
+    }
+
+}
+
+@media $medium {
+
+    for $i in (1..20) {
+
+        $value = $i * 5;
+
+        .h-m-{$value} {
+            height: 1% * $value;
+        }
+
+        .w-m-{$value} {
+            width: 1% * $value;
+        }
+
+        .vh-m-{$value} {
+            height: 1vh * $value;
+        }
+
+        .vw-m-{$value} {
+            width: 1vw * $value;
+        }
+
+    }
+
+}
+
+@media $small {
+
+    for $i in (1..20) {
+
+        $value = $i * 5;
+
+        .h-s-{$value} {
+            height: 1% * $value;
+        }
+
+        .w-s-{$value} {
+            width: 1% * $value;
+        }
+
+        .vh-s-{$value} {
+            height: 1vh * $value;
+        }
+
+        .vw-s-{$value} {
+            width: 1vw * $value;
+        }
+
+    }
+
+}
+
+.relative {
+    position:relative;
+}
+
+.absolute {
+    position:absolute;
+}
+
+.sticky {
+    position:sticky;
+}
+
+img.absolute {
+    position: absolute
+}
+
+ .fixed {
+    position:fixed;
+}
+
+.fixed.top.left {
+    position:fixed;
+    top:0px;
+    left:0px;
+}
+
+.fixed.top.right {
+    position:fixed;
+    top:0px;
+    right:0px;
+}
+
+.fixed.bottom.left {
+    position:fixed;
+    bottom:0px;
+    left:0px;
+}
+
+.fixed.bottom.right {
+    position:fixed;
+    bottom:0px;
+    right:0px;
+}
+
+.fixed.bottom.right {
+    position:fixed;
+    bottom:0px;
+    right:0px;
+}
+
+.absolute.bottom.left {
+    position:absolute;
+    bottom:0px;
+    left:0px;
+}
+
+.absolute.bottom.right {
+    position:absolute;
+    bottom:0px;
+    right:0px;
+}
+
+.absolute.left {
+    position:absolute;
+    left:0px;
+}
+
+.absolute.top.left {
+    position:absolute;
+    top:0px;
+    left:0px;
+}
+
+.absolute.top.right {
+    position:absolute;
+    top:0px;
+    right:0px;
+}
+
+for $i in (1..10) {
+
+    .layer-{$i} {
+        z-index: $i;
+    }
+
+}
+
+.no-wrap {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.inline {
+    display:inline;
+}

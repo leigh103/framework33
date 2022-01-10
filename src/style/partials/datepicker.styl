@@ -1,0 +1,147 @@
+date-picker {
+
+    position: relative;
+    display: block;
+
+    .value {
+        height: $input-height;
+        background-color: white;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        cursor: pointer;
+    }
+
+}
+
+
+.dates {
+
+    &-wrap {
+        display: none;
+        position: static;
+        margin-top: $input-height;
+        background-color: white;
+        font-size: 0.875rem;
+        padding: 0.5rem;
+
+        .dates-time {
+            display: none;
+            .dates-time-title {
+                grid-column-end: span 2;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+            }
+             .dates-time-input-wrap {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                input {
+                    padding: 0;
+                    flex: 1;
+                    text-align: center;
+                    &::-webkit-inner-spin-button {
+                        -webkit-appearance: none;
+                        margin: 0;
+                    }
+                }
+
+                .divider {
+                    flex: none;
+                    text-align: center;
+                }
+            }
+        }
+
+        &.datetime {
+            .dates-time {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+            }
+        }
+    }
+
+    &-header {
+        display: flex;
+
+        .arrow {
+            flex: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            -webkit-touch-callout: none; /* iOS Safari */
+-webkit-user-select: none; /* Safari */
+ -khtml-user-select: none; /* Konqueror HTML */
+   -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none;
+        }
+
+        .month-wrap {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 0;
+            border-radius: 5px;
+            -webkit-touch-callout: none; /* iOS Safari */
+-webkit-user-select: none; /* Safari */
+ -khtml-user-select: none; /* Konqueror HTML */
+   -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+        user-select: none;
+        }
+
+        .month {
+            padding-right: 0.25rem
+        }
+
+        .year {
+            padding-left: 0.25rem
+        }
+    }
+
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    justify-content: space-between;
+
+    .date {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem 0rem;
+        border-radius: 5px;
+
+        &:not(.day):hover {
+            cursor: pointer;
+            background-color: rgba(0,0,0,0.1)
+        }
+
+        &.pre {
+            opacity: 0.5
+        }
+
+        &.selected {
+            background-color: rgba(50,0,0,0.1)
+        }
+
+        &.today {
+            background-color: rgba(0,0,0,0.05)
+        }
+
+    }
+}
+
+date-picker-static .dates-wrap {
+    border: none;
+    box-shadow: none;
+    @media $small {
+        margin: 0;
+    }
+}

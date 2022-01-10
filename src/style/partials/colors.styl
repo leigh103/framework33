@@ -1,0 +1,135 @@
+
+.bg-none {
+    background:none
+}
+
+.bg-cover {
+    background-position:center center;
+    background-size:cover;
+    background-repeat:no-repeat;
+}
+
+.bg-contain {
+    background-position:center center;
+    background-size:contain;
+    background-repeat:no-repeat;
+}
+
+.bg-sticky {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    width:100vw;
+    height: 100vh;
+    object-fit: cover;
+    top: 0;
+    z-index:-1;
+
+    & + * {
+        margin-top:-100vh;
+    }
+}
+
+.bg {
+
+    &-frosted {
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        background-color: rgba(255,255,255,0.1) !important;
+
+        &-light {
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            background-color: rgba(255,255,255,0.8) !important;
+        }
+
+        &-dark {
+            -webkit-backdrop-filter: blur(8px);
+            backdrop-filter: blur(8px);
+            background-color: rgba(30,30,30,0.8) !important;
+        }
+
+    }
+
+
+}
+
+.blend-multiply {
+    mix-blend-mode:multiply;
+}
+
+.blend-screen {
+    mix-blend-mode:screen;
+}
+
+.blend-overlay {
+    mix-blend-mode:overlay;
+}
+
+.blend-darken {
+    mix-blend-mode:darken;
+}
+
+.blend-lighten {
+    mix-blend-mode:lighten;
+}
+
+.blend-color {
+    mix-blend-mode:screen;
+}
+
+.blend-color-dodge {
+    mix-blend-mode:color-dodge;
+}
+
+.blend-color-burn {
+    mix-blend-mode:color-burn;
+}
+
+.blend-saturation {
+    mix-blend-mode:saturation;
+}
+
+.blend-luminosity {
+    mix-blend-mode:luminosity;
+}
+
+
+.bg-multiply {
+    background-blend-mode:multiply;
+}
+
+.bg-screen {
+    background-blend-mode:screen;
+}
+
+.bg-overlay {
+    background-blend-mode:overlay;
+}
+
+.bg-darken {
+    background-blend-mode:darken;
+}
+
+.bg-lighten {
+    background-blend-mode:lighten;
+}
+
+.bg-color {
+    background-blend-mode:screen;
+}
+
+.bg-color-dodge {
+    background-blend-mode:color-dodge;
+}
+
+.bg-color-burn {
+    background-blend-mode:color-burn;
+}
+
+.bg-saturation {
+    background-blend-mode:saturation;
+}
+
+.bg-luminosity {
+    background-blend-mode:luminosity;
+}

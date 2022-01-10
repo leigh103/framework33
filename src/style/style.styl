@@ -1,0 +1,64 @@
+$desktop-1080p-width = 1920px;
+$tablet-width = 1180px;
+$phone-width = 851px;
+
+$desktop-4k = '(min-width: '+$desktop-1080p-width+')';
+$desktop-1080p = '(min-width: '+$tablet-width+') and (max-width: '+$desktop-1080p-width+')';
+$desktop = '(min-width: '+$tablet-width+')';
+$medium = '(min-width: '+ $phone-width +') and (max-width: '+$tablet-width+')';
+$small = 'only screen and (max-width: '+ $phone-width +')';
+
+$input-height = 2.188rem;
+
+@import '/partials/animations.styl';
+@import '/partials/app.styl';
+@import '/partials/block.styl';
+@import '/partials/buttons.styl';
+@import '/partials/colors.styl';
+@import '/partials/datepicker.styl';
+@import '/partials/dropdown.styl';
+@import '/partials/flex.styl';
+@import '/partials/forms.styl';
+@import '/partials/grid.styl';
+@import '/partials/hidden.styl';
+@import '/partials/img.styl';
+@import '/partials/layout.styl';
+@import '/partials/margin.styl';
+@import '/partials/modal.styl';
+@import '/partials/overflow.styl';
+@import '/partials/padding.styl';
+@import '/partials/parallax.styl';
+@import '/partials/sortable.styl';
+@import '/partials/table.styl';
+@import '/partials/typography.styl';
+
+html {
+    width:100vw;
+    padding:0;
+    margin:0;
+    text-align:left;
+    position:relative;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: subpixel-antialiased;
+}
+
+body {
+    width:100vw;
+    min-height:100vh;
+    padding:0;
+    margin:0;
+    text-align:left;
+    overflow-x:hidden;
+    overflow-y:scroll;
+    position:relative;
+    -ms-overflow-style:none;
+    -webkit-backface-visibility: hidden;
+}
+
+
+*, *:before, *:after {
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    min-height:1px;
+}

@@ -1,0 +1,48 @@
+
+$move-amount = 40px;
+$move-amount-back = $move-amount - $move-amount - $move-amount;
+$move-speed = 300ms;
+
+.animate {
+
+    -webkit-transform: translate3D(0, 0, 0);
+
+    &.fade-in-out {
+        -webkit-backface-visibility: hidden;
+        transition: opacity $move-speed ease-in-out;
+        opacity: 0;
+    }
+
+    &.slide-from-right {
+        transition: transform $move-speed ease-in-out,  opacity $move-speed ease-in-out;
+        transform: translateX(150%);
+        opacity: 0
+    }
+
+    &.exit-view {
+
+        &.fade-in-out {
+            opacity: 0
+        }
+
+        &.slide-from-right {
+            transform: translateX(150%);
+            opacity: 0
+        }
+
+    }
+
+    &.in-view {
+
+        &.fade-in-out {
+            opacity: 1
+        }
+
+        &.slide-from-right {
+            transform: translateX(0);
+            opacity: 1
+        }
+
+    }
+
+}

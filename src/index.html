@@ -1,0 +1,112 @@
+<!doctype html>
+<html>
+    <head>
+
+        <title>Plop</title>
+        <script src="https://kit.fontawesome.com/e7faa1906b.js" crossorigin="anonymous"></script>
+    </head>
+    <body class="bg-grey">
+
+        <section class="relative text-white v-100" style="overflow: hidden" app-drop="view.title = 'Dropped'">
+
+            <img class="background" data-parallax="0.3" data-parallax_direction="down" src="https://picsum.photos/1600/700">
+            <div class="relative flex-middle flex-column vh-50" data-parallax_direction="down" data-parallax="0.2" data-animation="{'enter':'move-up','delay':'0.5s','duration':'1s'}">
+                <h2>This is the back layer</h2>
+                <h4 app-bind="view.sub_title">This is the back layer</h4>
+            </div>
+
+        </section>
+
+        <section class="contain p-5 mt-3" app-init="getEmail()">
+
+            <button app-click="openModal('edit')">Open edit modal</button>
+
+            <h4 class="mt-2 mb-1">Datepicker</h4>
+            <date-picker app-model="view.date" class="mb-2 layer-3" data-datetime="true" data-format="ddd Do MMMM YYYY h:mma">
+            </date-picker>
+
+            <h4 class="mt-2 mb-1">Table search</h4>
+            <table-search placeholder="Search Products..." app-model="view.sub_title" data-url="http://melded.dev.marimo.co/api/products/search?str=" data-columns="name,_key,price" data-value="." class="mb-2 layer-2">
+            </table-search>
+
+            <h4 class="mt-2 mb-1">Dropdown Select</h4>
+            <dropdown-select app-model="view.title" class="my-2 layer-1">
+                <div app-for="list in view.list" app-attr="{'value':list.value}" class="option">
+                    <div app-bind="list.text"></div>
+                    <div app-bind="list.value"></div>
+                </div>
+            </dropdown-select>
+
+            <h4 class="mt-2 mb-1">Search Select</h4>
+            <dropdown-select data-url="http://melded.dev.marimo.co/api/products" app-change="alert(view.title)" app-model="view.title" data-bind="name" data-value="_key" class="my-2 layer-1" placeholder="Options from URL">
+
+            </dropdown-select>
+
+
+        </section>
+
+
+                <section class="relative text-33-grey">
+
+                        <img class="bg-sticky" src="https://picsum.photos/1600/1600">
+                        <div class="relative flex-middle vh-100">
+                            <h2>This is the back 1</h2>
+                        </div>
+
+                        <div class="relative flex-middle vh-100 bg-white p-4">
+                            <h2>This is the back 2</h2>
+                        </div>
+
+                </section>
+
+                <section class="relative text-33-grey">
+
+                        <img class=" bg-sticky" src="https://picsum.photos/1600/700">
+                        <div class="relative flex-middle vh-100">
+                            <h2>This is the back 1</h2>
+                        </div>
+
+                        <div class="relative flex-middle vh-100 bg-frosted p-4">
+                            <h2>This is the back 2</h2>
+                        </div>
+
+                        <div class="relative flex-middle vh-100">
+                            <h2>This is the back 3</h2>
+                        </div>
+
+                </section>
+
+                <section class="contain p-5 mt-3">
+
+                    <div class="table mb-3">
+                        <div class="row">
+                            <div class="cell"><input type="text" app-model="new.title"></div>
+                            <div class="cell"><input type="text" app-model="new.col1"></div>
+                            <div class="cell text-right">
+                                <button class="btn" app-click="_push(new,view.table)">Push</button>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+        <modal-auto app-show="view.modal == 'edit'">
+            <div class="table mb-3 p-2">
+                <div class="row">
+                    <div class="cell"><input type="text" app-model="edit.title"></div>
+                    <div class="cell"><input type="text" app-model="edit.col1"></div>
+                    <div class="cell text-right">
+                        <button class="btn" app-click="_push(new,view.table)">Push</button>
+                    </div>
+                </div>
+            </div>
+        </modal-auto>
+
+
+
+        <script src="js/framework33.js"></script>
+        <script src="./scripts/script.js"></script>
+        <script src="http://melded.dev.marimo.co/js/moment.js?v=1.0"></script>
+
+    </body>
+
+</html>
