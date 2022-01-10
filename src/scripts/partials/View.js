@@ -274,28 +274,36 @@
             }
 
             if (type == 'dragstart' && el._app.dragstart && el._app.dragstart.keys.indexOf(key) >= 0){
-                el.setAttribute('draggable','true')
-                el.removeEventListener('dragstart', dragstart)
-                el.addEventListener('dragstart', dragstart)
+                if (!el._app.dragstart.listening){
+                    el.setAttribute('draggable','true')
+                    el.removeEventListener('dragstart', dragstart)
+                    el.addEventListener('dragstart', dragstart)
+                    el._app.dragstart.listening = true
+                }
             }
 
             if (type == 'drag' && el._app.drag && el._app.drag.keys.indexOf(key) >= 0 || el._app.dragend && el._app.dragend.keys.indexOf(key) >= 0){
-                el.setAttribute('draggable','true')
-                el.removeEventListener('dragend', dragend)
-                el.addEventListener('dragend', dragend)
+                if (!el._app.drag.listening){
+                    el.setAttribute('draggable','true')
+                    el.removeEventListener('dragend', dragend)
+                    el.addEventListener('dragend', dragend)
+                    el._app.drag.listening = true
+                }
             }
 
             if (type == 'drop' && el._app.drop && el._app.drop.keys.indexOf(key) >= 0){
+                if (!el._app.drop.listening){
+                    el.removeEventListener('drop', drop)
+                    el.addEventListener('drop', drop)
 
-                el.removeEventListener('drop', drop)
-                el.addEventListener('drop', drop)
-
-                el.addEventListener("dragenter", function( evnt ) {
-                    evnt.target.classList.add('dropping')
-                }, false)
-                el.addEventListener("dragleave", function( evnt ) {
-                    evnt.target.classList.remove('dropping')
-                }, false)
+                    el.addEventListener("dragenter", function( evnt ) {
+                        evnt.target.classList.add('dropping')
+                    }, false)
+                    el.addEventListener("dragleave", function( evnt ) {
+                        evnt.target.classList.remove('dropping')
+                    }, false)
+                    el._app.drop.listening = true
+                }
             }
 
             if (type == 'class' && el._app.class){
@@ -310,13 +318,21 @@
             }
 
             if (type == 'click' && el._app.click){
-                el.removeEventListener('click', click)
-                el.addEventListener('click', click)
+
+                if (!el._app.click.listening){
+                    el.removeEventListener('click', click)
+                    el.addEventListener('click', click)
+                    el._app.click.listening = true
+                }
+                
             }
 
             if (type == 'paste' && el._app.paste){
-                el.removeEventListener('paste', paste)
-                el.addEventListener('paste', paste)
+                if (!el._app.paste.listening){
+                    el.removeEventListener('paste', paste)
+                    el.addEventListener('paste', paste)
+                    el._app.paste.listening = true
+                }
             }
 
             if (type == 'if' && el._app.if){

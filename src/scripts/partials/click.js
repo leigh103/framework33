@@ -1,4 +1,3 @@
-
     const click = (evt) => {
 
         if (scope.view._click_enabled === true){
