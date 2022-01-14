@@ -7,23 +7,30 @@
             el.className = el._app.original_classes
         }
 
-        let new_class = new Evaluate(el._app.class.exp).value(),
-            result
+        let new_class = new Evaluate(el._app.class.exp).value()
 
         if (Array.isArray(new_class)){
-            result = new_class[1]
-            new_class = new_class[0]
-        }
 
-        if (new_class && result !== false){
-
-            new_class = new_class.toString().split(/\s/)
+          //  new_class = new_class.toString().split(/\s/)
 
             new_class.map((item)=>{
-                el.classList.add(item)
+                if (!el.classList.contains(item)){
+                    el.classList.add(item)
+                }
             })
 
-        } else {
+        } else if (typeof new_class == 'string') {
+
+            new_class = new_class.split(/\s|,/)
+
+            new_class.map((item)=>{
+
+                if (typeof item == 'string' && item.length > 0 && !el.classList.contains(item)){
+                    el.classList.add(item)
+                }
+            })
+
+        } else if (el._app.original_classes) {
             el.className = el._app.original_classes
         }
 

@@ -29,6 +29,9 @@
                 length_key = true
             }
 
+            let keys = this.getKeys(key)
+            el._app.keys = el._app.keys.concat(keys.keys)
+
             if (type == 'for'){
 
                 // let clone = {el:el.cloneNode(true),parent:el.parentNode}
@@ -39,13 +42,9 @@
 
             //    el.removeAttribute('app-for')
 
-                let keys = this.getKeys(key),
-                    statement = this.parseAppFor(key)
+                let statement = this.parseAppFor(key)
 
-                el._app = {
-                    keys:[]
-                }
-                el._app.keys = el._app.keys.concat(keys.keys)
+                el._app.keys.push(statement[1])
 
                 el._app[type] = key
 
@@ -66,10 +65,6 @@
 
             } else if (type == 'attr'){
 
-                let keys = this.getKeys(key)
-
-                el._app.keys = el._app.keys.concat(keys.keys)
-
                 el._app.attr = {
                     exp: key,
                     key_type: keys.key_type,
@@ -79,8 +74,6 @@
 
             } else if (type == 'if'){
 
-                let keys = this.getKeys(key)
-                el._app.keys = el._app.keys.concat(keys.keys)
                 el._app[type] = {
                     exp: key,
                     key_type: keys.key_type,
@@ -91,13 +84,10 @@
 
             } else {
 
-                let keys = this.getKeys(key)
-
                 if (keys.keys.length == 0 && el._app.scope_obj){
                     keys.keys = [el._app.scope_obj]
                 }
 
-                el._app.keys = el._app.keys.concat(keys.keys)
                 el._app[type] = {exp: key, key_type: keys.key_type, keys:keys.keys}
 
             }

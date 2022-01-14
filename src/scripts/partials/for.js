@@ -4,10 +4,11 @@
 
         return new Promise( async (resolve, reject) => {
 
-            if (window.update_loops.hasOwnProperty(el._app.for.scope_obj) && window.update_loops[el._app.for.scope_obj] === true){ // if there's an update in progress, don't update
+            if (window.update_loops.hasOwnProperty(el._app.for.scope_obj) && window.update_loops[el._app.for.scope_obj] == el){ // if there's an update in progress, don't update
+                console.log(el._app.for.scope_obj+ ' in progress')
                 return
             } else {
-                window.update_loops[el._app.for.scope_obj] = true
+                window.update_loops[el._app.for.scope_obj] = el
             }
 
             if (el._app.for.children){ // remove children from the DOM and the array
@@ -49,7 +50,7 @@
                             last = i==el._app.for.data.length-1
 
                         parseIndex(el._app.for.scope_obj, clones, i, first, last).then((clone) => {
-
+ 
                             parent.appendChild(clone[0])
                             el._app.for.children.push(clone[0])
 
@@ -132,7 +133,7 @@
 
                                 if (!element._app){
                                     element._app = {
-                                        keys:[]
+                                        keys:[scope_obj]
                                     }
                                 }
                                 element._app.scope_obj = scope_obj

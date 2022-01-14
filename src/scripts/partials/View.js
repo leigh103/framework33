@@ -257,7 +257,6 @@
                     }
 
                     if (el.tagName == "SELECT") {
-                        console.log('list', el, el._app)
                         el.removeEventListener('change', change)
                         el.addEventListener('change', change)
                     }
