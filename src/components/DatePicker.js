@@ -32,11 +32,15 @@ export class DatePicker extends HTMLElement {
                 </div>
                 <div class="dates-header">
                     <div class="arrow prev context-link"><</div>
-                    <div class="month-wrap">
-                        <div class="month"></div>
-                        <div class="year"></div>
+                    <div class="month-wrap context-link open-year-select">
+                        <div class="month context-link open-year-select"></div>
+                        <div class="year context-link open-year-select"></div>
                     </div>
                     <div class="arrow next context-link">></div>
+                </div>
+                <div class="year-select">
+                    <div class="months"></div>
+                    <div class="years"></div>
                 </div>
                 <div class="dates">
 
@@ -46,15 +50,23 @@ export class DatePicker extends HTMLElement {
 
         `;
 
-        this.months = ['January','Febuary','March','April','May','June','July','August','September','October','November','December'],
-        this.months_short = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-        this.dates = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th','13th','14th','15th','16th','17th','18th','19th','20th','21st','22nd','23rd','24th','25th','26th','27th','28th','29th','30th','31st'],
-        this.days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
-        this.days_short = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+        this.months = ['January','Febuary','March','April','May','June','July','August','September','October','November','December']
+        this.months_short = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+        this.dates = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th','13th','14th','15th','16th','17th','18th','19th','20th','21st','22nd','23rd','24th','25th','26th','27th','28th','29th','30th','31st']
+        this.days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
+        this.days_short = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+
+        this.years = []
+        let current_year = parseInt(new Date().getFullYear())+20        
+
+        for (var i=current_year;i>=current_year-120;i--){
+            this.years.push(i)
+        }
 
         this.datepicker = this.querySelector('.dates-wrap')
         this.time_hrs = this.querySelector('.dates-time-hrs')
         this.time_mins = this.querySelector('.dates-time-mins')
+        this.time_years = this.querySelector('.year-select')
 
         this.addEventListener('click',this.openDatePicker)
 
@@ -442,6 +454,16 @@ export class DatePicker extends HTMLElement {
 
         }
 
+        if (evnt.target.dataset.year){
+            this.parent.getDaysArray(evnt.target.dataset.year, this.selected.getMonth()-1)
+            return
+        }
+
+        if (evnt.target.dataset.month){
+            this.parent.getDaysArray(this.selected.getFullYear(), evnt.target.dataset.month)
+            return
+        }
+
         if (evnt.target.classList.contains('prev')){
             let monthIdx = this.selected.getMonth()-2
             this.selected.setMonth(monthIdx)
@@ -454,6 +476,50 @@ export class DatePicker extends HTMLElement {
             this.parent.getDaysArray(newDate.getFullYear(), newDate.getMonth())
             return
         }
+
+        if (evnt.target.classList.contains('open-year-select')){
+            this.parent.openYearSelect(this)
+            return
+        }
+
+
+    }
+
+    openYearSelect(datepicker){
+
+        let wrap = datepicker.querySelector('.year-select'),
+            months = datepicker.querySelector('.months'),
+            years = datepicker.querySelector('.years')
+
+        wrap.style.display = 'flex'
+        wrap.style.height = '10rem'
+        wrap.style.width = '100%'
+        wrap.style.overflowY = 'hidden'
+        wrap.style.margin = '1rem 0'
+
+        years.style.overflowY = 'scroll'
+        years.style.height = '10rem'
+        years.style.flex = '1'
+        months.style.overflowY = 'scroll'
+        months.style.height = '10rem'
+        months.style.flex = '2'
+
+        years.innerHTML = ''
+        months.innerHTML = ''
+
+        this.years.forEach((year)=>{
+            years.innerHTML += '<div id="year-'+year+'" class="year context-link w-100 flex-middle" style="cursor: pointer; height:2rem" data-year="'+year+'">'+year+'</div>'
+        })
+
+        this.months.forEach((month, i)=>{
+            months.innerHTML += '<div id="month-'+i+'" class="month context-link w-100 flex-middle" style="cursor: pointer; height:2rem" data-month="'+i+'">'+month+'</div>'
+        })
+
+        let scroll_year = years.querySelector('#year-'+datepicker.selected.getFullYear())
+        years.scrollTop = scroll_year.offsetTop-128
+
+        let scroll_month = months.querySelector('#month-'+datepicker.selected.getMonth())
+        months.scrollTop = scroll_month.offsetTop-156
 
 
     }
