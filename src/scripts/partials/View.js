@@ -7,6 +7,7 @@
     import model from './model'
     import forLoop from './for'
     import click from './click'
+    import touch from './touch'
     import dragend from './dragend'
     import dragstart from './dragstart'
     import drop from './drop'
@@ -68,7 +69,7 @@
         }
 
         processUpdate(key, update){
- // console.log(key, update)
+
             if (update === true){
 
             } else {
@@ -230,9 +231,7 @@
                     model(false,el)
                 }
 
-            }
-
-            if (type == 'change' && el._app.change){
+            } else if (type == 'change' && el._app.change){
 
                 if (!el._app.change.listening){
 
@@ -270,27 +269,21 @@
 
                 }
 
-            }
-
-            if (type == 'dragstart' && el._app.dragstart && el._app.dragstart.keys.indexOf(key) >= 0){
+            } else if (type == 'dragstart' && el._app.dragstart && el._app.dragstart.keys.indexOf(key) >= 0){
                 if (!el._app.dragstart.listening){
                     el.setAttribute('draggable','true')
                     el.removeEventListener('dragstart', dragstart)
                     el.addEventListener('dragstart', dragstart)
                     el._app.dragstart.listening = true
                 }
-            }
-
-            if (type == 'drag' && el._app.drag && el._app.drag.keys.indexOf(key) >= 0 || el._app.dragend && el._app.dragend.keys.indexOf(key) >= 0){
+            } else if (type == 'drag' && el._app.drag && el._app.drag.keys.indexOf(key) >= 0 || el._app.dragend && el._app.dragend.keys.indexOf(key) >= 0){
                 if (!el._app.drag.listening){
                     el.setAttribute('draggable','true')
                     el.removeEventListener('dragend', dragend)
                     el.addEventListener('dragend', dragend)
                     el._app.drag.listening = true
                 }
-            }
-
-            if (type == 'drop' && el._app.drop && el._app.drop.keys.indexOf(key) >= 0){
+            } else if (type == 'drop' && el._app.drop && el._app.drop.keys.indexOf(key) >= 0){
                 if (!el._app.drop.listening){
                     el.removeEventListener('drop', drop)
                     el.addEventListener('drop', drop)
@@ -303,58 +296,61 @@
                     }, false)
                     el._app.drop.listening = true
                 }
-            }
+            } else if (type == 'class' && el._app.class && el._app.keys.indexOf(key) >= 0){
 
-            if (type == 'class' && el._app.class){
                 setClass(el)
-            }
 
-            if (type == 'bind' && el._app.bind){
+            } else if (type == 'bind' && el._app.bind){
                 // el._app.renders = {
                 //     bind: true
                 // }
                 bind(el)
-            }
-
-            if (type == 'click' && el._app.click){
+            } else if (type == 'click' && el._app.click){
 
                 if (!el._app.click.listening){
-                    el.removeEventListener('click', click)
-                    el.addEventListener('click', click)
+
+                    // if (('ontouchstart' in window) ||
+                    // (navigator.maxTouchPoints > 0) ||
+                    // (navigator.msMaxTouchPoints > 0)){
+                    //     window.oncontextmenu = function() { return false; }
+                    //     el.removeEventListener('touchstart', touch)
+                    //     el.addEventListener('touchstart', touch)
+                    //     el.removeEventListener('touchend', touch)
+                    //     el.addEventListener('touchend', touch)
+                    // } else {
+                        el.removeEventListener('click', click)
+                        el.addEventListener('click', click)
+                    // }
+                    
+                   
                     el._app.click.listening = true
                 }
-                
-            }
+            
+            // } else if (type == 'hover' && el._app.hover){
 
-            if (type == 'paste' && el._app.paste){
+            //     if (!el._app.hover.listening){
+            //         el.removeEventListener('mouseenter', hover)
+            //         el.addEventListener('mouseenter', hover)
+            //         el._app.hover.listening = true
+            //     }
+                
+            } else if (type == 'paste' && el._app.paste){
                 if (!el._app.paste.listening){
                     el.removeEventListener('paste', paste)
                     el.addEventListener('paste', paste)
                     el._app.paste.listening = true
                 }
-            }
-
-            if (type == 'if' && el._app.if){
+            } else if (type == 'if' && el._app.if){
             //    setIf(el)
-            }
-
-            if (type == 'show' && el._app.show){
+            } else if (type == 'show' && el._app.show){
                 show(el)
-            }
-
-            if (type == 'hide' && el._app.hide){
+            } else if (type == 'hide' && el._app.hide){
                 hide(el)
-            }
-
-            if (type == 'checked' && el._app.checked){
+            } else if (type == 'checked' && el._app.checked){
                 checked(el)
-            }
-
-            if (type == 'src' && el._app.src){
+            } else if (type == 'src' && el._app.src){
                 setSrc(el)
-            }
-
-            if (type == 'attr' && el._app.attr){
+            } else if (type == 'attr' && el._app.attr){
                 setAttr(el)
             }
 
@@ -404,6 +400,8 @@
                     },200)
 
                 } else {
+                    el.classList.add('in-view')
+                        el.classList.remove('exit-view')
                     el.style.display = display_value
                 }
 
@@ -427,8 +425,10 @@
                     el.classList.add('exit-view')
                     setTimeout(function(){
                         el.style.display = 'none'
-                    },1000)
+                    },400)
                 } else {
+                    el.classList.remove('in-view')
+                    el.classList.add('exit-view')
                     el.style.display = 'none'
                 }
 

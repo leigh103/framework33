@@ -8,7 +8,7 @@ export class ModalAuto extends HTMLElement {
         this.setAttribute('app-click','closeModal()')
     }
 
-    this.classList.add('animate','fade-in-out')
+    this.classList.add('animate')
 
     if (!this.dataset.title){
         this.dataset.title = ''

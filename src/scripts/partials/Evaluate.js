@@ -136,7 +136,7 @@
                         }
 
                     }
-
+                    
                     return self.regex.object_reference.test(match) && typeof match == 'string' && match != 'false' && match != 'true'
 
                 })
@@ -241,10 +241,10 @@
             let old = _get(window.scope, key),
                 result = _set(window.scope, key, value)
 
-            view.update(key)
+            view.update(key, true)
 
             if (typeof value == 'object'){
-                view.updateChildren(key, value)
+            //    view.updateChildren(key, value)
             }
 
             if (typeof window.watch[key] == 'function'){

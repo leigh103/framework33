@@ -129,7 +129,8 @@ Array.prototype.localGet = function(str){
     if (!result){
         result = []
     }
-    return result
+    this.concat(result)
+    return this
 }
 
 Array.prototype.localRemove = function(str){

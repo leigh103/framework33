@@ -1,6 +1,6 @@
 
     const setClass = (el) => {
-
+        
         if (typeof el._app.original_classes == 'undefined'){
             el._app.original_classes = el.className+''
         } else {
@@ -8,7 +8,7 @@
         }
 
         let new_class = new Evaluate(el._app.class.exp).value()
-
+       
         if (Array.isArray(new_class)){
 
           //  new_class = new_class.toString().split(/\s/)
@@ -19,9 +19,9 @@
                 }
             })
 
-        } else if (typeof new_class == 'string') {
+        } else if (typeof new_class != 'undefined') {
 
-            new_class = new_class.split(/\s|,/)
+            new_class = new_class.toString().split(/\s|,/)
 
             new_class.map((item)=>{
 

@@ -10,8 +10,8 @@
             } else {
                 window.update_loops[el._app.for.scope_obj] = el
             }
-
-            if (el._app.for.children){ // remove children from the DOM and the array
+            
+            if (el._app.for.children && el._app.for.children.length > 0){ // remove children from the DOM and the array
                 el._app.for.children = el._app.for.children.filter((child)=>{
                     child.remove()
                     return false
@@ -58,8 +58,10 @@
                             if (i < data.length){ // if there's more data to process, start the next one
                                 loop(data,i)
                             } else { // otherwise stop the loop
+
                                 delete window.update_loops[el._app.for.scope_obj]
                                 view.update(el._app.for.scope_obj,true)
+                                
                             }
 
                         })
