@@ -57,9 +57,9 @@
             //    console.log('processing',window.update_queue, window.update_queue.length, window.update_queue_cnt)
                 window.update_queue_processing = true
             //    console.log('processing',window.update_queue, window.update_queue.length)
-                if (window.update_queue[0].key){
+           //     if (window.update_queue[0].key){
                     this.processUpdate(window.update_queue[0].key, window.update_queue[0].value)
-                }
+            //    }
             
             } else {
                 window.update_queue_processing = false
@@ -154,19 +154,19 @@
 
             } else {
             // console.log(6, key)
-                // for (var key in app.index){
+            //     for (var key in app.index){
 
-                //     app.index[key] = app.index[key].filter((item,i)=>{ // update all elements with this key
-                //         if (item.el.parentNode || item.type == 'if'){
-                //             this.updateElement(item.el, key, item.type)
-                //             return true
-                //         } else {
-                //             return false
-                //         }
+            //         app.index[key] = app.index[key].filter((item,i)=>{ // update all elements with this key
+            //             if (item.el.parentNode || item.type == 'if'){
+            //                 this.updateElement(item.el, key, item.type)
+            //                 return true
+            //             } else {
+            //                 return false
+            //             }
 
-                //     })
+            //         })
 
-                // }
+            //     }
 
             }
             window.update_queue.splice(0,1)
