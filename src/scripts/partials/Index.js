@@ -124,17 +124,23 @@
 
                 if (key_matches){ // add in the root object index
 
-                    while(key_root.match(/\./)){
+                    while(/\./.test(key_root)){
 
-                        key_root = key_root.replace(/\[[0-9]+\]/,'').split('.')
-                        if (key_root.length > 1){
-                            key_root.pop()
-                            key_root = key_root.join('.')
+                        if (/\]$/.test(key_root)){
+                            key_root = key_root.replace(/\[[0-9]+\]$/,'')
+                            
+                        } else {
+                            key_root = key_root.split('.')
+                            if (key_root.length > 1){
+                                key_root.pop()
+                                key_root = key_root.join('.')
+                            }
                         }
+                        
                         if (!app.index[key_root]){
                             app.index[key_root] = []
                         }
-
+                        
                         let el_obj = {el:el, key:key_root, type:type},
                             exists = app.index[key_root].findIndex(x => x.el === el && x.type == type)
 

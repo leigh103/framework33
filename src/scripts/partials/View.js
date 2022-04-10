@@ -57,10 +57,10 @@
             //    console.log('processing',window.update_queue, window.update_queue.length, window.update_queue_cnt)
                 window.update_queue_processing = true
             //    console.log('processing',window.update_queue, window.update_queue.length)
-                this.processUpdate(window.update_queue[0].key, window.update_queue[0].value)
-
-
-
+                if (window.update_queue[0].key){
+                    this.processUpdate(window.update_queue[0].key, window.update_queue[0].value)
+                }
+            
             } else {
                 window.update_queue_processing = false
         //        console.log('stopping',window.update_queue, window.update_queue.length, window.update_queue_cnt)
@@ -73,7 +73,7 @@
             if (update === true){
 
             } else {
-
+   
                 let for_objs = window.app.for.filter((item)=>{
 
                     if (key == 'init'){
@@ -110,19 +110,19 @@
                 })
 
             } else if (typeof key == 'object' && Array.isArray(key)) { // if it's an array of values to update loop through them
-
+           
                 key.map((item,i)=>{
                     this.update(item.replace(/\'/g,''), key, item.type)
                 })
 
             } else if (typeof key == 'object' && key._params && Array.isArray(key._params)) { // if it's an array of parameters to update loop through them
-
+             
                 key._params.map((item,i)=>{
                     this.update(item.replace(/\'/g,''), key, item.type)
                 })
 
             } else if (key == 'init') {
-
+             
                 for (key in app.index){
 
                     if (evaluate.getValue(key)){
@@ -142,21 +142,31 @@
 
                 }
 
-            } else {
+            } else if (typeof key == 'string' && typeof window.watch[key] == 'function'){
 
-                for (var key in app.index){
-
-                    app.index[key] = app.index[key].filter((item,i)=>{ // update all elements with this key
-                        if (item.el.parentNode || item.type == 'if'){
-                            this.updateElement(item.el, key, item.type)
-                            return true
-                        } else {
-                            return false
-                        }
-
-                    })
-
+                let new_data = evaluate.getValue(key),
+                   old_data
+                
+                if (!window.watch_cache[key] || window.watch_cache[key] != new_data){
+                    window.watch_cache[key] = new_data
+                    window.watch[key].call(null,new_data,old_data,key)
                 }
+
+            } else {
+            // console.log(6, key)
+                // for (var key in app.index){
+
+                //     app.index[key] = app.index[key].filter((item,i)=>{ // update all elements with this key
+                //         if (item.el.parentNode || item.type == 'if'){
+                //             this.updateElement(item.el, key, item.type)
+                //             return true
+                //         } else {
+                //             return false
+                //         }
+
+                //     })
+
+                // }
 
             }
             window.update_queue.splice(0,1)
@@ -186,6 +196,8 @@
         }
 
         async updateElement(el, key, type){
+
+            let chk_watch = false
 
             if (type == 'model' && el._app.model && el._app.model.keys.indexOf(key) >= 0){
 
@@ -231,6 +243,8 @@
                     model(false,el)
                 }
 
+                chk_watch = true
+
             } else if (type == 'change' && el._app.change){
 
                 if (!el._app.change.listening){
@@ -269,6 +283,8 @@
 
                 }
 
+                chk_watch = true
+
             } else if (type == 'dragstart' && el._app.dragstart && el._app.dragstart.keys.indexOf(key) >= 0){
                 if (!el._app.dragstart.listening){
                     el.setAttribute('draggable','true')
@@ -296,7 +312,7 @@
                     }, false)
                     el._app.drop.listening = true
                 }
-            } else if (type == 'class' && el._app.class && el._app.keys.indexOf(key) >= 0){
+            } else if (type == 'class' && el._app.class){
 
                 setClass(el)
 
@@ -325,6 +341,8 @@
                    
                     el._app.click.listening = true
                 }
+
+                chk_watch = true
             
             // } else if (type == 'hover' && el._app.hover){
 
@@ -334,23 +352,27 @@
             //         el._app.hover.listening = true
             //     }
                 
-            } else if (type == 'paste' && el._app.paste){
+            } else if (type == 'paste' && el._app.paste && el._app.keys.indexOf(key) >= 0){
                 if (!el._app.paste.listening){
                     el.removeEventListener('paste', paste)
                     el.addEventListener('paste', paste)
                     el._app.paste.listening = true
                 }
+
+                chk_watch = true
+
             } else if (type == 'if' && el._app.if){
             //    setIf(el)
-            } else if (type == 'show' && el._app.show){
+            } else if (type == 'show' && el._app.show && el._app.show.keys.indexOf(key) >= 0){
+             //   console.log(el, key, type)
                 show(el)
-            } else if (type == 'hide' && el._app.hide){
+            } else if (type == 'hide' && el._app.hide && el._app.hide.keys.indexOf(key) >= 0){
                 hide(el)
             } else if (type == 'checked' && el._app.checked){
                 checked(el)
             } else if (type == 'src' && el._app.src){
                 setSrc(el)
-            } else if (type == 'attr' && el._app.attr){
+            } else if (type == 'attr' && el._app.attr ){
                 setAttr(el)
             }
 
@@ -358,10 +380,15 @@
             //     setAttr(el)
             // }
 
-            if (window.watch && window.watch[key] && typeof window.watch[key] == 'function'){
+            if (chk_watch === true && window.watch && window.watch[key] && typeof window.watch[key] == 'function'){
                let new_data = evaluate.getValue(key),
                    old_data
-               window.watch[key].call(null,new_data,old_data,key)
+                
+                if (!window.watch_cache[key] || window.watch_cache[key] != new_data){
+                    window.watch_cache[key] = new_data
+                    window.watch[key].call(null,new_data,old_data,key)
+                }
+               
             }
 
         //    this.processUpdateQueue()
@@ -373,7 +400,7 @@
             if (!el){
                 return
             }
-
+         //   console.log(el)
             return new Promise(function(resolve, reject) {
 
                 let display_value = 'block'

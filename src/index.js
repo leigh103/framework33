@@ -11,6 +11,7 @@ import Evaluate from './scripts/partials/Evaluate'
 import http from './scripts/partials/http.js'
 import init from './scripts/partials/init.js'
 import forLoop from './scripts/partials/for.js'
+import ContentEditable from './components/ContentEditable.js'
 import ModalAuto from './components/ModalAuto.js'
 import DropdownSelect from './components/DropdownSelect.js'
 import DropdownSearch from './components/DropdownSearch.js'
@@ -33,6 +34,7 @@ window.evaluate = new Evaluate()
 window.http = http
 window.extend = {}
 window.watch = {}
+window.watch_cache = {}
 window.ws_host = ''
 window.ws_timer = false
 window.ws_server = ''

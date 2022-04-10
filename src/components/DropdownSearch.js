@@ -39,6 +39,7 @@ export class DropdownSearch extends HTMLElement {
         this.input._model = this.model
         this.input._on_change = this.on_change
         this.input.dropdown = this.dropdown
+        this.input.search = this.search
         this.input._selectDropdown = this.selectDropdown
         this.input.addEventListener('keyup',this.search)
 
@@ -79,6 +80,11 @@ export class DropdownSearch extends HTMLElement {
             if (this.input.value){
                 this.input.value = ''
             }
+
+        //    setTimeout(function(){
+               this.input.search('__preview__')
+        //    },250)
+            
 
         } else {
 

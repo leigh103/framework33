@@ -1,6 +1,6 @@
 
     const show = (el, val) => {
-
+     //   console.log(el, val)
         let result = new Evaluate(el._app.show.exp).value()
 
         if (!el._app.show.orig_display){ // init
@@ -24,7 +24,7 @@
             }
 
         }
-
+// console.log(el, val, result)
         if (result && result != false){
             view.enterView(el)
         } else {
