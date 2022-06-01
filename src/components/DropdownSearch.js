@@ -12,6 +12,7 @@ export class DropdownSearch extends HTMLElement {
         super();
 
         this.model = this.getAttribute('app-model')
+        this.scan = this.getAttribute('scan')
         this.on_change = this.getAttribute('app-change')
         this.placeholder = this.getAttribute('placeholder')
         if (!this.placeholder){
@@ -21,6 +22,20 @@ export class DropdownSearch extends HTMLElement {
         this.innerHTML = `
 
             <input type="text" class="value context-link" placeholder="`+this.placeholder+`" spellcheck="false">
+
+        `;
+
+        if (this.scan){
+            this.innerHTML += `
+
+            <span class="icon scan grey layer-5 block" onclick="scope.startScanner(this)"></span>
+
+        `;
+        }
+        
+
+        this.innerHTML += `
+
             <div class="dropdown context">
 
             </div>

@@ -20,9 +20,15 @@
                     value = ''
                 }
                 set.innerHTML = value
-            } else {
+            } else if (set.tagName == "SELECT"){
                 if (typeof value == 'undefined'){
-                    value = null
+                    value = ''
+                }
+                set.value = value
+            } else {
+                
+                if (typeof value == 'undefined'){
+                    value = ''
                 }
                 set.value = value
             }

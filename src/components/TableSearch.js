@@ -72,7 +72,7 @@ export class TableSearch extends HTMLElement {
             }
 
         } else {
-
+            evnt.target.parentNode.search('__preview__')
         }
 
     }
@@ -80,6 +80,10 @@ export class TableSearch extends HTMLElement {
     search(evnt){
 
         let self = this
+
+        if (!self._url && self.input._url){
+            self = self.input
+        }
 
         if (typeof evnt == 'string' || evnt.target.value && evnt.target.value.length >= 3){
 

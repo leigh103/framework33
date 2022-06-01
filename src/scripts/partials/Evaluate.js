@@ -247,9 +247,9 @@
             //    view.updateChildren(key, value)
             }
 
-            if (typeof window.watch[key] == 'function'){
-                window.watch[key].call('',value, old)
-            }
+            // if (typeof window.watch[key] == 'function'){
+            //     window.watch[key].call('',value, old)
+            // }
 
             return _get(window.scope, key)
 

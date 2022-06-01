@@ -502,7 +502,7 @@ export class DatePicker extends HTMLElement {
         years.style.flex = '1'
         months.style.overflowY = 'scroll'
         months.style.height = '10rem'
-        months.style.flex = '2'
+        months.style.flex = '1'
 
         years.innerHTML = ''
         months.innerHTML = ''

@@ -70,6 +70,10 @@
 
         processUpdate(key, update){
 
+            // if (key == 'boot') {
+            //     console.log(4, key, this.isArray(key))
+            // }
+
             if (update === true){
 
             } else {
@@ -121,15 +125,15 @@
                     this.update(item.replace(/\'/g,''), key, item.type)
                 })
 
-            } else if (key == 'init') {
-             
+            } else if (key == 'boot') {
+                // console.log(5, key)
                 for (key in app.index){
 
                     if (evaluate.getValue(key)){
 
                         app.index[key] = app.index[key].filter((item,i)=>{
 
-                            if (item.el.parentNode || item.type == 'for' || item.type == 'if'){
+                            if (item.el.parentNode || item.type == 'for' || item.type == 'if' || item.type == 'change'){
                                 this.updateElement(item.el, key, item.type)
                                 return true
                             } else {
@@ -142,31 +146,31 @@
 
                 }
 
-            } else if (typeof key == 'string' && typeof window.watch[key] == 'function'){
+            // } else if (typeof key == 'string' && typeof window.watch[key] == 'function'){
 
-                let new_data = evaluate.getValue(key),
-                   old_data
+            //     let new_data = evaluate.getValue(key),
+            //        old_data
                 
-                if (!window.watch_cache[key] || window.watch_cache[key] != new_data){
-                    window.watch_cache[key] = new_data
-                    window.watch[key].call(null,new_data,old_data,key)
-                }
+            //     if (!window.watch_cache[key] || window.watch_cache[key] != new_data){
+            //         // window.watch_cache[key] = new_data
+            //         // window.watch[key].call(null,new_data,old_data,key)
+            //     }
 
             } else {
             // console.log(6, key)
-            //     for (var key in app.index){
+                // for (var key in app.index){
 
-            //         app.index[key] = app.index[key].filter((item,i)=>{ // update all elements with this key
-            //             if (item.el.parentNode || item.type == 'if'){
-            //                 this.updateElement(item.el, key, item.type)
-            //                 return true
-            //             } else {
-            //                 return false
-            //             }
+                //     app.index[key] = app.index[key].filter((item,i)=>{ // update all elements with this key
+                //         if (item.el.parentNode || item.type == 'if'){
+                //             this.updateElement(item.el, key, item.type)
+                //             return true
+                //         } else {
+                //             return false
+                //         }
 
-            //         })
+                //     })
 
-            //     }
+                // }
 
             }
             window.update_queue.splice(0,1)
@@ -196,7 +200,7 @@
         }
 
         async updateElement(el, key, type){
-
+         //   console.log(type, el)
             let chk_watch = false
 
             if (type == 'model' && el._app.model && el._app.model.keys.indexOf(key) >= 0){
@@ -246,7 +250,7 @@
                 chk_watch = true
 
             } else if (type == 'change' && el._app.change){
-
+                
                 if (!el._app.change.listening){
 
                     if (el.tagName == "INPUT") {
@@ -353,6 +357,7 @@
             //     }
                 
             } else if (type == 'paste' && el._app.paste && el._app.keys.indexOf(key) >= 0){
+
                 if (!el._app.paste.listening){
                     el.removeEventListener('paste', paste)
                     el.addEventListener('paste', paste)
@@ -380,11 +385,13 @@
             //     setAttr(el)
             // }
 
-            if (chk_watch === true && window.watch && window.watch[key] && typeof window.watch[key] == 'function'){
+            if (chk_watch === true && window.watch && typeof window.watch[key] == 'function'){
+
                let new_data = evaluate.getValue(key),
                    old_data
                 
                 if (!window.watch_cache[key] || window.watch_cache[key] != new_data){
+                    console.log('firing')
                     window.watch_cache[key] = new_data
                     window.watch[key].call(null,new_data,old_data,key)
                 }

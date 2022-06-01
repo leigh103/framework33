@@ -336,6 +336,8 @@ window.app = {
     prefix: 'app-'
 }
 
+window.app.prefix_regex = RegExp(app.prefix)
+
 document.addEventListener('DOMContentLoaded', async () => {
 
     // window.app.elements = view.domSearch(document, function(element) {
@@ -404,7 +406,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 init(window.app.init[i])
             }
 
-            view.update('init')
+            view.update('boot')
 
         }
 
@@ -781,8 +783,8 @@ window.createContextMenu = function(name, html, position){
 
     if (window.innerWidth <= 850){
         new_el.style.top = position.top+'px'
-        new_el.style.left = '0px'
-        new_el.style.width = 'calc(100vw - 2rem)'
+        new_el.style.left = '2rem'
+        new_el.style.width = 'calc(100% - 4rem)'
     } else {
         new_el.style.top = position.top+'px'
         new_el.style.left = position.left+'px'

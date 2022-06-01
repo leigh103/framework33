@@ -7,6 +7,10 @@
 
         constructor(key, el, type, idx) {
 
+            if (typeof type == 'string'){
+                type = type.replace(window.app.prefix_regex, '')
+            }
+
             let length_key = false
 
             if (!key || !el || !type){
