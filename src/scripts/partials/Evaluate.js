@@ -247,9 +247,9 @@
             //    view.updateChildren(key, value)
             }
 
-            // if (typeof window.watch[key] == 'function'){
-            //     window.watch[key].call('',value, old)
-            // }
+            if (typeof window.watch[key] == 'function'){
+                window.watch[key].call('',value, old)
+            }
 
             return _get(window.scope, key)
 
@@ -318,7 +318,7 @@
             })
 
             if (typeof window.scope[this.matches[1]] == 'function'){
-
+      
                 result = window.scope[this.matches[1]].apply(data,params)
                 if (data){
                 //    view.update(data)

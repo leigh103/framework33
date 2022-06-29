@@ -779,6 +779,7 @@ window.createContextMenu = function(name, html, position){
     new_el.innerHTML = html
     new_el.classList.add(name, 'context','context-temp','animate','dropdown','exit-view')
     new_el.style.position = 'fixed'
+    new_el.style.visibility = 'hidden'
     new_el.style.zIndex = '999'
 
     if (window.innerWidth <= 850){
@@ -792,6 +793,30 @@ window.createContextMenu = function(name, html, position){
     }
 
     document.querySelector('body').append(new_el)
+
+    if (new_el.offsetHeight > 0){
+
+        if (new_el.offsetHeight+position.top >= window.innerHeight){
+            new_el.style.top = (new_el.style.top-new_el.offsetHeight.height)+'px'
+        }
+
+        new_el.style.visibility = 'visible'
+
+    } else {
+
+        setTimeout(function(){
+            if (new_el.offsetHeight+position.top >= window.innerHeight){
+                let diff = (new_el.offsetHeight+position.top)-window.innerHeight
+                diff = diff+40
+                new_el.style.transform = 'translateY(-'+diff+'px)'
+            }
+            new_el.style.visibility = 'visible'
+        },100)
+    }
+
+    
+    
+
     return new_el
 
 }

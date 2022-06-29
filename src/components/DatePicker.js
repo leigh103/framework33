@@ -455,7 +455,11 @@ export class DatePicker extends HTMLElement {
         }
 
         if (evnt.target.dataset.year){
-            this.parent.getDaysArray(evnt.target.dataset.year, this.selected.getMonth()-1)
+            let month = this.selected.getMonth()-1
+            if (month <= 0){
+                month = 11
+            }
+            this.parent.getDaysArray(evnt.target.dataset.year, month)
             return
         }
 
