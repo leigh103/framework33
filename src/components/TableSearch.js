@@ -56,7 +56,7 @@ export class TableSearch extends HTMLElement {
             model = evnt.target._app.model
         }
 
-        if (this.table_el._rows){
+        if (this.table_el && this.table_el._rows){
             this.table_el._rows.map((row)=>{
                 row.classList.remove('selected')
             })

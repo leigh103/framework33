@@ -19,7 +19,7 @@ export class DatePicker extends HTMLElement {
             <div type="text" class="value context-link" data-value="true">`+this.placeholder+`</div>
 
             <div class="dates-wrap context" data-animation="{'enter':'drop-down','exit':'drop-up'}">
-                <div class="dates-close text-right clickable">&times;</div>
+                
                 <div class="dates-time context-link">
                     <div class="dates-time-title">Set time</div>
                     <div class="dates-time-input-wrap">
@@ -32,7 +32,7 @@ export class DatePicker extends HTMLElement {
                 </div>
                 <div class="dates-header">
                     <div class="arrow prev context-link"><</div>
-                    <div class="month-wrap context-link open-year-select">
+                    <div class="month-wrap context-link open-year-select clickable">
                         <div class="month context-link open-year-select"></div>
                         <div class="year context-link open-year-select"></div>
                     </div>
@@ -45,7 +45,14 @@ export class DatePicker extends HTMLElement {
                 <div class="dates">
 
                 </div>
-
+                <div class="dates-buttons flex w-100 mt-1">
+                    <div class="dates-clear context-link btn bg-white flex-1">
+                        Clear
+                    </div>
+                    <div class="dates-close context-link btn bg-primary flex-1">
+                        Set
+                    </div>
+                </div>
             </div>
 
         `;
@@ -71,6 +78,7 @@ export class DatePicker extends HTMLElement {
         this.addEventListener('click',this.openDatePicker)
 
         let value_div = this.querySelector('.value')
+        
         this.getDate(this.model).then((model_date)=>{
 
             if (model_date){
@@ -105,6 +113,38 @@ export class DatePicker extends HTMLElement {
 
     }
 
+    setDate(model_date){
+
+        let date_str
+
+        let value_div = this.querySelector('.value')
+
+        if (typeof moment == 'function' && this.format){
+
+            date_str = moment(model_date).format(this.format)
+
+        } else {
+
+            let date = new Date(model_date)
+
+            date_str = this.days[date.getDay()]+' '+this.dates[date.getDate()-1]+' '+this.months[date.getMonth()]+' '+date.getFullYear()
+
+            if (this.datetime){
+                let hrs = date.getHours(),
+                    mins = date.getMinutes()
+
+                if (mins < 10){
+                    mins = '0'+parseInt(mins)
+                }
+
+                date_str += " at "+hrs+":"+mins
+
+            }
+
+        }
+        value_div.innerHTML = date_str
+
+    }
 
     getDaysArray(year, month, selected_date) {
 
@@ -317,7 +357,7 @@ export class DatePicker extends HTMLElement {
 
     selectDate(evnt){
 
-        if (evnt.target.dataset.date){
+        if (evnt.target.dataset.date && evnt.target.dataset.date != 'undefined'){
 
             let date = new Date(evnt.target.dataset.date)
 
@@ -456,7 +496,7 @@ export class DatePicker extends HTMLElement {
 
         if (evnt.target.dataset.year){
             let month = this.selected.getMonth()-1
-            console.log(month)
+
             if (month < 0){
                 month = 11
             }
@@ -488,6 +528,16 @@ export class DatePicker extends HTMLElement {
             return
         }
 
+        if (evnt.target.classList.contains('dates-clear')){
+            new Evaluate().setValue(this.parent.model, '')
+            this.parent.querySelector('.value').innerHTML = ''
+            return
+        }
+
+        if (evnt.target.classList.contains('dates-close')){
+            view.exitView(this)
+            return
+        }
 
     }
 
@@ -497,37 +547,46 @@ export class DatePicker extends HTMLElement {
             months = datepicker.querySelector('.months'),
             years = datepicker.querySelector('.years')
 
-        wrap.style.display = 'flex'
-        wrap.style.height = '10rem'
-        wrap.style.width = '100%'
-        wrap.style.overflowY = 'hidden'
-        wrap.style.margin = '1rem 0'
+        if (!this.year_select_open){
 
-        years.style.overflowY = 'scroll'
-        years.style.height = '10rem'
-        years.style.flex = '1'
-        months.style.overflowY = 'scroll'
-        months.style.height = '10rem'
-        months.style.flex = '1'
+            wrap.style.display = 'flex'
+            wrap.style.height = '10rem'
+            wrap.style.width = '100%'
+            wrap.style.overflowY = 'hidden'
+            wrap.style.margin = '1rem 0'
+    
+            years.style.overflowY = 'scroll'
+            years.style.height = '10rem'
+            years.style.flex = '1'
+            months.style.overflowY = 'scroll'
+            months.style.height = '10rem'
+            months.style.flex = '1'
+    
+            years.innerHTML = ''
+            months.innerHTML = ''
+    
+            this.years.forEach((year)=>{
+                years.innerHTML += '<div id="year-'+year+'" class="year context-link w-100 flex-middle" style="cursor: pointer; height:2rem" data-year="'+year+'">'+year+'</div>'
+            })
+    
+            this.months.forEach((month, i)=>{
+                months.innerHTML += '<div id="month-'+i+'" class="month context-link w-100 flex-middle" style="cursor: pointer; height:2rem" data-month="'+i+'">'+month+'</div>'
+            })
+    
+            let scroll_year = years.querySelector('#year-'+datepicker.selected.getFullYear())
+            years.scrollTop = scroll_year.offsetTop-128
+    
+            let scroll_month = months.querySelector('#month-'+datepicker.selected.getMonth())
+            months.scrollTop = scroll_month.offsetTop-156
 
-        years.innerHTML = ''
-        months.innerHTML = ''
+        } else {
 
-        this.years.forEach((year)=>{
-            years.innerHTML += '<div id="year-'+year+'" class="year context-link w-100 flex-middle" style="cursor: pointer; height:2rem" data-year="'+year+'">'+year+'</div>'
-        })
+            wrap.style.display = 'none'
 
-        this.months.forEach((month, i)=>{
-            months.innerHTML += '<div id="month-'+i+'" class="month context-link w-100 flex-middle" style="cursor: pointer; height:2rem" data-month="'+i+'">'+month+'</div>'
-        })
+        }
 
-        let scroll_year = years.querySelector('#year-'+datepicker.selected.getFullYear())
-        years.scrollTop = scroll_year.offsetTop-128
-
-        let scroll_month = months.querySelector('#month-'+datepicker.selected.getMonth())
-        months.scrollTop = scroll_month.offsetTop-156
-
-
+        this.year_select_open = !this.year_select_open
+    
     }
 
     getDate(model_date){

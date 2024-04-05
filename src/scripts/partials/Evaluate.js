@@ -4,7 +4,7 @@
 
     export default class Evaluate {
 
-        constructor(exp, data){
+        constructor(exp, data, el){
 
             if (exp){
                 this.exp = exp
@@ -18,11 +18,17 @@
                 this.data = false
             }
 
+            if (el){
+                this.el = el
+            } else {
+                this.el = false
+            }
+
             this.type = ''
             this.matches = []
 
             this.regex = {
-                comparison_class: /\{\s*'([a-zA-Z0-9._\s\[\]\-]+)'\s*\:\s*([a-zA-Z0-9._\s\[\]\/']+)\s*([!=<>+]+)*\s*([a-zA-Z0-9._\s\[\]\/']+)*\s*\}/,
+                comparison_class: /\{\s*'([a-zA-Z0-9._\s\[\]\-]+)'\s*\:\s*([a-zA-Z0-9._\s\[\]\/':]+)\s*([!=<>+]+)*\s*([a-zA-Z0-9._\s\[\]\/']+)*\s*\}/,
                 comparison_function: /\{\s*'([a-zA-Z0-9._\[\]\-]+)'\s*\:\s*([a-zA-Z0-9._\[\]]+)\((.*?)\)\s*\}/,
                 comparison_operator: /^([a-zA-Z0-9._\[\]()!]+)\s*(!=|==|===|>|>=|<|<=)\s*(\'[a-zA-Z0-9._!\s]+\'|[a-zA-Z0-9._\[\]()!]+)/,
                 statement: /^(\'[a-zA-Z0-9._!\-\s]+\'|[a-zA-Z0-9._\[\]()!]+)\s*(\=)\s*(\'[a-zA-Z0-9._!\-\s]+\'|[a-zA-Z0-9._\[\]()!]+)/, // /([a-za-zA-Z._]+)\s*(=)\s*'?((.*))'?/
@@ -108,7 +114,7 @@
                 found = this.matches.map((match)=>{
 
                     if (typeof match == 'string'){
-                        match = match.trim()
+                        match = match.replace(/\.length$/,'').trim()
                     }
 
                     return match
@@ -169,11 +175,12 @@
         }
 
         getValue(key){
-
+            
             let negative = false,
                 length = false
 
-            if (typeof key == 'string' && key.match(/\.length$/)){
+            if (typeof key == 'string' && /\.length/.test(key)){
+
                 key = key.replace(/\.length$/,'')
                 length = true
             }
@@ -191,14 +198,13 @@
 
             let result = false
 
-
             if (this.regex.number.test(key)){
 
                 key = parseFloat(key)
                 result = key
 
             } else if (this.type == 'string' || this.regex.string.test(key)){
-
+          
                 result = key.replace(this.regex.string,'$1')
 
             } else if (!this.regex.tel.test(key) && this.regex.number.test(key)){
@@ -216,6 +222,9 @@
             } else if (typeof this.data == 'string' || !this.data){
 
                 result = _get(window.scope, key)
+                if (/\]billed_to/.test(key)){
+                    console.log(key, window.scope.new.users, result)
+                }
 
             }
 
@@ -227,8 +236,12 @@
                 result = !result
             }
 
-            if (length === true && typeof result != 'undefined'){
+            
+
+            if (length === true && result){
                 return result.length
+            } else if (length === true && !result){
+                return 0
             } else {
                 return result
             }
@@ -238,10 +251,11 @@
 
         setValue(key, value){
 
-            let old = _get(window.scope, key),
-                result = _set(window.scope, key, value)
+            let old = _get(window.scope, key)
 
-            view.update(key, true)
+            _set(window.scope, key, value)
+  
+            view.update(key)
 
             if (typeof value == 'object'){
             //    view.updateChildren(key, value)
@@ -311,6 +325,10 @@
 
             if (params && typeof params == 'object'){
                 data._params = JSON.parse(JSON.stringify(params))
+            }
+
+            if (this.el){
+                data._el = this.el
             }
 
             params = params.map((param,i)=>{

@@ -7,6 +7,7 @@
             if (set.type == "file"){
                 return false
             }
+            
 
             let value = evaluate.getValue(set._app.model.keys[0])
 
@@ -24,7 +25,12 @@
                 if (typeof value == 'undefined'){
                     value = ''
                 }
+            //    console.log(set._app.model.keys, value)
                 set.value = value
+            } else if (set.tagName == "DATE-PICKER" && typeof value == 'string'){
+
+                set.setDate(value)
+
             } else {
                 
                 if (typeof value == 'undefined'){
@@ -49,11 +55,13 @@
 
                     reader.onload = function(e) {
 
-                        var img = new Image()
-                        img.src = reader.result
-
                         if (el._app && el._app.model && el._app.model.exp){
-                            evaluate.setValue(el._app.model.exp, img.src)
+
+                            evaluate.setValue(el._app.model.exp, reader.result)
+
+                            if (el._app.model.keys.pop() == 'new'){
+                                view.set('new.name', file.name.replace(/\.[a-zA-Z0-9]{3,4}$/,''))
+                            }
                         }
 
                         if (el._app && el._app.change && el._app.change.exp){

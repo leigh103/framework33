@@ -28,10 +28,10 @@
 
             type = this.parseType(type)
 
-            if (key && key.match(/length/)){
-                key = key.replace('.length','')
-                length_key = true
-            }
+            // if (key && key.match(/length/)){
+            //     key = key.replace('.length','')
+            //     length_key = true
+            // }
 
             let keys = this.getKeys(key)
             el._app.keys = el._app.keys.concat(keys.keys)

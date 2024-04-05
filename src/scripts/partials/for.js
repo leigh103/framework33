@@ -3,12 +3,25 @@
     const forLoop = (el, render) => {
 
         return new Promise( async (resolve, reject) => {
+            // console.log(el._app.for.scope_obj)
+            if (el._app.for.progress || window.update_loops.hasOwnProperty(el._app.for.scope_obj)){ // if there's an update in progress, don't update
+                
+                if (window.update_loops[el._app.for.scope_obj] != el){
 
-            if (window.update_loops.hasOwnProperty(el._app.for.scope_obj) && window.update_loops[el._app.for.scope_obj] == el){ // if there's an update in progress, don't update
-                console.log(el._app.for.scope_obj+ ' in progress')
-                return
+                    el._app.for.scope_obj_idx = el._app.for.scope_obj+'_'+Object.keys(window.update_loops).length
+                    window.update_loops[el._app.for.scope_obj_idx] = el
+
+                } else {
+                    console.log(el._app.for.scope_obj+ ' in progress')
+                    return
+                }
+                
             } else {
+
+                el._app.for.scope_obj_idx = el._app.for.scope_obj
                 window.update_loops[el._app.for.scope_obj] = el
+                el._app.for.progress = true
+
             }
             
             if (el._app.for.children && el._app.for.children.length > 0){ // remove children from the DOM and the array
@@ -45,26 +58,36 @@
                         let clones = master[0].cloneNode(true)// master.map((child) => {return child.cloneNode(true)})
 
                         clones = [clones, ...clones.querySelectorAll(':scope *')]
-
+                        
                         let first = i==0,
                             last = i==el._app.for.data.length-1
 
-                        parseIndex(el._app.for.scope_obj, clones, i, first, last).then((clone) => {
- 
+
+                        el._app.for.progress = i
+
+                        parseIndex(el._app.for.scope_obj_idx, clones, i, first, last).then((clone) => {
+                            
                             parent.appendChild(clone[0])
                             el._app.for.children.push(clone[0])
-
+                
                             i++
+                      
                             if (i < data.length){ // if there's more data to process, start the next one
                                 loop(data,i)
-                            } else { // otherwise stop the loop
+                            } else if (typeof window.update_loops[el._app.for.scope_obj_idx] != 'undefined'){ // otherwise stop the loop
 
-                                delete window.update_loops[el._app.for.scope_obj]
-                                view.update(el._app.for.scope_obj,true)
+                                delete window.update_loops[el._app.for.scope_obj_idx]
+                            //    view.update(el._app.for.scope_obj,true, parent)
                                 
+                                view.processUpdate(el._app.for.scope_obj, true)
+                                view.processUpdate(el._app.for.scope_obj_idx, true)
+
+                                el._app.for.progress = false
                             }
 
                         })
+
+
                     }
 
                 }
@@ -139,7 +162,7 @@
                                     }
                                 }
                                 element._app.scope_obj = scope_obj
-
+                            //    console.log(element._app, scope_obj)
                                 new Index(element.attributes[ii].nodeValue, element, element.attributes[ii].nodeName, idx)
 
                             }

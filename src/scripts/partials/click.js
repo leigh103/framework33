@@ -1,5 +1,5 @@
     const click = (evt) => {
-
+        
         if (scope.view._click_enabled === true){
             return false
         } else {
@@ -43,6 +43,16 @@
 
             }
             
+
+        } else if (evt.type == 'touchstart'){
+
+            setTimeout(function(){
+                evt.type == 'click'
+                
+            })
+
+
+        } else if (evt.type == 'touchend'){
 
         }
 

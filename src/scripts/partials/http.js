@@ -61,7 +61,7 @@ module.exports = {
 
     },
 
-    post(url, payload){
+    post(url, payload, header){
 
         return new Promise(function(resolve, reject){
 
@@ -82,8 +82,19 @@ module.exports = {
 
             if (payload){
 
-                request.setRequestHeader('Content-type', 'application/json')
-                request.send(JSON.stringify(payload))
+                if (header){
+                    if (header == 'none'){
+                        request.withCredentials = true
+                    } else {
+                        request.setRequestHeader('Content-type', header)
+                    }
+                    request.send(payload)
+                } else {
+                    request.setRequestHeader('Content-type', 'application/json')
+                    request.send(JSON.stringify(payload))
+                }
+                
+                
 
             } else {
 

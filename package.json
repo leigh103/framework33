@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.prod.js",
     "watch": "webpack --watch",
-    "deploy": "webpack --config webpack.prod.js && cp dist/js/* /websites/melded/public/js/framework-33/v2.0/ ; cp dist/css/* /websites/melded/public/style/framework-33/v2.0/",
+    "deploy": "webpack --config webpack.prod.js && cp dist/js/* /websites/chat/public/js/framework-33/v2.0/ ; cp dist/css/* /websites/chat/public/style/framework-33/v2.0/",
     "start": "webpack serve --config webpack.dev.js"
   },
   "keywords": [],
@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "babel-loader": "^8.2.1",
+    "just-safe-get": "^4.2.0",
     "lodash": "^4.17.20",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",

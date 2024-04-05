@@ -21,6 +21,10 @@
                 }
             }
 
+            if (el.tagName == 'MODAL-AUTO'){
+                el._app.show.orig_display = 'flex'
+            }
+
             if (result && result != false){
                 el.style.display = 'none'
             } else {

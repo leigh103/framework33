@@ -1,7 +1,7 @@
 
 $move-amount = 40px;
 $move-amount-back = $move-amount - $move-amount - $move-amount;
-$move-speed = 300ms;
+$move-speed = 600ms;
 
 .animate {
 
@@ -13,9 +13,27 @@ $move-speed = 300ms;
         opacity: 0;
     }
 
-    &.slide-from-right {
+    &.slide-from-right, &.slide-from-right-in-out {
         transition: transform $move-speed ease-in-out,  opacity $move-speed ease-in-out;
-        transform: translateX(150%);
+        transform: translateX(25%);
+        opacity: 0
+    }
+
+    &.slide-from-left, &.slide-from-left-in-out {
+        transition: transform $move-speed ease-in-out,  opacity $move-speed ease-in-out;
+        transform: translateX(-25%);
+        opacity: 0
+    }
+
+    &.slide-from-top, &.slide-from-top-in-out {
+        transition: transform $move-speed ease-in-out,  opacity $move-speed ease-in-out;
+        transform: translateY(-25%);
+        opacity: 0
+    }
+
+    &.slide-from-bottom, &.slide-from-bottom-in-out {
+        transition: transform $move-speed ease-in-out,  opacity $move-speed ease-in-out;
+        transform: translateY(25%);
         opacity: 0
     }
 
@@ -25,8 +43,25 @@ $move-speed = 300ms;
             opacity: 0
         }
 
-        &.slide-from-right {
-            transform: translateX(150%);
+        &.slide-from-top, &.slide-from-bottom {
+            transform: translateY(0);
+            opacity: 1
+        }
+
+        &.slide-from-right, &.slide-from-left {
+            transform: translateX(0);
+            opacity: 1
+        }
+
+        &.slide-from-top-in-out {
+            transition: transform $move-speed ease-in-out,  opacity $move-speed ease-in-out;
+            transform: translateY(25%);
+            opacity: 0
+        }
+
+        &.slide-from-bottom-in-out {
+            transition: transform $move-speed ease-in-out,  opacity $move-speed ease-in-out;
+            transform: translateY(-25%);
             opacity: 0
         }
 
@@ -38,8 +73,13 @@ $move-speed = 300ms;
             opacity: 1
         }
 
-        &.slide-from-right {
+        &.slide-from-right, &.slide-from-left, &.slide-from-right-in-out, &.slide-from-left-in-out {
             transform: translateX(0);
+            opacity: 1
+        }
+
+        &.slide-from-top, &.slide-from-bottom, &.slide-from-top-in-out, &.slide-from-bottom-in-out {
+            transform: translateY(0);
             opacity: 1
         }
 

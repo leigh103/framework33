@@ -1,8 +1,8 @@
 
     const show = (el, val) => {
-     //   console.log(el, val)
+        // console.log(el, el._app.show)
         let result = new Evaluate(el._app.show.exp).value()
-
+        
         if (!el._app.show.orig_display){ // init
 
             el._app.show.orig_display = window.getComputedStyle(el, null).display
@@ -24,7 +24,11 @@
             }
 
         }
-// console.log(el, val, result)
+
+        if (el.tagName == 'MODAL-AUTO'){
+            el._app.show.orig_display = 'flex'
+        }
+
         if (result && result != false){
             view.enterView(el)
         } else {

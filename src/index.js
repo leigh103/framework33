@@ -11,7 +11,7 @@ import Evaluate from './scripts/partials/Evaluate'
 import http from './scripts/partials/http.js'
 import init from './scripts/partials/init.js'
 import forLoop from './scripts/partials/for.js'
-import ContentEditable from './components/ContentEditable.js'
+// import ContentEditable from './components/ContentEditable.js'
 import ModalAuto from './components/ModalAuto.js'
 import DropdownSelect from './components/DropdownSelect.js'
 import DropdownSearch from './components/DropdownSearch.js'
@@ -43,6 +43,9 @@ window.typing = false
 window.typing_count = 0
 window.typing_timer = false
 window._function_call_params = ''
+window.device = {
+    is_touch:'ontouchstart' in window || navigator.msMaxTouchPoints
+}
 
 // window.handler = {
 //
@@ -377,8 +380,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                     new Index(element.attributes[ii].nodeValue, element, element.attributes[ii].nodeName)
                 }
 
-                if (element.dataset.animation || element.dataset.parallax){
-                    window.app.animations.push(element)
+                if (element.classList.contains('animate') || element.dataset.parallax || element.hasAttribute('app-lazy') || element.hasAttribute('app-init-scroll')){
+                    if (window.app.animations.indexOf(element) < 0){
+                        window.app.animations.push(element)
+                    }
+                    
                 }
 
             }
@@ -495,6 +501,7 @@ window.socketConnect = (host) => {
     }
 
     window.ws_server.onerror = function(err){
+
         if (window.ws_server.readyState !== 1){
             console.log(err, 'Attempting reconnect...')
             if (!window.ws_timer){
@@ -650,16 +657,17 @@ const inView = (el) => {
     let trigger_top = el.getAttribute('anim-trigger-top'),
         trigger_bottom = el.getAttribute('anim-trigger-bottom'),
         viewport_h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0),
-        _top = el.getBoundingClientRect().top
+        _top = el.getBoundingClientRect().top,
+        _bottom = el.getBoundingClientRect().bottom
 
     if (!trigger_top){
-        trigger_top = 10
+        trigger_top = viewport_h-100
     } else {
         trigger_top = viewport_h * (parseFloat(trigger_top.replace('%',''))/100)
     }
 
     if (!trigger_bottom){
-        trigger_bottom = viewport_h - 10
+        trigger_bottom = viewport_h-100
     } else {
         trigger_bottom = viewport_h * (parseFloat(trigger_bottom.replace('%',''))/100)
         trigger_bottom = viewport_h - trigger_bottom
@@ -684,8 +692,8 @@ const inView = (el) => {
         }
 
     }
-
-    return (_top <= trigger_bottom && _top >= trigger_top)
+ //   console.log(_top, trigger_top, _bottom, trigger_bottom, _top <= trigger_top && _bottom >= trigger_bottom)
+    return (_top <= trigger_top && _bottom >= trigger_bottom) //return (_top <= trigger_bottom && _top >= trigger_top)
 
 }
 
@@ -696,22 +704,43 @@ const inViewChk = () => {
         for (let i = 0; i < window.app.animations.length; i++) {
 
             let self = window.app.animations[i]
-
+ 
             if (inView(self)) {
-                if (self.classList && !self.classList.contains('in-view')) {
-                    applyInViewClass(self);
-                    if (self.hasAttribute('app-lazy')){
-                        lazyLoad(self)
-                    }
+                
+                toggleInView(self, true)
+                if (self.hasAttribute('app-lazy')){
+                    lazyLoad(self)
                 }
+
+                if (self.hasAttribute('app-init-scroll')){
+                    init(self)
+                }
+              
             } else {
-                if (self.classList && self.classList.contains('in-view')) {
-                    applyExitViewClass(self, i);
-                }
+             //   if (self.classList && self.classList.contains('in-view')) {
+                toggleInView(self, false);
+             //   }
             }
 
         }
 
+    }
+
+}
+
+const toggleInView = (el, in_view) => {
+
+    if (in_view){
+        if (!el.classList.contains('in-view')){
+            el.classList.remove("exit-view")
+            el.classList.add("in-view")
+        }
+        
+    } else {
+        if (el.classList.contains('in-view') && !el.classList.contains('exit-view')){
+            el.classList.remove("in-view")
+            el.classList.add("exit-view")
+        }
     }
 
 }

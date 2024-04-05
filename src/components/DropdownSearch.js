@@ -14,6 +14,7 @@ export class DropdownSearch extends HTMLElement {
         this.model = this.getAttribute('app-model')
         this.scan = this.getAttribute('scan')
         this.on_change = this.getAttribute('app-change')
+        this._empty = this.getAttribute('app-empty')
         this.placeholder = this.getAttribute('placeholder')
         if (!this.placeholder){
             this.placeholder = 'Please select...'
@@ -73,6 +74,9 @@ export class DropdownSearch extends HTMLElement {
     selectDropdown(evnt){
 
         if (this.input){
+
+            new Evaluate().setValue(this.model, '')
+
 
             this.input.focus()
 
@@ -259,6 +263,9 @@ export class DropdownSearch extends HTMLElement {
 
                     })
 
+                } else if (self._empty){
+                    self.dropdown_context.innerHTML = '<div class="text-italic text-33-grey">'+self._empty+'</div>'
+
                 } else {
                     self.dropdown_context.innerHTML = '<div class="text-italic text-33-grey">Nothing found</div>'
                 }
@@ -268,7 +275,7 @@ export class DropdownSearch extends HTMLElement {
 
             if (self.dropdown_context){
                 self.dropdown_context.innerHTML = ''
-            }
+            }  
 
         }
 

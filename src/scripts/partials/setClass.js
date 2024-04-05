@@ -7,10 +7,8 @@
             el.className = el._app.original_classes
         }
 
-        let new_class = new Evaluate(el._app.class.exp).value()
+        let new_class = new Evaluate(el._app.class.exp, false, el).value()
 
-        
-       
         if (Array.isArray(new_class)){
 
           //  new_class = new_class.toString().split(/\s/)

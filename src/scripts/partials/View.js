@@ -1,13 +1,16 @@
 
     import Evaluate from './Evaluate'
     import bind from './bind'
+    import html from './html'
     import show from './show'
     import hide from './hide'
     import checked from './checked'
     import model from './model'
     import forLoop from './for'
     import click from './click'
+    import longpress from './longpress'
     import touch from './touch'
+    import swipe from './swipe'
     import dragend from './dragend'
     import dragstart from './dragstart'
     import drop from './drop'
@@ -30,7 +33,7 @@
             return val
         }
 
-        update(key, value){
+        update(key, value, el){
 
             var index = -1
             for(var i = 0; i < window.update_queue.length; i++) {
@@ -40,39 +43,38 @@
                 }
             }
             if (index < 0){
-                window.update_queue.push({key: key, value: value})
+                let queue_obj = {key: key, value: value}
+                if (el){
+                    queue_obj.el = el
+                }
+                window.update_queue.push(queue_obj)
             }
 
-        //    console.log('adding',window.update_queue, window.update_queue_processing)
             if (window.update_queue_processing === false){
-        //        console.log('starting processing')
                 this.processUpdateQueue()
             }
 
         }
 
         processUpdateQueue(){
-// window.update_queue_cnt = window.update_queue_cnt+1
+
             if (window.update_queue.length > 0){ //&& window.update_queue_cnt < 10){
-            //    console.log('processing',window.update_queue, window.update_queue.length, window.update_queue_cnt)
+     
                 window.update_queue_processing = true
-            //    console.log('processing',window.update_queue, window.update_queue.length)
-           //     if (window.update_queue[0].key){
+                if (window.update_queue[0].el){
+                    this.processUpdate(window.update_queue[0].key, window.update_queue[0].value, window.update_queue[0].el)
+                } else {
                     this.processUpdate(window.update_queue[0].key, window.update_queue[0].value)
-            //    }
-            
+                }
+                
+
             } else {
                 window.update_queue_processing = false
-        //        console.log('stopping',window.update_queue, window.update_queue.length, window.update_queue_cnt)
             }
 
         }
 
-        processUpdate(key, update){
-
-            // if (key == 'boot') {
-            //     console.log(4, key, this.isArray(key))
-            // }
+        processUpdate(key, update, el){
 
             if (update === true){
 
@@ -105,8 +107,13 @@
                 app.index[key] = app.index[key].filter((item,i)=>{ // update all elements with this key
 
                     if (item.el.parentNode || item.type == 'if'){
-                        this.updateElement(item.el, key, item.type)
+
+                        if (!el || el && item.el.parentNode == el){
+                            this.updateElement(item.el, key, item.type)
+                        }
+
                         return true
+
                     } else {
                         return false
                     }
@@ -126,7 +133,7 @@
                 })
 
             } else if (key == 'boot') {
-                // console.log(5, key)
+           
                 for (key in app.index){
 
                     if (evaluate.getValue(key)){
@@ -146,53 +153,25 @@
 
                 }
 
-            // } else if (typeof key == 'string' && typeof window.watch[key] == 'function'){
-
-            //     let new_data = evaluate.getValue(key),
-            //        old_data
-                
-            //     if (!window.watch_cache[key] || window.watch_cache[key] != new_data){
-            //         // window.watch_cache[key] = new_data
-            //         // window.watch[key].call(null,new_data,old_data,key)
-            //     }
-
-            } else {
-            // console.log(6, key)
-                // for (var key in app.index){
-
-                //     app.index[key] = app.index[key].filter((item,i)=>{ // update all elements with this key
-                //         if (item.el.parentNode || item.type == 'if'){
-                //             this.updateElement(item.el, key, item.type)
-                //             return true
-                //         } else {
-                //             return false
-                //         }
-
-                //     })
-
-                // }
-
             }
+            
             window.update_queue.splice(0,1)
-        //    console.log('next')
+
             this.processUpdateQueue()
 
         }
 
         updateChildren(key, data){
-// console.log('ucc',idx, data, old)
+
             for (let i in data){
 
                 let key_child = index.parsePath([key,i])
-
                 key_child = index.parseKey(key_child)
-// console.log(idx_child, data[i])
 
                 if (typeof data[i] == 'object'){
-// console.log('ucc',idx_child, data[i])
                     this.updateChildren(key_child, data[i])
                 }
- // console.log('uc',idx_child, data[i])
+
                 this.update(key_child)
 
             }
@@ -200,7 +179,7 @@
         }
 
         async updateElement(el, key, type){
-         //   console.log(type, el)
+  
             let chk_watch = false
 
             if (type == 'model' && el._app.model && el._app.model.keys.indexOf(key) >= 0){
@@ -209,8 +188,8 @@
 
                     if (el.tagName == "INPUT") {
                         if (el.type == "text" || el.type == "number" || el.type == "password" || el.type == "email" || el.type == "tel") {
-                            el.removeEventListener('keyup', model)
-                            el.addEventListener('keyup', model)
+                            el.removeEventListener('input', model)
+                            el.addEventListener('input', model)
                         }
                         if (el.type == "number" || el.type == "file" || el.type == "range" || el.type == "color") {
                             el.removeEventListener('change', model)
@@ -223,8 +202,8 @@
                     }
 
                     if (el.tagName == "TEXTAREA") {
-                        el.removeEventListener('keyup', model)
-                        el.addEventListener('keyup', model)
+                        el.removeEventListener('input', model)
+                        el.addEventListener('input', model)
                     }
 
                     if (el.tagName == "SELECT") {
@@ -321,40 +300,50 @@
                 setClass(el)
 
             } else if (type == 'bind' && el._app.bind){
-                // el._app.renders = {
-                //     bind: true
-                // }
                 bind(el)
+            } else if (type == 'html' && el._app.html){
+                html(el)
+            } else if (type == 'swipe' && el._app.swipe){
+                swipe(el)
             } else if (type == 'click' && el._app.click){
 
                 if (!el._app.click.listening){
 
-                    // if (('ontouchstart' in window) ||
-                    // (navigator.maxTouchPoints > 0) ||
-                    // (navigator.msMaxTouchPoints > 0)){
-                    //     window.oncontextmenu = function() { return false; }
-                    //     el.removeEventListener('touchstart', touch)
-                    //     el.addEventListener('touchstart', touch)
-                    //     el.removeEventListener('touchend', touch)
-                    //     el.addEventListener('touchend', touch)
-                    // } else {
-                        el.removeEventListener('click', click)
-                        el.addEventListener('click', click)
-                    // }
-                    
+                    el.removeEventListener('click', click)
+                    el.addEventListener('click', click)
                    
                     el._app.click.listening = true
+
                 }
 
                 chk_watch = true
             
-            // } else if (type == 'hover' && el._app.hover){
+            } else if (type == 'longpress' && el._app.longpress){
 
-            //     if (!el._app.hover.listening){
-            //         el.removeEventListener('mouseenter', hover)
-            //         el.addEventListener('mouseenter', hover)
-            //         el._app.hover.listening = true
-            //     }
+                if (!el._app.longpress.listening){
+
+                    if (!device.is_touch){
+
+                        el.removeEventListener('contextmenu', longpress)
+                        el.addEventListener('contextmenu', longpress)
+                    
+                        el._app.click.listening = true
+
+                    } else {
+
+                        el.removeEventListener('touchstart', longpress)
+                        el.addEventListener('touchstart', longpress)
+                        el.removeEventListener('touchend', longpress)
+                        el.addEventListener('touchend', longpress)
+                       
+                        el._app.longpress.listening = true
+                        
+                    }
+                   
+
+                }
+
+                chk_watch = true
                 
             } else if (type == 'paste' && el._app.paste && el._app.keys.indexOf(key) >= 0){
 
@@ -369,7 +358,6 @@
             } else if (type == 'if' && el._app.if){
             //    setIf(el)
             } else if (type == 'show' && el._app.show && el._app.show.keys.indexOf(key) >= 0){
-             //   console.log(el, key, type)
                 show(el)
             } else if (type == 'hide' && el._app.hide && el._app.hide.keys.indexOf(key) >= 0){
                 hide(el)
@@ -381,17 +369,12 @@
                 setAttr(el)
             }
 
-            // if (el._app.attr && el._app.value.keys.indexOf(key) >= 0){
-            //     setAttr(el)
-            // }
-
             if (chk_watch === true && window.watch && typeof window.watch[key] == 'function'){
 
                let new_data = evaluate.getValue(key),
                    old_data
                 
                 if (!window.watch_cache[key] || window.watch_cache[key] != new_data){
-                    console.log('firing')
                     window.watch_cache[key] = new_data
                     window.watch[key].call(null,new_data,old_data,key)
                 }
@@ -407,7 +390,7 @@
             if (!el){
                 return
             }
-         //   console.log(el)
+
             return new Promise(function(resolve, reject) {
 
                 let display_value = 'block'
@@ -419,10 +402,6 @@
                 if (el._app && el._app.hide && el._app.hide.orig_display){
                     display_value = el._app.hide.orig_display
                 }
-                //
-                // el.style.display = display_value
-                // el.classList.remove('exit-view')
-                // el.classList.add('in-view')
 
                 if (el.classList.contains('animate')){
 
