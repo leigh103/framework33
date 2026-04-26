@@ -367,9 +367,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     controller()
 
-    for (var i=0; i < window.app.elements.length; i++) {
+    scope._init(window.app.elements)
 
-        let element = window.app.elements[i]
+})
+
+scope._init = function(elements){
+
+    for (var i=0; i < elements.length; i++) {
+
+        let element = elements[i]
 
         if (typeof element.attributes == 'object'){
 
@@ -380,7 +386,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     new Index(element.attributes[ii].nodeValue, element, element.attributes[ii].nodeName)
                 }
 
-                if (element.classList.contains('animate') || element.dataset.parallax || element.hasAttribute('app-lazy') || element.hasAttribute('app-init-scroll')){
+                if (element.classList.contains('animate') && element.tagName != 'MODAL-AUTO' || element.dataset.parallax || element.hasAttribute('app-lazy') || element.hasAttribute('app-init-scroll')){
                     if (window.app.animations.indexOf(element) < 0){
                         window.app.animations.push(element)
                     }
@@ -391,7 +397,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         }
 
-        if (i >= window.app.elements.length-1){
+        if (i >= elements.length-1){
 
             scope._loaded = true
             document.querySelector('body').classList.add('loaded')
@@ -417,10 +423,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
     }
+}
 
-
-
-})
 
 window.addEventListener('load', () => {
 
@@ -597,6 +601,8 @@ const initSortable = () => {
                             new Evaluate(els[i]._app.sorted.exp).value(evt)
                         }
 
+                    } else if (els[i]._app && els[i]._app.sorted && els[i]._app.sorted.exp){
+                        new Evaluate(els[i]._app.sorted.exp).value(evt)
                     }
 
             	},
@@ -677,7 +683,7 @@ const inView = (el) => {
         if (_top <= viewport_h){
 
             if (!el.dataset.parallax_top){
-                el.dataset.parallax_top = 100
+                el.dataset.parallax_top = 100 
             }
 
             let parallax = window.pageYOffset * parseFloat(el.dataset.parallax)

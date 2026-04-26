@@ -15,49 +15,49 @@ export class DatePicker extends HTMLElement {
         }
 
         this.innerHTML = `
-
-            <div type="text" class="value context-link" data-value="true">`+this.placeholder+`</div>
+            <div type="text" class="value context-link" data-value="true">${this.placeholder}</div>
 
             <div class="dates-wrap context" data-animation="{'enter':'drop-down','exit':'drop-up'}">
                 
                 <div class="dates-time context-link">
                     <div class="dates-time-title">Set time</div>
                     <div class="dates-time-input-wrap">
-                        <select class="text-right context-link dates-time-hrs">
-                        </select>
+                        <select class="context-link dates-time-hrs"></select>
                         <div class="divider">:</div>
-                        <select class="text-right context-link dates-time-mins">
-                        </select>
+                        <select class="context-link dates-time-mins"></select>
                     </div>
                 </div>
                 <div class="dates-header">
-                    <div class="arrow prev context-link"><</div>
+                    <div class="arrow prev context-link">&lt;</div>
                     <div class="month-wrap context-link open-year-select clickable">
                         <div class="month context-link open-year-select"></div>
                         <div class="year context-link open-year-select"></div>
                     </div>
-                    <div class="arrow next context-link">></div>
+                    <div class="arrow next context-link">&gt;</div>
                 </div>
                 <div class="year-select">
                     <div class="months"></div>
                     <div class="years"></div>
                 </div>
                 <div class="dates">
-
+                    <div class="weekdays">
+                        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div>
+                        <div>Thu</div><div>Fri</div><div>Sat</div>
+                    </div>
+                    <div class="days-grid"></div>
                 </div>
-                <div class="dates-buttons flex w-100 mt-1">
-                    <div class="dates-clear context-link btn bg-white flex-1">
+                <div class="dates-buttons">
+                    <div class="dates-clear context-link btn bg-white">
                         Clear
                     </div>
-                    <div class="dates-close context-link btn bg-primary flex-1">
+                    <div class="dates-close context-link btn bg-primary">
                         Set
                     </div>
                 </div>
             </div>
-
         `;
 
-        this.months = ['January','Febuary','March','April','May','June','July','August','September','October','November','December']
+        this.months = ['January','February','March','April','May','June','July','August','September','October','November','December']
         this.months_short = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
         this.dates = ['1st','2nd','3rd','4th','5th','6th','7th','8th','9th','10th','11th','12th','13th','14th','15th','16th','17th','18th','19th','20th','21st','22nd','23rd','24th','25th','26th','27th','28th','29th','30th','31st']
         this.days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday']
@@ -75,480 +75,322 @@ export class DatePicker extends HTMLElement {
         this.time_mins = this.querySelector('.dates-time-mins')
         this.time_years = this.querySelector('.year-select')
 
+        // Initialize state
+        this.currentDate = new Date()
+        this.selectedDate = null
+        this.year_select_open = false
+
         this.addEventListener('click',this.openDatePicker)
 
         let value_div = this.querySelector('.value')
         
         this.getDate(this.model).then((model_date)=>{
-
             if (model_date){
-                let date_str
-
-                if (typeof moment == 'function' && this.format){
-
-                    date_str = moment(model_date).format(this.format)
-
-                } else {
-
-                    let date = new Date(model_date)
-
-                    date_str = this.days[date.getDay()]+' '+this.dates[date.getDate()-1]+' '+this.months[date.getMonth()]+' '+date.getFullYear()
-
-                    if (this.datetime){
-                        let hrs = date.getHours(),
-                            mins = date.getMinutes()
-
-                        if (mins < 10){
-                            mins = '0'+parseInt(mins)
-                        }
-
-                        date_str += " at "+hrs+":"+mins
-
-                    }
-
-                }
-                value_div.innerHTML = date_str
+                this.selectedDate = new Date(model_date)
+                this.currentDate = new Date(model_date)
+                this.updateDisplayValue()
             }
         })
 
     }
 
     setDate(model_date){
+        this.selectedDate = new Date(model_date)
+        this.currentDate = new Date(model_date)
+        this.updateDisplayValue()
+    }
 
+    updateDisplayValue() {
         let date_str
-
         let value_div = this.querySelector('.value')
 
+        if (!this.selectedDate) {
+            value_div.innerHTML = this.placeholder
+            return
+        }
+
         if (typeof moment == 'function' && this.format){
-
-            date_str = moment(model_date).format(this.format)
-
+            date_str = moment(this.selectedDate).format(this.format)
         } else {
+            const dateOptions = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
 
-            let date = new Date(model_date)
-
-            date_str = this.days[date.getDay()]+' '+this.dates[date.getDate()-1]+' '+this.months[date.getMonth()]+' '+date.getFullYear()
-
-            if (this.datetime){
-                let hrs = date.getHours(),
-                    mins = date.getMinutes()
-
-                if (mins < 10){
-                    mins = '0'+parseInt(mins)
-                }
-
-                date_str += " at "+hrs+":"+mins
-
+            if (this.datetime) {
+                date_str = this.selectedDate.toLocaleString('en-US', {
+                    ...dateOptions,
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                });
+            } else {
+                date_str = this.selectedDate.toLocaleDateString('en-US', dateOptions);
             }
-
         }
         value_div.innerHTML = date_str
-
     }
 
-    getDaysArray(year, month, selected_date) {
-
-        if (typeof year == 'undefined'){
-            year = new Date().getFullYear()
-        }
-
-        if (typeof month == 'undefined'){
-            month = new Date().getMonth()
-        }
-
-      var monthIndex = month,
-          date = new Date(year, monthIndex, 1),
-          pre_dates = new Date(year, monthIndex, 1),
-          date_div = this.datepicker_context.querySelector('.dates'),
-          month_div = this.datepicker_context.querySelector('.month'),
-          year_div = this.datepicker_context.querySelector('.year'),
-          result = [
-              {date:'M',type:'day'},
-              {date:'T',type:'day'},
-              {date:'W',type:'day'},
-              {date:'T',type:'day'},
-              {date:'F',type:'day'},
-              {date:'S',type:'day'},
-              {date:'S',type:'day'},
-          ],
-          offset = date.getDay()-1,
-          today = new Date().getDate(),
-          this_month = new Date().getMonth()
-
-          this.datepicker_context.selected = date
-
-      if (offset < 0){
-          offset = 6
-      }
-
-      pre_dates.setDate(pre_dates.getDate() - offset);
-
-      for (var i=0;i<offset;i++){
-          let iso = pre_dates.toISOString()
-          result.push({date:pre_dates.getDate()+'',type:'pre',iso:iso})
-          pre_dates.setDate(pre_dates.getDate() + 1);
-      }
-
-      while (date.getMonth() == monthIndex) {
-
-          let day = date.getDate(),
-              iso = date.toString()
-
-          if (day == selected_date){
-              result.push({date:day+'',type:'selected',iso:iso});
-          } else if (day < today && this_month == monthIndex){
-              result.push({date:day+'',type:'passed',iso:iso});
-          } else if (day == today && this_month == monthIndex){
-              result.push({date:day+'',type:'today',iso:iso});
-          } else {
-              result.push({date:day+'',type:'reg',iso:iso});
-          }
-
-          date.setDate(date.getDate() + 1);
-
-      }
-
-      if (result.length > 42){
-          var post_dates = 49 - result.length;
-      }
-
-      while (date.getDate() <= post_dates) {
-
-          let day = date.getDate(),
-              iso = date.toString()
-
-          result.push({date:day+'',type:'post',iso:iso});
-
-          date.setDate(date.getDate() + 1);
-
-      }
-
-      month_div.innerHTML = this.months[month]
-      year_div.innerHTML = year
-      date_div.innerHTML = ''
-
-      for (var i in result){
-
-          if (result[i] && result[i].date){
-
-              let date_cell = document.createElement("div")
-
-              date_cell.classList.add('date','context-link',result[i].type)
-              date_cell.innerHTML = result[i].date
-              date_cell.dataset.date = result[i].iso
-              date_cell.dataset.model = this.model
-
-              date_div.append(date_cell)
-
-          }
-
-      }
-
+    updateHeader() {
+        const month_div = this.datepicker_context.querySelector('.month')
+        const year_div = this.datepicker_context.querySelector('.year')
+        
+        month_div.innerHTML = this.months[this.currentDate.getMonth()]
+        year_div.innerHTML = this.currentDate.getFullYear()
     }
 
-    addDateTimes(type){
+    generateCalendar() {
+        const year = this.currentDate.getFullYear()
+        const month = this.currentDate.getMonth()
+        const firstDay = new Date(year, month, 1)
+        const lastDay = new Date(year, month + 1, 0)
+        const startPadding = firstDay.getDay()
+        const daysInMonth = lastDay.getDate()
 
-        let start = 0,
-            end = 23,
-            result = '',
-            text,
-            value
+        const daysGrid = this.datepicker_context.querySelector('.days-grid')
+        daysGrid.innerHTML = ''
 
-        if (type == 'minutes'){
-            end = 59
+        // Add padding days from previous month
+        for (let i = 0; i < startPadding; i++) {
+            const paddingDiv = document.createElement('div')
+            paddingDiv.className = 'date padding context-link'
+            daysGrid.appendChild(paddingDiv)
         }
 
-        for (var i=start;i<=end;i++){
+        // Add days of current month
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(year, month, day)
+            const isSelected = this.selectedDate && date.toDateString() === this.selectedDate.toDateString()
+            
+            const dayDiv = document.createElement('div')
+            dayDiv.className = `date context-link ${isSelected ? 'selected' : ''}`
+            dayDiv.innerHTML = day
+            dayDiv.dataset.date = date.toISOString()
+            dayDiv.dataset.model = this.model
+            
+            daysGrid.appendChild(dayDiv)
+        }
+    }
 
-            text = i
-            value = i
-            if (i < 10 && type == 'minutes'){
-                text = '0'+i
-                value = '0'+i
-            }
-            result += '<option value="'+value+'">'+text+'</option>'
+    setupTimeInputs() {
+        if (!this.datetime) return
+
+        const hrs = this.datepicker_context.querySelector('.dates-time-hrs')
+        const mins = this.datepicker_context.querySelector('.dates-time-mins')
+
+        // Populate hours dropdown (00-23)
+        hrs.innerHTML = ''
+        for (let i = 0; i < 24; i++) {
+            const option = document.createElement('option')
+            const value = i.toString().padStart(2, '0')
+            option.value = value
+            option.textContent = value
+            hrs.appendChild(option)
         }
 
-        return result
+        // Populate minutes dropdown (00-59)
+        mins.innerHTML = ''
+        for (let i = 0; i < 60; i++) {
+            const option = document.createElement('option')
+            const value = i.toString().padStart(2, '0')
+            option.value = value
+            option.textContent = value
+            mins.appendChild(option)
+        }
 
+        // Set current values
+        if (this.selectedDate) {
+            hrs.value = this.selectedDate.getHours().toString().padStart(2, '0')
+            mins.value = this.selectedDate.getMinutes().toString().padStart(2, '0')
+        } else {
+            const now = new Date()
+            hrs.value = now.getHours().toString().padStart(2, '0')
+            mins.value = now.getMinutes().toString().padStart(2, '0')
+        }
+
+        hrs.addEventListener('change', (e) => {
+            this.updateTimeValue('hours', parseInt(e.target.value))
+        })
+
+        mins.addEventListener('change', (e) => {
+            this.updateTimeValue('minutes', parseInt(e.target.value))
+        })
+    }
+
+    updateTimeValue(type, value) {
+        if (!this.selectedDate) {
+            this.selectedDate = new Date()
+        }
+
+        if (type === 'hours') {
+            this.selectedDate.setHours(value)
+        } else if (type === 'minutes') {
+            this.selectedDate.setMinutes(value)
+        }
+
+        new Evaluate().setValue(this.model, this.selectedDate.toISOString())
+        this.updateDisplayValue()
+
+        if (this.on_change) {
+            new Evaluate(this.on_change).value({ target: this })
+        }
     }
 
     openDatePicker(evnt){
-
-        var selectDate = this.selectDate
+        var selectDate = this.selectDate.bind(this)
 
         document.querySelector('body').style.overflowY = 'hidden'
 
         this.datepicker_context = createContextMenu('dates-wrap', this.datepicker.innerHTML, this.getBoundingClientRect())
-        this.datepicker_context.addEventListener('click',selectDate)
+        this.datepicker_context.addEventListener('click', selectDate)
         this.datepicker_context.days = this.days
         this.datepicker_context.months = this.months
         this.datepicker_context.dates = this.dates
         this.datepicker_context.datetime = this.datetime
         this.datepicker_context.format = this.format
         this.datepicker_context.parent = this
-        this.datepicker_context.hrs = this.datepicker_context.querySelector('.dates-time-hrs')
-        this.datepicker_context.mins = this.datepicker_context.querySelector('.dates-time-mins')
-
-        this.datepicker_context.hrs.dataset.model = this.model
-        this.datepicker_context.mins.dataset.model = this.model
-
-        this.datepicker_context.hrs.parent = this
-        this.datepicker_context.mins.parent = this
-
-        this.datepicker_context.hrs.innerHTML = this.addDateTimes('hours')
-        this.datepicker_context.mins.innerHTML = this.addDateTimes('minutes')
-
-        this.datepicker_context.hrs.addEventListener('change', function (e) {
-
-                setTimeout(function(){
-                    selectDate(e)
-                },100)
-
-        })
-
-        this.datepicker_context.mins.addEventListener('change', function (e) {
-
-                setTimeout(function(){
-                    selectDate(e)
-                },100)
-
-        })
 
         if (this.datetime){
             this.datepicker_context.classList.add('datetime')
         }
 
+        // Initialize current date from model or use today
         let model_date = new Evaluate().getValue(this.model)
         if (model_date){
-
-            let date = new Date(model_date)
-            this.getDaysArray(date.getFullYear(), date.getMonth(), date.getDate())
-            this.datepicker_context.hrs.value = date.getHours()
-            let mins = date.getMinutes()
-
-            if (mins < 10){
-                this.datepicker_context.mins.value = '0'+mins
-            } else {
-                this.datepicker_context.mins.value = mins+''
-            }
-
-        } else {
-
-            let date = new Date()
-            this.datepicker_context.hrs.value = date.getHours()
-            let mins = date.getMinutes()
-
-            if (mins < 10){
-                this.datepicker_context.mins.value = '0'+mins
-            } else {
-                this.datepicker_context.mins.value = mins+''
-            }
-            this.getDaysArray()
-
+            this.selectedDate = new Date(model_date)
+            this.currentDate = new Date(model_date)
+        } else if (!this.selectedDate) {
+            this.currentDate = new Date()
         }
 
+        this.updateHeader()
+        this.generateCalendar()
+        this.setupTimeInputs()
+
         view.enterView(this.datepicker_context).then(()=>{
-
+            // Calendar is now visible
         })
-
     }
 
 
     selectDate(evnt){
+        // Handle day selection
+        if (evnt.target.classList.contains('date') && !evnt.target.classList.contains('padding') && evnt.target.dataset.date) {
+            const newDate = new Date(evnt.target.dataset.date)
 
-        if (evnt.target.dataset.date && evnt.target.dataset.date != 'undefined'){
-
-            let date = new Date(evnt.target.dataset.date)
-
-            let date_str
-
-            if (typeof moment == 'function' && this.format){
-
-                if (this.hrs && this.hrs.value && this.hrs.value < 24 && this.datetime){
-                    date_str = moment(evnt.target.dataset.date).set({hours:this.hrs.value,mins:this.mins.value}).format(this.format)
-                    date.setHours(this.hrs.value)
-
-                    if (this.mins.value < 10){
-                        this.mins.value = '0'+parseInt(this.mins.value)
-                    }
-
-                    if (this.mins && this.mins.value && this.mins.value < 60){
-                        date.setMinutes(this.mins.value)
-                    }
-                } else {
-                    date_str = moment(evnt.target.dataset.date).format(this.format)
-                }
-
-
-            } else {
-
-                date_str = this.days[date.getDay()]+' '+this.dates[date.getDate()-1]+' '+this.months[date.getMonth()]+' '+date.getFullYear()
-
-                if (this.hrs && this.hrs.value && this.hrs.value < 24 && this.datetime){
-                    date.setHours(this.hrs.value)
-
-                    if (this.mins.value < 10){
-                        this.mins.value = '0'+parseInt(this.mins.value)
-                    }
-
-                    if (this.mins && this.mins.value && this.mins.value < 60){
-                        date.setMinutes(this.mins.value)
-                    }
-
-                    date_str += " at "+this.hrs.value+":"+this.mins.value
-
-                }
-
+            // Preserve time if datetime mode and we have a selected date
+            if (this.datetime && this.selectedDate) {
+                newDate.setHours(this.selectedDate.getHours())
+                newDate.setMinutes(this.selectedDate.getMinutes())
             }
 
-            new Evaluate().setValue(evnt.target.dataset.model, date.toString())
-            this.parent.querySelector('.value').innerHTML = date_str
+            this.selectedDate = newDate
+            new Evaluate().setValue(this.model, this.selectedDate.toISOString())
+            this.updateDisplayValue()
+            this.generateCalendar()
 
-            this.querySelectorAll(".date").forEach((el) => {
-                el.classList.remove('selected');
-            })
+            // Don't auto-close popup - let user click "Set" button to close
 
-            evnt.target.classList.add('selected')
-
-            if (!this.classList.contains('datetime')){
-                view.exitView(this)
+            if (this.on_change) {
+                new Evaluate(this.on_change).value(evnt)
             }
-
-            if (this.parent.on_change){
-                new Evaluate(this.parent.on_change).value(evnt)
-            }
+            return
         }
 
-        if (evnt.target.classList.contains('dates-time-mins')){
-
-            let date_val = new Evaluate().getValue(evnt.target.dataset.model),
-                date = new Date(date_val)
-
-            if (date instanceof Date && !isNaN(date)){
-                date.setMinutes(evnt.target.value)
-
-                let date_mins = date.getMinutes(),
-                    date_str
-
-                new Evaluate().setValue(evnt.target.dataset.model, date.toString())
-
-                if (typeof moment == 'function' && evnt.target.parent.dataset.format){
-
-                    date_str = moment(date.toISOString()).format(evnt.target.parent.dataset.format)
-
-                } else {
-
-                    if (date_mins < 10){
-                        date_mins = '0'+date_mins
-                    }
-
-                    date_str = evnt.target.parent.days[date.getDay()]+' '+evnt.target.parent.dates[date.getDate()-1]+' '+evnt.target.parent.months[date.getMonth()]+' '+date.getFullYear()+" at "+date.getHours()+":"+date_mins
-
-                }
-
-                evnt.target.parent.querySelector('.value').innerHTML = date_str
-
-                if (evnt.target.parent.on_change){
-                    new Evaluate(evnt.target.parent.on_change).value(evnt)
-                }
-            }
-
+        // Handle navigation
+        if (evnt.target.classList.contains('prev')) {
+            this.currentDate.setMonth(this.currentDate.getMonth() - 1)
+            this.updateHeader()
+            this.generateCalendar()
+            return
         }
 
-        if (evnt.target.classList.contains('dates-time-hrs')){
-
-            let date_val = new Evaluate().getValue(evnt.target.dataset.model),
-                date = new Date(date_val)
-
-            if (date instanceof Date && !isNaN(date)){
-                date.setHours(evnt.target.value)
-
-                let date_mins = date.getMinutes(),
-                    date_str
-
-                new Evaluate().setValue(evnt.target.dataset.model, date.toString())
-
-                if (typeof moment == 'function' && evnt.target.parent.dataset.format){
-
-                    date_str = moment(date.toISOString()).format(evnt.target.parent.dataset.format)
-
-                } else {
-
-                    if (date_mins < 10){
-                        date_mins = '0'+date_mins
-                    }
-
-                    date_str = evnt.target.parent.days[date.getDay()]+' '+evnt.target.parent.dates[date.getDate()-1]+' '+evnt.target.parent.months[date.getMonth()]+' '+date.getFullYear()+" at "+date.getHours()+":"+date_mins
-
-                }
-
-                evnt.target.parent.querySelector('.value').innerHTML = date_str
-
-                if (evnt.target.parent.on_change){
-                    new Evaluate(evnt.target.parent.on_change).value(evnt)
-                }
-
-            }
-
-
+        if (evnt.target.classList.contains('next')) {
+            this.currentDate.setMonth(this.currentDate.getMonth() + 1)
+            this.updateHeader()
+            this.generateCalendar()
+            return
         }
 
-        if (evnt.target.dataset.year){
-            let month = this.selected.getMonth()-1
+        // Handle year/month selection
+        if (evnt.target.classList.contains('open-year-select')) {
+            this.openYearSelect(this.datepicker_context)
+            return
+        }
 
-            if (month < 0){
-                month = 11
+        if (evnt.target.dataset.year) {
+            this.currentDate.setFullYear(parseInt(evnt.target.dataset.year))
+            
+            // Update selected date if one exists
+            if (this.selectedDate) {
+                this.selectedDate.setFullYear(parseInt(evnt.target.dataset.year))
+                new Evaluate().setValue(this.model, this.selectedDate.toISOString())
+                this.updateDisplayValue()
+                
+                if (this.on_change) {
+                    new Evaluate(this.on_change).value(evnt)
+                }
             }
             
-            this.parent.getDaysArray(evnt.target.dataset.year, month)
+            this.updateHeader()
+            this.generateCalendar()
+            this.openYearSelect(this.datepicker_context) // Close year select
             return
         }
 
-        if (evnt.target.dataset.month){
-            this.parent.getDaysArray(this.selected.getFullYear(), evnt.target.dataset.month)
+        if (evnt.target.dataset.month) {
+            this.currentDate.setMonth(parseInt(evnt.target.dataset.month))
+            
+            // Update selected date if one exists
+            if (this.selectedDate) {
+                this.selectedDate.setMonth(parseInt(evnt.target.dataset.month))
+                new Evaluate().setValue(this.model, this.selectedDate.toISOString())
+                this.updateDisplayValue()
+                
+                if (this.on_change) {
+                    new Evaluate(this.on_change).value(evnt)
+                }
+            }
+            
+            this.updateHeader()
+            this.generateCalendar()
+            this.openYearSelect(this.datepicker_context) // Close year select
             return
         }
 
-        if (evnt.target.classList.contains('prev')){
-            let monthIdx = this.selected.getMonth()-2
-            this.selected.setMonth(monthIdx)
-            this.parent.getDaysArray(this.selected.getFullYear(), this.selected.getMonth())
+        // Handle buttons
+        if (evnt.target.classList.contains('dates-clear')) {
+            this.selectedDate = null
+            new Evaluate().setValue(this.model, '')
+            this.updateDisplayValue()
+            
+            // Ensure currentDate is valid before regenerating calendar
+            if (!this.currentDate || isNaN(this.currentDate.getTime())) {
+                this.currentDate = new Date()
+            }
+            
+            // Regenerate calendar to remove selection highlighting but keep current month/year
+            this.generateCalendar()
+            
+            if (this.on_change) {
+                new Evaluate(this.on_change).value(evnt)
+            }
             return
         }
 
-        if (evnt.target.classList.contains('next')){
-            let newDate = new Date(this.selected.setMonth(this.selected.getMonth()))
-            this.parent.getDaysArray(newDate.getFullYear(), newDate.getMonth())
+        if (evnt.target.classList.contains('dates-close')) {
+            view.exitView(this.datepicker_context)
             return
         }
-
-        if (evnt.target.classList.contains('open-year-select')){
-            this.parent.openYearSelect(this)
-            return
-        }
-
-        if (evnt.target.classList.contains('dates-clear')){
-            new Evaluate().setValue(this.parent.model, '')
-            this.parent.querySelector('.value').innerHTML = ''
-            return
-        }
-
-        if (evnt.target.classList.contains('dates-close')){
-            view.exitView(this)
-            return
-        }
-
     }
 
     openYearSelect(datepicker){
-
         let wrap = datepicker.querySelector('.year-select'),
             months = datepicker.querySelector('.months'),
             years = datepicker.querySelector('.years')
 
         if (!this.year_select_open){
-
             wrap.style.display = 'flex'
             wrap.style.height = '10rem'
             wrap.style.width = '100%'
@@ -573,34 +415,29 @@ export class DatePicker extends HTMLElement {
                 months.innerHTML += '<div id="month-'+i+'" class="month context-link w-100 flex-middle" style="cursor: pointer; height:2rem" data-month="'+i+'">'+month+'</div>'
             })
     
-            let scroll_year = years.querySelector('#year-'+datepicker.selected.getFullYear())
-            years.scrollTop = scroll_year.offsetTop-128
+            let scroll_year = years.querySelector('#year-'+this.currentDate.getFullYear())
+            if (scroll_year) {
+                years.scrollTop = scroll_year.offsetTop-128
+            }
     
-            let scroll_month = months.querySelector('#month-'+datepicker.selected.getMonth())
-            months.scrollTop = scroll_month.offsetTop-156
-
+            let scroll_month = months.querySelector('#month-'+this.currentDate.getMonth())
+            if (scroll_month) {
+                months.scrollTop = scroll_month.offsetTop-156
+            }
         } else {
-
             wrap.style.display = 'none'
-
         }
 
         this.year_select_open = !this.year_select_open
-    
     }
 
     getDate(model_date){
-
-        return new Promise( async (resolve, reject) => {
-
-            setTimeout(function(){
+        return new Promise((resolve) => {
+            setTimeout(() => {
                 model_date = new Evaluate().getValue(model_date)
                 resolve(model_date)
-            },1000)
-
-
+            }, 100) // Reduced timeout for better responsiveness
         })
-
     }
 
 

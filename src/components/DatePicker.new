@@ -1,0 +1,263 @@
+export default function DatePickerDirective(element, expression, framework) {
+    const isDateTime = element.getAttribute('data-datetime') === 'true';
+    const changeExpression = element.getAttribute('app-change'); // Capture the change directive
+    const placeholder = element.getAttribute('placeholder') || 'Select a date...';
+    const container = document.createElement('div');
+    container.className = 'datepicker';
+    const comment = document.createComment(`app-datepicker: ${expression}`);
+    const parentNode = element.parentNode;
+
+    const markup = `
+        <input type="text" class="datepicker-input" placeholder="${placeholder}">
+        <div class="datepicker-popup">
+            <div class="datepicker-header"></div>
+            <div class="datepicker-calendar"></div>
+            ${isDateTime ? `
+            <div class="datepicker-time">
+                <input type="number" class="time-hours" min="0" max="23" step="1">
+                :
+                <input type="number" class="time-minutes" min="0" max="59" step="1">
+            </div>
+            ` : ''}
+        </div>
+    `;
+    container.innerHTML = markup;
+
+    const displayInput = container.querySelector('.datepicker-input');
+    const popup = container.querySelector('.datepicker-popup');
+    const headerDiv = container.querySelector('.datepicker-header');
+    const calendarDiv = container.querySelector('.datepicker-calendar');
+    const hoursInput = isDateTime ? container.querySelector('.time-hours') : null;
+    const minutesInput = isDateTime ? container.querySelector('.time-minutes') : null;
+
+    // Apply the change directive to the new input if it existed on the original
+    if (changeExpression) {
+        displayInput.setAttribute('app-change', changeExpression);
+    }
+
+    let currentDate = new Date();
+    let selectedDate = null;
+    let isVisible = false;
+
+    framework.addDependency(expression, element);
+
+    const formatDate = (date) => {
+        if (!date) return '';
+
+        const dateOptions = {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        };
+
+        if (isDateTime) {
+            return date.toLocaleString('en-US', {
+                ...dateOptions,
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+        }
+
+        return date.toLocaleDateString('en-US', dateOptions);
+    };
+
+    const updateHeader = () => {
+        headerDiv.innerHTML = `
+            <button class="prev-month">&lt;</button>
+            <span>${currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+            <button class="next-month">&gt;</button>
+        `;
+    };
+
+    const generateCalendar = () => {
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const startPadding = firstDay.getDay();
+        const daysInMonth = lastDay.getDate();
+
+        let calendarHTML = `
+            <div class="weekdays">
+                <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div>
+                <div>Thu</div><div>Fri</div><div>Sat</div>
+            </div>
+            <div class="days">
+        `;
+
+        for (let i = 0; i < startPadding; i++) {
+            calendarHTML += '<div class="padding"></div>';
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const date = new Date(year, month, day);
+            const isSelected = selectedDate && date.toDateString() === selectedDate.toDateString();
+            calendarHTML += `
+                <div class="day ${isSelected ? 'selected' : ''}" 
+                     data-date="${date.toISOString()}">
+                    ${day}
+                </div>
+            `;
+        }
+
+        calendarHTML += '</div>';
+        calendarDiv.innerHTML = calendarHTML;
+    };
+
+    const updateValue = (date, updateTime = false) => {
+        selectedDate = date;
+
+        if (isDateTime && !updateTime) {
+            selectedDate.setHours(hoursInput.value || 0);
+            selectedDate.setMinutes(minutesInput.value || 0);
+        }
+        displayInput.value = formatDate(selectedDate);
+        framework.setNestedValue(expression, selectedDate ? selectedDate.toISOString() : null);
+
+        if (isDateTime && selectedDate) {
+            hoursInput.value = selectedDate.getHours().toString().padStart(2, '0');
+            minutesInput.value = selectedDate.getMinutes().toString().padStart(2, '0');
+        }
+
+        generateCalendar();
+
+        // Trigger change event for app-change directive
+        displayInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+    };
+
+    if (isDateTime) {
+        hoursInput.addEventListener('change', () => {
+            if (!selectedDate) selectedDate = new Date();
+
+            let hours = parseInt(hoursInput.value);
+
+            if (isNaN(hours) || hours < 0) hours = 0;
+            if (hours > 23) hours = 23;
+
+            selectedDate.setHours(hours);
+            hoursInput.value = hours.toString().padStart(2, '0');
+            updateValue(selectedDate, true);
+        });
+
+        minutesInput.addEventListener('change', () => {
+            if (!selectedDate) selectedDate = new Date();
+
+            let minutes = parseInt(minutesInput.value);
+
+            if (isNaN(minutes) || minutes < 0) minutes = 0;
+            if (minutes > 59) minutes = 59;
+
+            selectedDate.setMinutes(minutes);
+            minutesInput.value = minutes.toString().padStart(2, '0');
+            updateValue(selectedDate, true);
+        });
+    }
+
+    headerDiv.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (e.target.classList.contains('prev-month')) {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            updateHeader();
+            generateCalendar();
+        } else if (e.target.classList.contains('next-month')) {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            updateHeader();
+            generateCalendar();
+        }
+    });
+
+    calendarDiv.addEventListener('click', (e) => {
+        if (e.target.classList.contains('day') && !e.target.classList.contains('padding')) {
+            const dateStr = e.target.dataset.date;
+            const newDate = new Date(dateStr);
+
+            if (isDateTime && selectedDate) {
+                newDate.setHours(selectedDate.getHours());
+                newDate.setMinutes(selectedDate.getMinutes());
+            }
+
+            updateValue(newDate);
+
+            if (!isDateTime) {
+                popup.style.display = 'none';
+                isVisible = false;
+            }
+        }
+    });
+
+    displayInput.addEventListener('click', () => {
+        if (!isVisible) {
+            popup.style.display = 'block';
+
+            const popupRect = popup.getBoundingClientRect();
+            const viewportHeight = window.innerHeight;
+
+            if (popupRect.bottom > viewportHeight) {
+                popup.classList.add('position-top');
+            } else {
+                popup.classList.remove('position-top');
+            }
+
+            isVisible = true;
+        } else {
+            popup.style.display = 'none';
+            isVisible = false;
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if ((e.target.classList.contains('prev-month') ||
+            e.target.classList.contains('next-month')) ||
+            container.contains(e.target)) {
+            return;
+        }
+
+        if (isVisible) {
+            popup.style.display = 'none';
+            isVisible = false;
+        }
+    });
+
+    const update = () => {
+        const newValue = framework.evaluateExpression(expression);
+        if (newValue && newValue !== selectedDate.toISOString()) {
+            selectedDate = new Date(newValue);
+            currentDate = new Date(newValue);
+            displayInput.value = formatDate(selectedDate);
+
+            if (isDateTime) {
+                hoursInput.value = selectedDate.getHours().toString().padStart(2, '0');
+                minutesInput.value = selectedDate.getMinutes().toString().padStart(2, '0');
+            }
+
+            updateHeader();
+            generateCalendar();
+        }
+    };
+
+    const initialValue = framework.evaluateExpression(expression);
+    if (initialValue) {
+        selectedDate = new Date(initialValue);
+        currentDate = new Date(initialValue);
+    }
+
+    updateHeader();
+    generateCalendar();
+    displayInput.value = formatDate(selectedDate);
+
+    if (isDateTime && selectedDate) {
+        hoursInput.value = selectedDate.getHours().toString().padStart(2, '0');
+        minutesInput.value = selectedDate.getMinutes().toString().padStart(2, '0');
+    }
+    element._update = update;
+
+    parentNode.replaceChild(comment, element);
+    parentNode.insertBefore(container, comment);
+
+    // Process the new container to apply any directives (like app-change)
+    if (framework.processElement) {
+        framework.processElement(container);
+    }
+}

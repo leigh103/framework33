@@ -22,7 +22,7 @@ export class DropdownSearch extends HTMLElement {
 
         this.innerHTML = `
 
-            <input type="text" class="value context-link" placeholder="`+this.placeholder+`" spellcheck="false">
+            <input type="text" id="`+this.model+`" class="value context-link" placeholder="`+this.placeholder+`" spellcheck="false">
 
         `;
 
@@ -77,7 +77,6 @@ export class DropdownSearch extends HTMLElement {
 
             new Evaluate().setValue(this.model, '')
 
-
             this.input.focus()
 
             this.input.dropdown_context = createContextMenu('dropdown-wrap', this.dropdown.innerHTML, this.getBoundingClientRect())
@@ -110,15 +109,17 @@ export class DropdownSearch extends HTMLElement {
             let value = null,
                 result = null
 
-            if (evnt && evnt.target && evnt.target._app && evnt.target._app.value){
-                value = evnt.target._app.value
-            } else if (evnt && evnt.target && evnt.target.getAttribute && evnt.target.dataset.value){
+            if (evnt && evnt.target && evnt.target.getAttribute && evnt.target.dataset.value){
                 value = evnt.target.dataset.value
+                
+            } else if (evnt && evnt.target && evnt.target._app && evnt.target._app.value){
+                value = evnt.target._app.value
+
             } else if (evnt && evnt.target && evnt.target.parentNode && evnt.target.parentNode.getAttribute && evnt.target.parentNode.dataset.value){
                 value = evnt.target.parentNode.dataset.value
             } else if (evnt && evnt.target && evnt.target.innerHTML){
                 value = evnt.target.innerHTML
-            }
+            } 
 
             if (value !== null && this._input){
                 result = new Evaluate().setValue(this._input.model, value)
@@ -126,6 +127,14 @@ export class DropdownSearch extends HTMLElement {
                     new Evaluate(this._input.on_change).value(evnt)
                 }
                 this._input.value = evnt.target.innerHTML
+
+                if (this._input.model && /_id$/.test(this._input.model) && evnt.target._app.value){
+
+                    let joined_field = this._input.model.replace(/_id$/,'')
+                    view.set(joined_field, evnt.target._app.value[this._input._bind])
+
+                }
+
             } else {
 
             }
@@ -255,8 +264,18 @@ export class DropdownSearch extends HTMLElement {
                             self.dropdown_context.appendChild(optn)
 
                         } else if (self._value){
+
                             let value = _get(item, self._value)
-                            self.dropdown_context.innerHTML += `<div data-value="`+value+`">`+text+`</div>`
+                            // self.dropdown_context.innerHTML += `<div data-value="`+value+`">`+text+`</div>`
+                            let optn = document.createElement('div')
+                            optn.dataset.value = value
+                            optn.innerHTML = text
+                            optn._app = {
+                                value: item
+                            }
+                      
+                            self.dropdown_context.appendChild(optn)
+
                         } else {
                             self.dropdown_context.innerHTML += `<div>`+text+`</div>`
                         }
@@ -286,7 +305,7 @@ export class DropdownSearch extends HTMLElement {
         return new Promise( async (resolve, reject) => {
 
             setTimeout(function(){
-                model = new Evaluate().getValue(model)
+                model = new Evaluate().getValue(model.replace(/_id$/,'.name'))
                 resolve(model)
             },1000)
 

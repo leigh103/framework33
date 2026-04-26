@@ -179,7 +179,7 @@
         }
 
         async updateElement(el, key, type){
-  
+ 
             let chk_watch = false
 
             if (type == 'model' && el._app.model && el._app.model.keys.indexOf(key) >= 0){
@@ -187,11 +187,11 @@
                 if (!el._app.model.listening){
 
                     if (el.tagName == "INPUT") {
-                        if (el.type == "text" || el.type == "number" || el.type == "password" || el.type == "email" || el.type == "tel") {
+                        if (el.type == "text" || el.type == "number" || el.type == "password" || el.type == "email" || el.type == "tel" || el.type == "color") {
                             el.removeEventListener('input', model)
                             el.addEventListener('input', model)
                         }
-                        if (el.type == "number" || el.type == "file" || el.type == "range" || el.type == "color") {
+                        if (el.type == "number" || el.type == "file" || el.type == "range") {
                             el.removeEventListener('change', model)
                             el.addEventListener('change', model)
                         }
@@ -472,6 +472,8 @@
             return results
 
         }
+
+        
 
         isArray(key) {
             return Array.isArray(app.index[key])

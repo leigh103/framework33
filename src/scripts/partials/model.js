@@ -32,9 +32,23 @@
                 set.setDate(value)
 
             } else {
-                
+
                 if (typeof value == 'undefined'){
                     value = ''
+                }
+
+                let currency = set.dataset.currency
+                if (currency){
+                    // Convert pence to pounds for currency fields
+                 
+                    let numValue = parseFloat(value);
+                    if (!isNaN(numValue)) {
+                        value = (numValue / 100).toFixed(2);
+                    } else if (value === null || value === undefined || value === '') {
+                        value = '0.00';
+                    } else {
+                        value = '0.00';
+                    }
                 }
                 set.value = value
             }
@@ -80,6 +94,7 @@
             } else if (el.tagName == "DIV"){
                 value = el.innerHTML
             } else {
+                
                 value = el.value
             }
 

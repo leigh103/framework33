@@ -7,36 +7,35 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --config webpack.prod.js",
     "watch": "webpack --watch",
-    "deploy": "webpack --config webpack.prod.js && cp dist/js/* /websites/chat/public/js/framework-33/v2.0/ ; cp dist/css/* /websites/chat/public/style/framework-33/v2.0/",
+    "deploy": "webpack --config webpack.prod.js && cp dist/js/* /melded/dev_melded_io/public/js/framework-33/v2.0/ ; cp dist/css/* /melded/dev_melded_io/public/style/framework-33/v2.0/",
     "start": "webpack serve --config webpack.dev.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "clean-webpack-plugin": "^3.0.0",
-    "css-loader": "^5.0.0",
-    "file-loader": "^6.1.1",
-    "html-webpack-plugin": "^4.5.0",
-    "style-loader": "^2.0.0",
-    "stylus": "^0.54.8",
-    "stylus-loader": "^4.1.1",
-    "webpack": "^5.1.3",
-    "webpack-cli": "^4.0.0",
-    "webpack-dev-server": "^3.11.0",
-    "webpack-merge": "^5.2.0"
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.8.1",
+    "css-minimizer-webpack-plugin": "^7.0.0",
+    "html-webpack-plugin": "^5.5.3",
+    "style-loader": "^3.3.3",
+    "stylus": "^0.59.0",
+    "stylus-loader": "^7.1.3",
+    "webpack": "^5.88.2",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1",
+    "webpack-merge": "^5.9.0"
   },
   "dependencies": {
-    "babel-loader": "^8.2.1",
+    "babel-loader": "^9.1.3",
     "just-safe-get": "^4.2.0",
-    "lodash": "^4.17.20",
+    "lodash": "^4.17.21",
     "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2",
-    "mini-css-extract-plugin": "^1.3.1",
+    "mini-css-extract-plugin": "^2.7.6",
     "nested-proxies": "^0.1.9",
     "observable-slim": "^0.1.5",
-    "optimize-css-assets-webpack-plugin": "^5.0.4",
-    "sortablejs": "^1.13.0",
-    "terser-webpack-plugin": "^5.0.3"
+    "sortablejs": "^1.15.0",
+    "terser-webpack-plugin": "^5.3.9"
   }
 }

@@ -20,7 +20,9 @@
         } else if (el._app.original_src) {
             el.src = el._app.original_src
         }
-        
+        if (typeof el.load == 'function'){
+            e.load()
+        }
 
     }
 
