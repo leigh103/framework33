@@ -104,6 +104,16 @@ export class TableSearch extends HTMLElement {
 
                     self.table_el._rows = []
 
+                    let header = document.createElement('div')
+                    header.classList.add('row')
+                    self._columns.map((column)=>{
+                        let cell = document.createElement('div')
+                        cell.classList.add('cell', 'middle','font-small','font-weight-800')
+                        cell.innerHTML = column.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase())
+                        header.appendChild(cell)
+                    })
+                    self.table_el.appendChild(header)
+
                     data.map((item, i)=>{
 
                         let row = document.createElement('div')
@@ -113,7 +123,9 @@ export class TableSearch extends HTMLElement {
                         self._columns.map((column, ii)=>{
 
                             let text = _get(item, column)
-
+                            if (!text){
+                                text = ''
+                            }
                             let cell = document.createElement('div')
                             cell.classList.add('cell','middle','clickable', 'name' ,'no-icon')
                             cell.innerHTML = text

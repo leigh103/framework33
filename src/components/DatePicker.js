@@ -275,9 +275,11 @@ export class DatePicker extends HTMLElement {
 
 
     selectDate(evnt){
+        const target = evnt.target instanceof Element ? evnt.target : evnt.target.parentElement
+
         // Handle day selection
-        if (evnt.target.classList.contains('date') && !evnt.target.classList.contains('padding') && evnt.target.dataset.date) {
-            const newDate = new Date(evnt.target.dataset.date)
+        if (target.classList.contains('date') && !target.classList.contains('padding') && target.dataset.date) {
+            const newDate = new Date(target.dataset.date)
 
             // Preserve time if datetime mode and we have a selected date
             if (this.datetime && this.selectedDate) {
@@ -299,14 +301,14 @@ export class DatePicker extends HTMLElement {
         }
 
         // Handle navigation
-        if (evnt.target.classList.contains('prev')) {
+        if (target.classList.contains('prev')) {
             this.currentDate.setMonth(this.currentDate.getMonth() - 1)
             this.updateHeader()
             this.generateCalendar()
             return
         }
 
-        if (evnt.target.classList.contains('next')) {
+        if (target.classList.contains('next')) {
             this.currentDate.setMonth(this.currentDate.getMonth() + 1)
             this.updateHeader()
             this.generateCalendar()
@@ -314,45 +316,45 @@ export class DatePicker extends HTMLElement {
         }
 
         // Handle year/month selection
-        if (evnt.target.classList.contains('open-year-select')) {
+        if (target.classList.contains('open-year-select')) {
             this.openYearSelect(this.datepicker_context)
             return
         }
 
-        if (evnt.target.dataset.year) {
-            this.currentDate.setFullYear(parseInt(evnt.target.dataset.year))
-            
+        if (target.dataset.year) {
+            this.currentDate.setFullYear(parseInt(target.dataset.year))
+
             // Update selected date if one exists
             if (this.selectedDate) {
-                this.selectedDate.setFullYear(parseInt(evnt.target.dataset.year))
+                this.selectedDate.setFullYear(parseInt(target.dataset.year))
                 new Evaluate().setValue(this.model, this.selectedDate.toISOString())
                 this.updateDisplayValue()
-                
+
                 if (this.on_change) {
                     new Evaluate(this.on_change).value(evnt)
                 }
             }
-            
+
             this.updateHeader()
             this.generateCalendar()
             this.openYearSelect(this.datepicker_context) // Close year select
             return
         }
 
-        if (evnt.target.dataset.month) {
-            this.currentDate.setMonth(parseInt(evnt.target.dataset.month))
-            
+        if (target.dataset.month) {
+            this.currentDate.setMonth(parseInt(target.dataset.month))
+
             // Update selected date if one exists
             if (this.selectedDate) {
-                this.selectedDate.setMonth(parseInt(evnt.target.dataset.month))
+                this.selectedDate.setMonth(parseInt(target.dataset.month))
                 new Evaluate().setValue(this.model, this.selectedDate.toISOString())
                 this.updateDisplayValue()
-                
+
                 if (this.on_change) {
                     new Evaluate(this.on_change).value(evnt)
                 }
             }
-            
+
             this.updateHeader()
             this.generateCalendar()
             this.openYearSelect(this.datepicker_context) // Close year select
@@ -360,26 +362,26 @@ export class DatePicker extends HTMLElement {
         }
 
         // Handle buttons
-        if (evnt.target.classList.contains('dates-clear')) {
+        if (target.classList.contains('dates-clear')) {
             this.selectedDate = null
             new Evaluate().setValue(this.model, '')
             this.updateDisplayValue()
-            
+
             // Ensure currentDate is valid before regenerating calendar
             if (!this.currentDate || isNaN(this.currentDate.getTime())) {
                 this.currentDate = new Date()
             }
-            
+
             // Regenerate calendar to remove selection highlighting but keep current month/year
             this.generateCalendar()
-            
+
             if (this.on_change) {
                 new Evaluate(this.on_change).value(evnt)
             }
             return
         }
 
-        if (evnt.target.classList.contains('dates-close')) {
+        if (target.classList.contains('dates-close')) {
             view.exitView(this.datepicker_context)
             return
         }
